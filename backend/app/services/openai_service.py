@@ -162,19 +162,24 @@ Tailor the workout intensity, exercise selection, and rep ranges based on the us
 
     client = get_openai_client()
     
-    # Start Langfuse trace if available
+    # Start Langfuse trace if available (wrapped in try-except for API compatibility)
     trace = None
     generation = None
     if langfuse:
-        trace = langfuse.trace(
-            name="generate_workout_plan",
-            metadata={"cycle_type": cycle_type, "cycle_weeks": cycle_weeks}
-        )
-        generation = trace.generation(
-            name="gpt4o-workout-plan",
-            model="gpt-4o",
-            input={"prompt": prompt[:500] + "..."},  # Truncate for logging
-        )
+        try:
+            trace = langfuse.trace(
+                name="generate_workout_plan",
+                metadata={"cycle_type": cycle_type, "cycle_weeks": cycle_weeks}
+            )
+            generation = trace.generation(
+                name="gpt4o-workout-plan",
+                model="gpt-4o",
+                input={"prompt": prompt[:500] + "..."},  # Truncate for logging
+            )
+        except Exception as e:
+            print(f"[Langfuse] Trace error (non-fatal): {e}")
+            trace = None
+            generation = None
     
     # Use JSON mode for guaranteed valid JSON structure
     response = client.chat.completions.create(
@@ -199,13 +204,16 @@ Tailor the workout intensity, exercise selection, and rep ranges based on the us
     
     # Log to Langfuse
     if generation:
-        generation.end(
-            output=response_text[:1000] + "..." if len(response_text) > 1000 else response_text,
-            usage={
-                "input": response.usage.prompt_tokens if response.usage else 0,
-                "output": response.usage.completion_tokens if response.usage else 0,
-            }
-        )
+        try:
+            generation.end(
+                output=response_text[:1000] + "..." if len(response_text) > 1000 else response_text,
+                usage={
+                    "input": response.usage.prompt_tokens if response.usage else 0,
+                    "output": response.usage.completion_tokens if response.usage else 0,
+                }
+            )
+        except Exception as e:
+            print(f"[Langfuse] Generation end error (non-fatal): {e}")
     
     # Check if response was truncated
     if response.choices[0].finish_reason == "length":

@@ -45,17 +45,22 @@ async def chat(request: ChatRequest):
     try:
         client = get_openai_client()
         
-        # Start Langfuse trace if available
+        # Start Langfuse trace if available (wrapped for API compatibility)
         trace = None
         generation = None
         if langfuse:
-            trace = langfuse.trace(name="chat")
-            user_msg = request.messages[-1].content if request.messages else ""
-            generation = trace.generation(
-                name="gpt4o-chat",
-                model="gpt-4o",
-                input=user_msg[:200],
-            )
+            try:
+                trace = langfuse.trace(name="chat")
+                user_msg = request.messages[-1].content if request.messages else ""
+                generation = trace.generation(
+                    name="gpt4o-chat",
+                    model="gpt-4o",
+                    input=user_msg[:200],
+                )
+            except Exception as e:
+                print(f"[Langfuse] Trace error (non-fatal): {e}")
+                trace = None
+                generation = None
         
         # Build message history
         messages = [{"role": "system", "content": SYSTEM_PROMPT}]
@@ -85,13 +90,16 @@ async def chat(request: ChatRequest):
         
         # Log to Langfuse
         if generation:
-            generation.end(
-                output=result,
-                usage={
-                    "input": response.usage.prompt_tokens if response.usage else 0,
-                    "output": response.usage.completion_tokens if response.usage else 0,
-                }
-            )
+            try:
+                generation.end(
+                    output=result,
+                    usage={
+                        "input": response.usage.prompt_tokens if response.usage else 0,
+                        "output": response.usage.completion_tokens if response.usage else 0,
+                    }
+                )
+            except Exception as e:
+                print(f"[Langfuse] Generation end error (non-fatal): {e}")
         
         return ChatResponse(message=result)
         

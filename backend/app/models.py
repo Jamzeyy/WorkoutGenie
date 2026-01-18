@@ -22,6 +22,20 @@ class User(Base):
     fitness_goal = Column(String(100), nullable=True)  # Build muscle, lose weight, etc.
     activity_level = Column(String(50), nullable=True)  # sedentary, light, moderate, active, very_active
     
+    # Subscription data (Paddle)
+    subscription_tier = Column(String(20), default="free")  # free, pro
+    subscription_status = Column(String(20), default="none")  # none, active, cancelled, past_due
+    paddle_customer_id = Column(String(100), nullable=True)
+    paddle_subscription_id = Column(String(100), nullable=True)
+    subscription_plan = Column(String(20), nullable=True)  # monthly, annual, two_year
+    subscription_ends_at = Column(DateTime, nullable=True)
+    
+    # Usage tracking for free tier limits
+    monthly_workouts_count = Column(Integer, default=0)
+    monthly_workouts_reset = Column(DateTime, default=datetime.utcnow)
+    daily_chat_count = Column(Integer, default=0)
+    daily_chat_reset = Column(DateTime, default=datetime.utcnow)
+    
     workouts = relationship("Workout", back_populates="user", cascade="all, delete-orphan")
     plans = relationship("WorkoutPlan", back_populates="user", cascade="all, delete-orphan")
 

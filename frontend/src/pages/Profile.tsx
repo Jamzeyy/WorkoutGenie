@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   User, Edit2, Save, X, Flame, Target, Trophy, Calendar,
-  TrendingUp, Dumbbell, Scale, Ruler, Activity
+  TrendingUp, Dumbbell, Scale, Ruler, Activity, Crown, Zap
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useSubscription } from '../context/SubscriptionContext';
 import { profileApi, UserProfile, UserStats, Milestone } from '../api';
 import Card from '../components/Card';
 import Button from '../components/Button';
@@ -30,6 +32,7 @@ const FITNESS_GOALS = [
 
 export default function Profile() {
   const { user } = useAuth();
+  const { subscription, isPro, limits } = useSubscription();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -170,6 +173,47 @@ export default function Profile() {
           </div>
         </Card>
       </div>
+
+      {/* Subscription Status */}
+      <Card animate={false}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className={`p-3 rounded-xl ${isPro ? 'bg-gradient-to-br from-amber-500/20 to-orange-500/20' : 'bg-dark-700'}`}>
+              {isPro ? (
+                <Crown className="w-6 h-6 text-amber-400" />
+              ) : (
+                <Zap className="w-6 h-6 text-dark-400" />
+              )}
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-white">
+                  {isPro ? 'Pro Member' : 'Free Plan'}
+                </h3>
+                {isPro && (
+                  <span className="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs font-medium rounded-full">
+                    {subscription?.plan === 'two_year' ? '2 Year' : subscription?.plan === 'annual' ? 'Annual' : 'Monthly'}
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-dark-400">
+                {isPro 
+                  ? `Renews ${subscription?.ends_at ? new Date(subscription.ends_at).toLocaleDateString() : 'soon'}`
+                  : `${limits?.workouts_used || 0}/${limits?.monthly_workouts} workouts • ${limits?.chat_used || 0}/${limits?.daily_chat_messages} chats today`
+                }
+              </p>
+            </div>
+          </div>
+          {!isPro && (
+            <Link to="/pricing">
+              <Button size="sm" className="bg-gradient-to-r from-genie-500 to-purple-500">
+                <Crown className="w-4 h-4 mr-1" />
+                Upgrade
+              </Button>
+            </Link>
+          )}
+        </div>
+      </Card>
 
       {/* Workout Calendar */}
       <Card animate={false}>

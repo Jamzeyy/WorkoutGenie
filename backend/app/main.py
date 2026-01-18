@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from .database import engine, Base, SessionLocal
-from .routers import workouts, plans, chat, auth, profile
+from .routers import workouts, plans, chat, auth, profile, subscriptions
 from .routers.auth import seed_admin_user
 
 # Initialize Sentry for error tracking
@@ -37,6 +37,17 @@ def run_migrations():
             ('gender', 'VARCHAR(20)'),
             ('fitness_goal', 'VARCHAR(100)'),
             ('activity_level', 'VARCHAR(50)'),
+            # Subscription fields
+            ('subscription_tier', "VARCHAR(20) DEFAULT 'free'"),
+            ('subscription_status', "VARCHAR(20) DEFAULT 'none'"),
+            ('paddle_customer_id', 'VARCHAR(100)'),
+            ('paddle_subscription_id', 'VARCHAR(100)'),
+            ('subscription_plan', 'VARCHAR(20)'),
+            ('subscription_ends_at', 'DATETIME'),
+            ('monthly_workouts_count', 'INTEGER DEFAULT 0'),
+            ('monthly_workouts_reset', 'DATETIME'),
+            ('daily_chat_count', 'INTEGER DEFAULT 0'),
+            ('daily_chat_reset', 'DATETIME'),
         ]
         
         for col_name, col_type in user_migrations:
@@ -109,6 +120,7 @@ app.include_router(workouts.router, prefix="/api")
 app.include_router(plans.router, prefix="/api")
 app.include_router(chat.router, prefix="/api")
 app.include_router(profile.router, prefix="/api")
+app.include_router(subscriptions.router, prefix="/api")
 
 
 @app.get("/")

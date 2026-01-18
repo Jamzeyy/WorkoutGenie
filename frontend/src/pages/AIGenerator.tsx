@@ -1,16 +1,17 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sparkles, ChevronRight, ChevronLeft, Check, 
   Dumbbell, Target, Clock, Calendar, Zap, 
-  Heart, AlertCircle, MessageSquare, Save
+  Heart, AlertCircle, MessageSquare, Save, Crown, Lock
 } from 'lucide-react';
 import posthog from 'posthog-js';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import { plansApi } from '../api';
 import { QuestionnaireData, GeneratePlanResponse } from '../types';
+import { useSubscription } from '../context/SubscriptionContext';
 
 const STEPS = [
   { id: 'fitness_level', title: 'Fitness Level', icon: Zap },
@@ -56,8 +57,60 @@ const CYCLE_TYPES = [
 
 export default function AIGenerator() {
   const navigate = useNavigate();
+  const { canGeneratePlan, isPro } = useSubscription();
   const [currentStep, setCurrentStep] = useState(0);
   const [generating, setGenerating] = useState(false);
+  
+  // Check if user can generate plans
+  const planAccess = canGeneratePlan();
+  
+  if (!planAccess.allowed) {
+    return (
+      <div className="max-w-2xl mx-auto py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center"
+        >
+          <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-genie-500/20 to-purple-500/20 flex items-center justify-center">
+            <Lock className="w-10 h-10 text-genie-400" />
+          </div>
+          <h1 className="text-2xl font-display text-white mb-3">Pro Feature</h1>
+          <p className="text-dark-400 mb-8 max-w-md mx-auto">
+            {planAccess.message}
+          </p>
+          <Link to="/pricing">
+            <Button className="bg-gradient-to-r from-genie-500 to-purple-500">
+              <Crown className="w-4 h-4 mr-2" />
+              Upgrade to Pro
+            </Button>
+          </Link>
+          
+          <div className="mt-12 p-6 bg-dark-800/50 border border-dark-700 rounded-2xl text-left">
+            <h3 className="text-lg font-semibold text-white mb-4">What you'll get with Pro:</h3>
+            <ul className="space-y-3 text-dark-300">
+              <li className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-400" />
+                Unlimited AI-generated workout plans
+              </li>
+              <li className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-400" />
+                Personalized based on your body stats
+              </li>
+              <li className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-400" />
+                Weekly, monthly, and 8-week programs
+              </li>
+              <li className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-400" />
+                Progressive overload built in
+              </li>
+            </ul>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
   const [generatedPlan, setGeneratedPlan] = useState<GeneratePlanResponse | null>(null);
   const [saving, setSaving] = useState(false);
   

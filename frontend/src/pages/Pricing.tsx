@@ -75,7 +75,7 @@ const features = [
 
 export default function Pricing() {
   const { user } = useAuth();
-  const [selectedPlan, setSelectedPlan] = useState('annual');
+  const [selectedPlan] = useState('annual');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

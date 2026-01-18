@@ -57,7 +57,7 @@ const CYCLE_TYPES = [
 
 export default function AIGenerator() {
   const navigate = useNavigate();
-  const { canGeneratePlan, isPro } = useSubscription();
+  const { canGeneratePlan } = useSubscription();
   const [currentStep, setCurrentStep] = useState(0);
   const [generating, setGenerating] = useState(false);
   

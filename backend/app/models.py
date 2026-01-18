@@ -4,16 +4,31 @@ from datetime import datetime
 from .database import Base
 
 
+class User(Base):
+    __tablename__ = "users"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), unique=True, index=True, nullable=False)
+    hashed_password = Column(String(255), nullable=False)
+    name = Column(String(255), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    workouts = relationship("Workout", back_populates="user", cascade="all, delete-orphan")
+    plans = relationship("WorkoutPlan", back_populates="user", cascade="all, delete-orphan")
+
+
 class Workout(Base):
     __tablename__ = "workouts"
     
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # nullable for migration
     name = Column(String(255), nullable=False)
     date = Column(DateTime, default=datetime.utcnow)
     duration_minutes = Column(Integer, nullable=True)
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     
+    user = relationship("User", back_populates="workouts")
     exercises = relationship("Exercise", back_populates="workout", cascade="all, delete-orphan")
 
 

@@ -1,30 +1,52 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 
 from ..database import get_db
-from ..models import WorkoutPlan
+from ..models import WorkoutPlan, User
 from ..schemas import WorkoutPlanCreate, WorkoutPlanResponse, GeneratePlanRequest, GeneratePlanResponse
 from ..services.openai_service import generate_workout_plan
+from ..services.auth_service import get_optional_user
 
 router = APIRouter(prefix="/plans", tags=["plans"])
 
 
 @router.get("/", response_model=List[WorkoutPlanResponse])
-def get_plans(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    plans = db.query(WorkoutPlan).order_by(WorkoutPlan.created_at.desc()).offset(skip).limit(limit).all()
+def get_plans(
+    skip: int = 0, 
+    limit: int = 100, 
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_user)
+):
+    query = db.query(WorkoutPlan)
+    if current_user:
+        query = query.filter(WorkoutPlan.user_id == current_user.id)
+    plans = query.order_by(WorkoutPlan.created_at.desc()).offset(skip).limit(limit).all()
     return plans
 
 
 @router.get("/active", response_model=List[WorkoutPlanResponse])
-def get_active_plans(db: Session = Depends(get_db)):
-    plans = db.query(WorkoutPlan).filter(WorkoutPlan.is_active == True).order_by(WorkoutPlan.created_at.desc()).all()
+def get_active_plans(
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_user)
+):
+    query = db.query(WorkoutPlan).filter(WorkoutPlan.is_active == True)
+    if current_user:
+        query = query.filter(WorkoutPlan.user_id == current_user.id)
+    plans = query.order_by(WorkoutPlan.created_at.desc()).all()
     return plans
 
 
 @router.get("/{plan_id}", response_model=WorkoutPlanResponse)
-def get_plan(plan_id: int, db: Session = Depends(get_db)):
-    plan = db.query(WorkoutPlan).filter(WorkoutPlan.id == plan_id).first()
+def get_plan(
+    plan_id: int, 
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_user)
+):
+    query = db.query(WorkoutPlan).filter(WorkoutPlan.id == plan_id)
+    if current_user:
+        query = query.filter(WorkoutPlan.user_id == current_user.id)
+    plan = query.first()
     if not plan:
         raise HTTPException(status_code=404, detail="Plan not found")
     return plan
@@ -49,7 +71,11 @@ async def generate_plan(request: GeneratePlanRequest):
 
 
 @router.post("/save", response_model=WorkoutPlanResponse)
-def save_plan(plan_data: WorkoutPlanCreate, db: Session = Depends(get_db)):
+def save_plan(
+    plan_data: WorkoutPlanCreate, 
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_user)
+):
     """Save a generated workout plan."""
     cycle_weeks_map = {
         "weekly": 1,
@@ -58,6 +84,7 @@ def save_plan(plan_data: WorkoutPlanCreate, db: Session = Depends(get_db)):
     }
     
     plan = WorkoutPlan(
+        user_id=current_user.id if current_user else None,
         name=plan_data.name,
         description=plan_data.description,
         cycle_type=plan_data.cycle_type,

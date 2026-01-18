@@ -1,35 +1,56 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from datetime import datetime
 
 from ..database import get_db
-from ..models import Workout, Exercise, ExerciseSet
+from ..models import Workout, Exercise, ExerciseSet, User
 from ..schemas import (
     WorkoutCreate, WorkoutResponse, WorkoutUpdate,
     ExerciseCreate, ExerciseSetCreate
 )
+from ..services.auth_service import get_optional_user
 
 router = APIRouter(prefix="/workouts", tags=["workouts"])
 
 
 @router.get("/", response_model=List[WorkoutResponse])
-def get_workouts(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    workouts = db.query(Workout).order_by(Workout.date.desc()).offset(skip).limit(limit).all()
+def get_workouts(
+    skip: int = 0, 
+    limit: int = 100, 
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_user)
+):
+    query = db.query(Workout)
+    if current_user:
+        query = query.filter(Workout.user_id == current_user.id)
+    workouts = query.order_by(Workout.date.desc()).offset(skip).limit(limit).all()
     return workouts
 
 
 @router.get("/{workout_id}", response_model=WorkoutResponse)
-def get_workout(workout_id: int, db: Session = Depends(get_db)):
-    workout = db.query(Workout).filter(Workout.id == workout_id).first()
+def get_workout(
+    workout_id: int, 
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_user)
+):
+    query = db.query(Workout).filter(Workout.id == workout_id)
+    if current_user:
+        query = query.filter(Workout.user_id == current_user.id)
+    workout = query.first()
     if not workout:
         raise HTTPException(status_code=404, detail="Workout not found")
     return workout
 
 
 @router.post("/", response_model=WorkoutResponse)
-def create_workout(workout_data: WorkoutCreate, db: Session = Depends(get_db)):
+def create_workout(
+    workout_data: WorkoutCreate, 
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_user)
+):
     workout = Workout(
+        user_id=current_user.id if current_user else None,
         name=workout_data.name,
         date=workout_data.date or datetime.utcnow(),
         duration_minutes=workout_data.duration_minutes,
@@ -144,9 +165,14 @@ def update_set(set_id: int, set_data: ExerciseSetCreate, db: Session = Depends(g
 
 
 @router.post("/from-plan")
-def create_workout_from_plan(plan_day: dict, db: Session = Depends(get_db)):
+def create_workout_from_plan(
+    plan_day: dict, 
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_user)
+):
     """Create a workout pre-populated with exercises from a plan day."""
     workout = Workout(
+        user_id=current_user.id if current_user else None,
         name=plan_day.get("workout_name", "Workout"),
         date=datetime.utcnow(),
         duration_minutes=plan_day.get("duration_minutes"),

@@ -1,7 +1,8 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Dumbbell, Sparkles, Calendar, Menu, X } from 'lucide-react';
+import { Home, Dumbbell, Sparkles, Calendar, Menu, X, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
 
 const navItems = [
   { to: '/', icon: Home, label: 'Home' },
@@ -12,6 +13,7 @@ const navItems = [
 
 export default function Navigation() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   return (
     <>
@@ -42,6 +44,21 @@ export default function Navigation() {
               </span>
             </NavLink>
           ))}
+        </div>
+        
+        {/* User & Logout */}
+        <div className="mt-auto pt-4 border-t border-dark-700">
+          {user && (
+            <button
+              onClick={logout}
+              className="w-12 h-12 rounded-xl flex items-center justify-center text-dark-400 hover:text-red-400 hover:bg-dark-800 transition-all group relative"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="absolute left-16 px-3 py-1.5 bg-dark-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                Logout
+              </span>
+            </button>
+          )}
         </div>
       </nav>
 
@@ -109,6 +126,16 @@ export default function Navigation() {
                     <span className="font-medium">{item.label}</span>
                   </NavLink>
                 ))}
+                
+                {user && (
+                  <button
+                    onClick={() => { logout(); setMobileOpen(false); }}
+                    className="flex items-center gap-4 px-6 py-4 rounded-xl transition-all bg-red-500/10 text-red-400 hover:bg-red-500/20 mt-4"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    <span className="font-medium">Logout</span>
+                  </button>
+                )}
               </div>
             </div>
           </motion.div>

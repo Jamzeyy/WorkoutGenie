@@ -2,6 +2,15 @@ import { Workout, WorkoutPlan, QuestionnaireData, GeneratePlanResponse } from '.
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://workoutgenie-production.up.railway.app/api';
 
+function getAuthHeaders(): HeadersInit {
+  const token = localStorage.getItem('token');
+  const headers: HeadersInit = { 'Content-Type': 'application/json' };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+}
+
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const error = await response.json().catch(() => ({ detail: 'An error occurred' }));
@@ -13,19 +22,23 @@ async function handleResponse<T>(response: Response): Promise<T> {
 // Workouts API
 export const workoutsApi = {
   getAll: async (): Promise<Workout[]> => {
-    const response = await fetch(`${API_BASE}/workouts/`);
+    const response = await fetch(`${API_BASE}/workouts/`, {
+      headers: getAuthHeaders(),
+    });
     return handleResponse<Workout[]>(response);
   },
 
   get: async (id: number): Promise<Workout> => {
-    const response = await fetch(`${API_BASE}/workouts/${id}`);
+    const response = await fetch(`${API_BASE}/workouts/${id}`, {
+      headers: getAuthHeaders(),
+    });
     return handleResponse<Workout>(response);
   },
 
   create: async (workout: Omit<Workout, 'id' | 'created_at'>): Promise<Workout> => {
     const response = await fetch(`${API_BASE}/workouts/`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(workout),
     });
     return handleResponse<Workout>(response);
@@ -34,7 +47,7 @@ export const workoutsApi = {
   update: async (id: number, workout: Partial<Workout>): Promise<Workout> => {
     const response = await fetch(`${API_BASE}/workouts/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(workout),
     });
     return handleResponse<Workout>(response);
@@ -43,6 +56,7 @@ export const workoutsApi = {
   delete: async (id: number): Promise<void> => {
     const response = await fetch(`${API_BASE}/workouts/${id}`, {
       method: 'DELETE',
+      headers: getAuthHeaders(),
     });
     if (!response.ok) throw new Error('Failed to delete workout');
   },
@@ -50,7 +64,7 @@ export const workoutsApi = {
   addExercise: async (workoutId: number, exercise: { name: string; sets: Array<{ set_number: number; reps?: number; weight?: number }> }): Promise<Workout> => {
     const response = await fetch(`${API_BASE}/workouts/${workoutId}/exercises`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(exercise),
     });
     return handleResponse<Workout>(response);
@@ -64,7 +78,7 @@ export const workoutsApi = {
   }): Promise<Workout> => {
     const response = await fetch(`${API_BASE}/workouts/from-plan`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(planDay),
     });
     return handleResponse<Workout>(response);
@@ -80,7 +94,7 @@ export const workoutsApi = {
   }): Promise<void> => {
     const response = await fetch(`${API_BASE}/workouts/sets/${setId}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(setData),
     });
     if (!response.ok) throw new Error('Failed to update set');
@@ -90,24 +104,30 @@ export const workoutsApi = {
 // Plans API
 export const plansApi = {
   getAll: async (): Promise<WorkoutPlan[]> => {
-    const response = await fetch(`${API_BASE}/plans/`);
+    const response = await fetch(`${API_BASE}/plans/`, {
+      headers: getAuthHeaders(),
+    });
     return handleResponse<WorkoutPlan[]>(response);
   },
 
   getActive: async (): Promise<WorkoutPlan[]> => {
-    const response = await fetch(`${API_BASE}/plans/active`);
+    const response = await fetch(`${API_BASE}/plans/active`, {
+      headers: getAuthHeaders(),
+    });
     return handleResponse<WorkoutPlan[]>(response);
   },
 
   get: async (id: number): Promise<WorkoutPlan> => {
-    const response = await fetch(`${API_BASE}/plans/${id}`);
+    const response = await fetch(`${API_BASE}/plans/${id}`, {
+      headers: getAuthHeaders(),
+    });
     return handleResponse<WorkoutPlan>(response);
   },
 
   generate: async (questionnaireData: QuestionnaireData, cycleType: string): Promise<GeneratePlanResponse> => {
     const response = await fetch(`${API_BASE}/plans/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify({
         questionnaire_data: questionnaireData,
         cycle_type: cycleType,
@@ -125,7 +145,7 @@ export const plansApi = {
   }): Promise<WorkoutPlan> => {
     const response = await fetch(`${API_BASE}/plans/save`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(plan),
     });
     return handleResponse<WorkoutPlan>(response);
@@ -134,6 +154,7 @@ export const plansApi = {
   toggleActive: async (id: number): Promise<void> => {
     const response = await fetch(`${API_BASE}/plans/${id}/toggle-active`, {
       method: 'PUT',
+      headers: getAuthHeaders(),
     });
     if (!response.ok) throw new Error('Failed to toggle plan');
   },
@@ -141,6 +162,7 @@ export const plansApi = {
   delete: async (id: number): Promise<void> => {
     const response = await fetch(`${API_BASE}/plans/${id}`, {
       method: 'DELETE',
+      headers: getAuthHeaders(),
     });
     if (!response.ok) throw new Error('Failed to delete plan');
   },
@@ -156,7 +178,7 @@ export const chatApi = {
   send: async (messages: ChatMessage[], context?: string): Promise<string> => {
     const response = await fetch(`${API_BASE}/chat/`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify({ messages, context }),
     });
     if (!response.ok) throw new Error('Chat request failed');

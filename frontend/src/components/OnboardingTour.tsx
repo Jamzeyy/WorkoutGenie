@@ -110,7 +110,6 @@ export default function OnboardingTour() {
   const { user, markOnboardingComplete } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [highlightPosition, setHighlightPosition] = useState<DOMRect | null>(null);
 
   useEffect(() => {
     // Check for force show via URL parameter (for testing)
@@ -137,43 +136,6 @@ export default function OnboardingTour() {
     }
   }, [user]);
 
-  useEffect(() => {
-    // Update highlight position when step changes
-    const step = TOUR_STEPS[currentStep];
-    
-    const updatePosition = () => {
-      if (step.targetSelector) {
-        const element = document.querySelector(step.targetSelector);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          setHighlightPosition(rect);
-        }
-      } else {
-        setHighlightPosition(null);
-      }
-    };
-
-    if (step.targetSelector) {
-      const element = document.querySelector(step.targetSelector);
-      if (element) {
-        // Scroll element into view first
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        // Wait for scroll to finish, then update position
-        setTimeout(updatePosition, 400);
-      }
-    } else {
-      setHighlightPosition(null);
-    }
-
-    // Update position on scroll/resize
-    window.addEventListener('scroll', updatePosition);
-    window.addEventListener('resize', updatePosition);
-    
-    return () => {
-      window.removeEventListener('scroll', updatePosition);
-      window.removeEventListener('resize', updatePosition);
-    };
-  }, [currentStep]);
 
   const handleComplete = async () => {
     // Mark complete in backend (persists across devices)
@@ -204,7 +166,6 @@ export default function OnboardingTour() {
   const step = TOUR_STEPS[currentStep];
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === TOUR_STEPS.length - 1;
-  const isFullScreenStep = step.id === 'welcome' || step.id === 'complete' || step.id === 'pro-tips';
 
   if (!isVisible) return null;
 
@@ -217,53 +178,9 @@ export default function OnboardingTour() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100]"
-            style={{ 
-              background: isFullScreenStep 
-                ? 'rgba(0, 0, 0, 0.85)' 
-                : 'rgba(0, 0, 0, 0.7)' 
-            }}
+            className="fixed inset-0 z-[100] bg-black/85"
           />
 
-          {/* Spotlight highlight for targeted elements */}
-          {highlightPosition && !isFullScreenStep && (
-            <>
-              {/* Dark overlay with cutout */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="fixed inset-0 z-[101] pointer-events-none"
-                style={{
-                  background: `radial-gradient(ellipse ${highlightPosition.width + 80}px ${highlightPosition.height + 80}px at ${highlightPosition.left + highlightPosition.width / 2}px ${highlightPosition.top + highlightPosition.height / 2}px, transparent 0%, transparent 50%, rgba(0,0,0,0.85) 100%)`,
-                }}
-              />
-              {/* Glowing border around target */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ 
-                  opacity: 1, 
-                  scale: 1,
-                  boxShadow: [
-                    '0 0 20px rgba(16, 185, 129, 0.6), 0 0 40px rgba(16, 185, 129, 0.3)',
-                    '0 0 30px rgba(16, 185, 129, 0.8), 0 0 60px rgba(16, 185, 129, 0.4)',
-                    '0 0 20px rgba(16, 185, 129, 0.6), 0 0 40px rgba(16, 185, 129, 0.3)',
-                  ]
-                }}
-                transition={{
-                  boxShadow: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' }
-                }}
-                className="fixed z-[102] rounded-2xl pointer-events-none"
-                style={{
-                  top: highlightPosition.top - 8,
-                  left: highlightPosition.left - 8,
-                  width: highlightPosition.width + 16,
-                  height: highlightPosition.height + 16,
-                  border: '3px solid rgba(16, 185, 129, 0.9)',
-                  background: 'transparent',
-                }}
-              />
-            </>
-          )}
 
           {/* Tour card */}
           <motion.div
@@ -271,15 +188,9 @@ export default function OnboardingTour() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className={`fixed z-[103] ${
-              isFullScreenStep 
-                ? 'inset-0 flex items-center justify-center p-3 md:p-4' 
-                : 'bottom-20 left-3 right-3 md:left-1/2 md:-translate-x-1/2 md:max-w-md md:bottom-8'
-            }`}
+            className="fixed z-[103] inset-0 flex items-center justify-center p-3 md:p-4"
           >
-            <div className={`bg-dark-800 border border-dark-600 rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] overflow-y-auto ${
-              isFullScreenStep ? 'max-w-md w-full' : 'w-full'
-            }`}>
+            <div className="bg-dark-800 border border-dark-600 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto max-w-md w-full">
               {/* Header with gradient */}
               <div className="bg-gradient-to-r from-genie-600 to-emerald-500 p-3 md:p-4 relative">
                 <button
@@ -307,18 +218,15 @@ export default function OnboardingTour() {
               {step.image && (
                 <div className="px-4 pt-3">
                   <div className="relative rounded-xl overflow-hidden border border-dark-600 bg-dark-900">
-                    {/* Image container */}
-                    <div className="relative">
-                      <img 
-                        src={step.image} 
-                        alt={`${step.title} preview`}
-                        className="w-full max-h-32 md:max-h-40 object-contain bg-dark-900"
-                        onError={(e) => {
-                          // Hide image container if image fails to load
-                          (e.target as HTMLImageElement).parentElement!.parentElement!.style.display = 'none';
-                        }}
-                      />
-                    </div>
+                    <img 
+                      src={step.image} 
+                      alt={`${step.title} preview`}
+                      className="w-full h-48 md:h-56 object-contain bg-dark-900"
+                      onError={(e) => {
+                        // Hide image container if image fails to load
+                        (e.target as HTMLImageElement).parentElement!.style.display = 'none';
+                      }}
+                    />
                   </div>
                 </div>
               )}

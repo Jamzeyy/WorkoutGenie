@@ -28,55 +28,10 @@ export default function Dashboard() {
   const [inputValue, setInputValue] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
-  const [keyboardOpen, setKeyboardOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const chatContainerRef = useRef<HTMLDivElement>(null);
   const inputContainerRef = useRef<HTMLDivElement>(null);
-
-  // Handle mobile keyboard open/close
-  useEffect(() => {
-    const handleViewportResize = () => {
-      if (!window.visualViewport) return;
-      
-      // Detect if keyboard is open by comparing viewport height to window height
-      const viewportHeight = window.visualViewport.height;
-      const windowHeight = window.innerHeight;
-      const isKeyboard = windowHeight - viewportHeight > 150;
-      
-      setKeyboardOpen(isKeyboard);
-      
-      if (isKeyboard && inputContainerRef.current) {
-        // Keyboard opened - scroll input into view with smooth behavior
-        setTimeout(() => {
-          inputContainerRef.current?.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'end'
-          });
-        }, 100);
-      } else if (!isKeyboard && chatContainerRef.current) {
-        // Keyboard closed - scroll to show the full chat from the top
-        setTimeout(() => {
-          chatContainerRef.current?.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start'
-          });
-        }, 100);
-      }
-    };
-
-    // Listen to visualViewport changes (mobile keyboard detection)
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', handleViewportResize);
-    }
-
-    return () => {
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', handleViewportResize);
-      }
-    };
-  }, []);
 
   // Handle input focus - ensure input is visible on mobile
   const handleInputFocus = () => {
@@ -89,17 +44,9 @@ export default function Dashboard() {
     }, 300);
   };
 
-  // Handle input blur - scroll back to show full chat
+  // No-op for blur - let user control scroll naturally
   const handleInputBlur = () => {
-    // Small delay to ensure keyboard is closing
-    setTimeout(() => {
-      if (!keyboardOpen) {
-        chatContainerRef.current?.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start'
-        });
-      }
-    }, 150);
+    // Do nothing - don't force scroll on keyboard close
   };
 
   useEffect(() => {
@@ -170,8 +117,6 @@ export default function Dashboard() {
     <div className="space-y-8">
       {/* AI Chat Section */}
       <motion.div
-        ref={chatContainerRef}
-        data-tour="ai-chat"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-genie-600 via-genie-500 to-emerald-400 p-1"

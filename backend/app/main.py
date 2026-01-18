@@ -11,6 +11,17 @@ from .routers.auth import seed_admin_user
 async def lifespan(app: FastAPI):
     # Startup: Create tables and seed admin
     Base.metadata.create_all(bind=engine)
+    
+    # Add is_admin column if it doesn't exist (migration for existing databases)
+    from sqlalchemy import text, inspect
+    with engine.connect() as conn:
+        inspector = inspect(engine)
+        columns = [col['name'] for col in inspector.get_columns('users')]
+        if 'is_admin' not in columns:
+            print("[Migration] Adding is_admin column to users table")
+            conn.execute(text("ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT 0"))
+            conn.commit()
+    
     db = SessionLocal()
     try:
         seed_admin_user(db)

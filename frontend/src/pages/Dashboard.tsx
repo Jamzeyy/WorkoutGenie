@@ -171,6 +171,7 @@ export default function Dashboard() {
       {/* AI Chat Section */}
       <motion.div
         ref={chatContainerRef}
+        data-tour="ai-chat"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-genie-600 via-genie-500 to-emerald-400 p-1"

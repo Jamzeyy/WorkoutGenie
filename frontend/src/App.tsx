@@ -29,6 +29,7 @@ import { SubscriptionProvider } from './context/SubscriptionContext';
 import AdBanner from './components/AdBanner';
 import Footer from './components/Footer';
 import TrialBanner from './components/TrialBanner';
+import OnboardingTour from './components/OnboardingTour';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -83,6 +84,7 @@ function AppRoutes() {
                 </main>
                 <Footer />
                 <AdBanner position="bottom" showGoogleAds={true} />
+                <OnboardingTour />
               </div>
             </SubscriptionProvider>
           </ProtectedRoute>

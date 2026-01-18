@@ -1,0 +1,293 @@
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  X, ChevronRight, ChevronLeft, Sparkles, MessageSquare, 
+  Dumbbell, Calendar, User, CheckCircle2, Rocket
+} from 'lucide-react';
+import Button from './Button';
+
+interface TourStep {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  targetSelector?: string;
+  position?: 'top' | 'bottom' | 'left' | 'right';
+}
+
+const TOUR_STEPS: TourStep[] = [
+  {
+    id: 'welcome',
+    title: 'Welcome to WorkoutGenie! 🧞‍♂️',
+    description: "Your AI-powered fitness companion. Let me show you around - this will only take a moment.",
+    icon: <Rocket className="w-8 h-8" />,
+  },
+  {
+    id: 'ai-chat',
+    title: 'AI Fitness Coach',
+    description: 'Ask me anything about workouts, nutrition, form tips, or fitness advice. I\'m here 24/7!',
+    icon: <MessageSquare className="w-6 h-6" />,
+    targetSelector: '[data-tour="ai-chat"]',
+    position: 'bottom',
+  },
+  {
+    id: 'generate',
+    title: 'Generate Custom Plans',
+    description: 'Answer a few questions and I\'ll create a personalized workout plan tailored just for you.',
+    icon: <Sparkles className="w-6 h-6" />,
+    targetSelector: '[data-tour="generate"]',
+    position: 'bottom',
+  },
+  {
+    id: 'workouts',
+    title: 'Track Your Workouts',
+    description: 'Log exercises, sets, reps, and weights. Watch your progress over time!',
+    icon: <Dumbbell className="w-6 h-6" />,
+    targetSelector: '[data-tour="workouts"]',
+    position: 'top',
+  },
+  {
+    id: 'plans',
+    title: 'Your Workout Plans',
+    description: 'View and follow your AI-generated or custom workout plans here.',
+    icon: <Calendar className="w-6 h-6" />,
+    targetSelector: '[data-tour="plans"]',
+    position: 'top',
+  },
+  {
+    id: 'profile',
+    title: 'Personalize Your Experience',
+    description: 'Add your fitness goals, body stats, and preferences for better recommendations.',
+    icon: <User className="w-6 h-6" />,
+    targetSelector: '[data-tour="profile"]',
+    position: 'top',
+  },
+  {
+    id: 'complete',
+    title: "You're All Set! 💪",
+    description: "Start by chatting with me or generating your first workout plan. Let's crush those goals!",
+    icon: <CheckCircle2 className="w-8 h-8" />,
+  },
+];
+
+const ONBOARDING_KEY = 'workoutgenie_onboarding_complete';
+
+export default function OnboardingTour() {
+  const [isVisible, setIsVisible] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [highlightPosition, setHighlightPosition] = useState<DOMRect | null>(null);
+
+  useEffect(() => {
+    // Check if user has completed onboarding
+    const hasCompleted = localStorage.getItem(ONBOARDING_KEY);
+    if (!hasCompleted) {
+      // Small delay to let the page render first
+      const timer = setTimeout(() => setIsVisible(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Update highlight position when step changes
+    const step = TOUR_STEPS[currentStep];
+    if (step.targetSelector) {
+      const element = document.querySelector(step.targetSelector);
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        setHighlightPosition(rect);
+        // Scroll element into view if needed
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    } else {
+      setHighlightPosition(null);
+    }
+  }, [currentStep]);
+
+  const handleComplete = () => {
+    localStorage.setItem(ONBOARDING_KEY, 'true');
+    setIsVisible(false);
+  };
+
+  const handleSkip = () => {
+    handleComplete();
+  };
+
+  const handleNext = () => {
+    if (currentStep < TOUR_STEPS.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      handleComplete();
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const step = TOUR_STEPS[currentStep];
+  const isFirstStep = currentStep === 0;
+  const isLastStep = currentStep === TOUR_STEPS.length - 1;
+  const isWelcomeOrComplete = step.id === 'welcome' || step.id === 'complete';
+
+  if (!isVisible) return null;
+
+  return (
+    <AnimatePresence>
+      {isVisible && (
+        <>
+          {/* Backdrop overlay */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100]"
+            style={{ 
+              background: isWelcomeOrComplete 
+                ? 'rgba(0, 0, 0, 0.85)' 
+                : 'rgba(0, 0, 0, 0.7)' 
+            }}
+          />
+
+          {/* Spotlight highlight for targeted elements */}
+          {highlightPosition && !isWelcomeOrComplete && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="fixed z-[101] rounded-2xl"
+              style={{
+                top: highlightPosition.top - 8,
+                left: highlightPosition.left - 8,
+                width: highlightPosition.width + 16,
+                height: highlightPosition.height + 16,
+                boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.75), 0 0 30px rgba(16, 185, 129, 0.5)',
+                border: '2px solid rgba(16, 185, 129, 0.6)',
+              }}
+            />
+          )}
+
+          {/* Tour card */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className={`fixed z-[102] ${
+              isWelcomeOrComplete 
+                ? 'inset-0 flex items-center justify-center p-4' 
+                : 'bottom-24 left-4 right-4 md:left-auto md:right-8 md:max-w-sm'
+            }`}
+          >
+            <div className={`bg-dark-800 border border-dark-600 rounded-2xl shadow-2xl overflow-hidden ${
+              isWelcomeOrComplete ? 'max-w-md w-full' : 'w-full'
+            }`}>
+              {/* Header with gradient */}
+              <div className="bg-gradient-to-r from-genie-600 to-emerald-500 p-4 relative">
+                <button
+                  onClick={handleSkip}
+                  className="absolute top-3 right-3 p-1.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                  aria-label="Skip tour"
+                >
+                  <X className="w-4 h-4 text-white" />
+                </button>
+                
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-white">
+                    {step.icon}
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white">{step.title}</h3>
+                    <p className="text-xs text-white/70">
+                      Step {currentStep + 1} of {TOUR_STEPS.length}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-5">
+                <p className="text-dark-300 text-sm leading-relaxed mb-5">
+                  {step.description}
+                </p>
+
+                {/* Feature cards for welcome screen */}
+                {step.id === 'welcome' && (
+                  <div className="grid grid-cols-2 gap-2 mb-5">
+                    {[
+                      { icon: <MessageSquare className="w-4 h-4" />, label: 'AI Coach' },
+                      { icon: <Sparkles className="w-4 h-4" />, label: 'Custom Plans' },
+                      { icon: <Dumbbell className="w-4 h-4" />, label: 'Track Workouts' },
+                      { icon: <Calendar className="w-4 h-4" />, label: 'View Progress' },
+                    ].map((feature) => (
+                      <div 
+                        key={feature.label}
+                        className="flex items-center gap-2 p-2.5 rounded-lg bg-dark-700/50 border border-dark-600"
+                      >
+                        <span className="text-genie-400">{feature.icon}</span>
+                        <span className="text-xs text-dark-300">{feature.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Progress dots */}
+                <div className="flex items-center justify-center gap-1.5 mb-5">
+                  {TOUR_STEPS.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentStep(index)}
+                      className={`w-2 h-2 rounded-full transition-all ${
+                        index === currentStep 
+                          ? 'bg-genie-500 w-6' 
+                          : index < currentStep 
+                            ? 'bg-genie-500/50' 
+                            : 'bg-dark-600'
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                {/* Navigation buttons */}
+                <div className="flex gap-2">
+                  {!isFirstStep && (
+                    <button
+                      onClick={handlePrev}
+                      className="flex-1 flex items-center justify-center gap-1 px-4 py-2.5 rounded-xl bg-dark-700 text-dark-300 hover:bg-dark-600 hover:text-white transition-colors text-sm"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      Back
+                    </button>
+                  )}
+                  
+                  <Button
+                    onClick={handleNext}
+                    className="flex-1"
+                    icon={isLastStep ? <CheckCircle2 className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                  >
+                    {isFirstStep ? "Let's Go!" : isLastStep ? "Get Started" : 'Next'}
+                  </Button>
+                </div>
+
+                {/* Skip link */}
+                {!isLastStep && (
+                  <button
+                    onClick={handleSkip}
+                    className="w-full mt-3 text-xs text-dark-500 hover:text-dark-400 transition-colors"
+                  >
+                    Skip tutorial
+                  </button>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
+// Export a function to reset onboarding (useful for testing or settings)
+export function resetOnboarding() {
+  localStorage.removeItem(ONBOARDING_KEY);
+}

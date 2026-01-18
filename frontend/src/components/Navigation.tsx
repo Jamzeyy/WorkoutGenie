@@ -5,11 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 
 const navItems = [
-  { to: '/', icon: Home, label: 'Home' },
-  { to: '/workouts', icon: Dumbbell, label: 'Workouts' },
-  { to: '/generate', icon: Sparkles, label: 'AI Generate' },
-  { to: '/plans', icon: Calendar, label: 'Plans' },
-  { to: '/profile', icon: User, label: 'Profile' },
+  { to: '/', icon: Home, label: 'Home', tourId: 'home' },
+  { to: '/workouts', icon: Dumbbell, label: 'Workouts', tourId: 'workouts' },
+  { to: '/generate', icon: Sparkles, label: 'AI Generate', tourId: 'generate' },
+  { to: '/plans', icon: Calendar, label: 'Plans', tourId: 'plans' },
+  { to: '/profile', icon: User, label: 'Profile', tourId: 'profile' },
 ];
 
 export default function Navigation() {
@@ -31,6 +31,7 @@ export default function Navigation() {
             <NavLink
               key={item.to}
               to={item.to}
+              data-tour={item.tourId}
               className={({ isActive }) =>
                 `w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group relative ${
                   isActive
@@ -88,6 +89,7 @@ export default function Navigation() {
               <NavLink
                 key={item.to}
                 to={item.to}
+                data-tour={item.tourId}
                 className={({ isActive }) =>
                   `flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all ${
                     isActive

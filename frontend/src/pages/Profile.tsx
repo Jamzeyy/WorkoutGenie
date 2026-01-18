@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   User, Edit2, Save, X, Flame, Target, Trophy, Calendar,
-  TrendingUp, Dumbbell, Scale, Ruler, Activity, Crown, Zap
+  TrendingUp, Dumbbell, Scale, Ruler, Activity, Crown, Zap, HelpCircle
 } from 'lucide-react';
+import { resetOnboarding } from '../components/OnboardingTour';
 import { useAuth } from '../context/AuthContext';
 import { useSubscription } from '../context/SubscriptionContext';
 import { profileApi, UserProfile, UserStats, Milestone } from '../api';
@@ -471,6 +472,38 @@ export default function Profile() {
             </div>
           </div>
         )}
+        </Card>
+
+        {/* Settings Section */}
+        <Card className="mt-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-dark-700 flex items-center justify-center">
+              <HelpCircle className="w-5 h-5 text-dark-400" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-white">App Settings</h3>
+              <p className="text-sm text-dark-400">Customize your experience</p>
+            </div>
+          </div>
+          
+          <div className="space-y-3">
+            <button
+              onClick={() => {
+                resetOnboarding();
+                window.location.reload();
+              }}
+              className="w-full flex items-center justify-between p-4 bg-dark-800/50 hover:bg-dark-700/50 rounded-xl transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">🧞‍♂️</span>
+                <div className="text-left">
+                  <p className="text-white font-medium group-hover:text-genie-400 transition-colors">Replay Tutorial</p>
+                  <p className="text-xs text-dark-400">Get a quick tour of all features</p>
+                </div>
+              </div>
+              <span className="text-dark-500 text-sm">→</span>
+            </button>
+          </div>
         </Card>
       </div>
     </div>

@@ -46,14 +46,14 @@ const exerciseData: ExerciseInfo[] = [
     name: "Pike Push-ups",
     description: "Pike push-ups target the shoulders by placing your body in an inverted V position. This is a great progression toward handstand push-ups.",
     muscles: ["Shoulders", "Triceps", "Upper Chest"],
-    videoUrl: "https://www.youtube.com/embed/sposDXWEB0A",
+    videoUrl: "https://www.youtube.com/embed/XzfNa6cPFLw",
     tips: ["Form an inverted V with body", "Head goes toward floor between hands", "Emphasizes shoulders over chest", "Great for shoulder strength"]
   },
   {
     name: "Pike Push-up",
     description: "Pike push-ups target the shoulders by placing your body in an inverted V position. This is a great progression toward handstand push-ups.",
     muscles: ["Shoulders", "Triceps", "Upper Chest"],
-    videoUrl: "https://www.youtube.com/embed/sposDXWEB0A",
+    videoUrl: "https://www.youtube.com/embed/XzfNa6cPFLw",
     tips: ["Form an inverted V with body", "Head goes toward floor between hands", "Emphasizes shoulders over chest", "Great for shoulder strength"]
   },
   {

@@ -8,6 +8,7 @@ import {
 import Card from '../components/Card';
 import Button from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
+import AdBanner from '../components/AdBanner';
 import { plansApi } from '../api';
 import { WorkoutPlan } from '../types';
 import { format } from 'date-fns';
@@ -147,6 +148,9 @@ export default function Plans() {
               </Card>
             </Link>
           ))}
+          
+          {/* Subtle inline ad for free users */}
+          <AdBanner position="inline" showGoogleAds={true} />
         </div>
       ) : (
         <Card>

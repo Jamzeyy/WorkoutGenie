@@ -82,7 +82,7 @@ function AppRoutes() {
                   </div>
                 </main>
                 <Footer />
-                <AdBanner position="bottom" />
+                <AdBanner position="bottom" showGoogleAds={true} />
               </div>
             </SubscriptionProvider>
           </ProtectedRoute>

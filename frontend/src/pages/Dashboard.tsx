@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Dumbbell, Calendar, TrendingUp, ChevronRight, Flame, Send, Bot, User } from 'lucide-react';
 import Card from '../components/Card';
 import Button from '../components/Button';
+import AdBanner from '../components/AdBanner';
 import { workoutsApi, plansApi, chatApi, ChatMessage } from '../api';
 import { Workout, WorkoutPlan } from '../types';
 import { format } from 'date-fns';
@@ -310,6 +311,9 @@ export default function Dashboard() {
           </Card>
         )}
       </div>
+
+      {/* Subtle inline ad for free users */}
+      <AdBanner position="inline" showGoogleAds={true} />
 
       {/* Active Plans */}
       {activePlans.length > 0 && (

@@ -63,6 +63,55 @@ const exerciseData: ExerciseInfo[] = [
     videoUrl: "https://www.youtube.com/embed/2z8JmcrW-As",
     tips: ["Lean forward for more chest", "Lower until upper arms are parallel", "Keep elbows close to body for triceps", "Don't lock out aggressively"]
   },
+  {
+    name: "Decline Bench Press",
+    description: "The decline bench press targets the lower chest. Set the bench to a 15-30 degree decline and press the barbell from your lower chest.",
+    muscles: ["Lower Chest", "Triceps", "Shoulders"],
+    videoUrl: "https://www.youtube.com/embed/LfyQBUKR8SE",
+    tips: ["Secure feet under pads", "Lower to lower chest", "Keep back flat on bench", "Don't go too steep on decline"]
+  },
+  {
+    name: "Incline Dumbbell Press",
+    description: "The incline dumbbell press targets the upper chest with greater range of motion than barbell. Set bench to 30-45 degrees and press dumbbells up and together.",
+    muscles: ["Upper Chest", "Shoulders", "Triceps"],
+    videoUrl: "https://www.youtube.com/embed/8iPEnn-ltC8",
+    tips: ["Set incline to 30-45 degrees", "Lower dumbbells to sides of chest", "Press up and slightly inward", "Keep wrists neutral"]
+  },
+  {
+    name: "Decline Dumbbell Press",
+    description: "The decline dumbbell press emphasizes the lower chest. Lie on a decline bench and press dumbbells from the sides of your lower chest.",
+    muscles: ["Lower Chest", "Triceps", "Shoulders"],
+    videoUrl: "https://www.youtube.com/embed/0PHxvgQQMGs",
+    tips: ["Secure feet under pads", "Lower to sides of lower chest", "Press up and together", "Control the descent"]
+  },
+  {
+    name: "Incline Flyes",
+    description: "Incline flyes isolate the upper chest. Set bench to 30-45 degrees, lower dumbbells in an arc to the sides, then squeeze them back together.",
+    muscles: ["Upper Chest"],
+    videoUrl: "https://www.youtube.com/embed/ajdFwa-qM98",
+    tips: ["Keep slight bend in elbows", "Feel the stretch at bottom", "Squeeze chest at top", "Don't go too heavy"]
+  },
+  {
+    name: "Decline Flyes",
+    description: "Decline flyes target the lower chest. Lie on a decline bench and perform the fly movement with dumbbells.",
+    muscles: ["Lower Chest"],
+    videoUrl: "https://www.youtube.com/embed/N-xCvhP-X4c",
+    tips: ["Secure feet under pads", "Keep elbows slightly bent", "Lower until stretch is felt", "Squeeze lower chest at top"]
+  },
+  {
+    name: "Low Cable Crossover",
+    description: "Low cable crossovers target the upper chest. Set cables at the lowest position and bring hands up and together in front of you.",
+    muscles: ["Upper Chest", "Shoulders"],
+    videoUrl: "https://www.youtube.com/embed/GxoVmkHS3-k",
+    tips: ["Set pulleys at bottom", "Bring hands up and together", "Squeeze upper chest at top", "Control the descent"]
+  },
+  {
+    name: "High Cable Crossover",
+    description: "High cable crossovers emphasize the lower chest. Set cables at the highest position and bring hands down and together in front of your hips.",
+    muscles: ["Lower Chest"],
+    videoUrl: "https://www.youtube.com/embed/taI4XduLpTk",
+    tips: ["Set pulleys at top", "Bring hands down and together", "Squeeze at bottom", "Keep slight forward lean"]
+  },
 
   // BACK
   {
@@ -120,6 +169,83 @@ const exerciseData: ExerciseInfo[] = [
     muscles: ["Rear Deltoids", "Rhomboids", "Rotator Cuff"],
     videoUrl: "https://www.youtube.com/embed/rep-qVOkqgk",
     tips: ["Keep elbows high", "Pull to face level", "Externally rotate at end", "Focus on rear delts, not biceps"]
+  },
+  {
+    name: "Chin-ups",
+    description: "Chin-ups use an underhand grip which emphasizes the biceps more than pull-ups. Hang from a bar with palms facing you and pull until chin clears the bar.",
+    muscles: ["Lats", "Biceps", "Core"],
+    videoUrl: "https://www.youtube.com/embed/brhRXlOhsAM",
+    tips: ["Palms face toward you", "Pull elbows down", "Chin over bar at top", "Great for bicep development"]
+  },
+  {
+    name: "Wide Grip Pull-ups",
+    description: "Wide grip pull-ups emphasize lat width. Use a grip wider than shoulder width with palms facing away.",
+    muscles: ["Lats", "Teres Major", "Biceps"],
+    videoUrl: "https://www.youtube.com/embed/cyGfOvkNZec",
+    tips: ["Grip wider than shoulders", "Pull elbows down and out", "Focus on lat contraction", "Don't swing"]
+  },
+  {
+    name: "Close Grip Lat Pulldown",
+    description: "Close grip lat pulldown uses a narrow handle to target the lats with greater range of motion and bicep involvement.",
+    muscles: ["Lats", "Biceps", "Rhomboids"],
+    videoUrl: "https://www.youtube.com/embed/lLCMU4pHkW4",
+    tips: ["Use V-bar or close grip handle", "Pull to upper chest", "Squeeze lats at bottom", "Control the return"]
+  },
+  {
+    name: "Wide Grip Lat Pulldown",
+    description: "Wide grip lat pulldown emphasizes lat width. Grip the bar wider than shoulder width and pull to upper chest.",
+    muscles: ["Lats", "Teres Major", "Biceps"],
+    videoUrl: "https://www.youtube.com/embed/JEb-dwU3VF4",
+    tips: ["Grip wider than shoulders", "Lean back slightly", "Pull to upper chest", "Focus on lat spread"]
+  },
+  {
+    name: "Sumo Deadlift",
+    description: "Sumo deadlift uses a wide stance which emphasizes the inner thighs and reduces lower back stress. Stand with feet wide and grip the bar between your legs.",
+    muscles: ["Glutes", "Inner Thighs", "Hamstrings", "Lower Back"],
+    videoUrl: "https://www.youtube.com/embed/tfYGqRQ8h74",
+    tips: ["Wide stance, toes pointed out", "Grip between legs", "Push knees out", "Keep chest up"]
+  },
+  {
+    name: "Stiff Leg Deadlift",
+    description: "Stiff leg deadlift keeps legs nearly straight to maximize hamstring stretch and activation. Push hips back while lowering the weight.",
+    muscles: ["Hamstrings", "Glutes", "Lower Back"],
+    videoUrl: "https://www.youtube.com/embed/1uDiW5--rAE",
+    tips: ["Keep legs almost straight", "Push hips back", "Feel hamstring stretch", "Don't round lower back"]
+  },
+  {
+    name: "Deficit Deadlift",
+    description: "Deficit deadlifts are performed standing on a raised platform to increase range of motion and difficulty.",
+    muscles: ["Lower Back", "Glutes", "Hamstrings", "Quads"],
+    videoUrl: "https://www.youtube.com/embed/vpb8-c_QKFQ",
+    tips: ["Stand on 2-4 inch platform", "Maintain proper form", "Great for building strength off floor", "Start lighter than regular deadlift"]
+  },
+  {
+    name: "Single Arm Dumbbell Row",
+    description: "Single arm dumbbell row allows focus on each side independently, helping fix muscle imbalances. Support yourself on a bench and row the dumbbell to your hip.",
+    muscles: ["Lats", "Rhomboids", "Biceps"],
+    videoUrl: "https://www.youtube.com/embed/pYcpY20QaE8",
+    tips: ["One knee and hand on bench", "Row to hip, not chest", "Squeeze shoulder blade", "Don't rotate torso"]
+  },
+  {
+    name: "Pendlay Row",
+    description: "Pendlay rows start from a dead stop on the floor each rep, building explosive pulling power. Keep back parallel to floor and row explosively.",
+    muscles: ["Lats", "Rhomboids", "Lower Back"],
+    videoUrl: "https://www.youtube.com/embed/T3N-TO4reLQ",
+    tips: ["Bar starts on floor each rep", "Back parallel to ground", "Pull explosively to chest", "Reset between reps"]
+  },
+  {
+    name: "Meadows Row",
+    description: "Meadows row is a landmine row variation that targets the lats from a unique angle. Stand perpendicular to the bar and row with an overhand grip.",
+    muscles: ["Lats", "Rear Deltoids", "Biceps"],
+    videoUrl: "https://www.youtube.com/embed/mR0VpZLbsY0",
+    tips: ["Stand perpendicular to bar", "Overhand grip on bar end", "Row to hip", "Great lat stretch at bottom"]
+  },
+  {
+    name: "Chest Supported Row",
+    description: "Chest supported row eliminates lower back strain by supporting your chest on an incline bench while rowing dumbbells or a barbell.",
+    muscles: ["Lats", "Rhomboids", "Rear Deltoids"],
+    videoUrl: "https://www.youtube.com/embed/H75im9fAUMc",
+    tips: ["Lie face down on incline bench", "Let arms hang straight down", "Row to hips", "Squeeze shoulder blades"]
   },
 
   // SHOULDERS
@@ -179,6 +305,69 @@ const exerciseData: ExerciseInfo[] = [
     videoUrl: "https://www.youtube.com/embed/cJRVVxmytaM",
     tips: ["Shrug straight up, not forward", "Hold at the top briefly", "Control the descent", "Don't roll your shoulders"]
   },
+  {
+    name: "Dumbbell Shoulder Press",
+    description: "Dumbbell shoulder press allows for natural arm path and addresses muscle imbalances. Press dumbbells from shoulder level to overhead.",
+    muscles: ["Shoulders", "Triceps"],
+    videoUrl: "https://www.youtube.com/embed/qEwKCR5JCog",
+    tips: ["Start at shoulder level", "Press up and slightly inward", "Don't bang dumbbells together", "Control the descent"]
+  },
+  {
+    name: "Seated Dumbbell Shoulder Press",
+    description: "Seated dumbbell press provides back support for stricter form. Sit with back against pad and press dumbbells overhead.",
+    muscles: ["Shoulders", "Triceps"],
+    videoUrl: "https://www.youtube.com/embed/B-aVuyhvLHU",
+    tips: ["Back flat against pad", "Press to full extension", "Keep core tight", "Lower to ear level"]
+  },
+  {
+    name: "Military Press",
+    description: "Standing military press is a strict overhead press with feet together. Press the barbell from shoulders to overhead without leg drive.",
+    muscles: ["Shoulders", "Triceps", "Core"],
+    videoUrl: "https://www.youtube.com/embed/2yjwXTZQDDI",
+    tips: ["Feet together or close", "No leg drive", "Brace core tight", "Press straight up"]
+  },
+  {
+    name: "Push Press",
+    description: "Push press uses leg drive to help press heavier weight overhead. Dip at the knees and explosively extend to help drive the bar up.",
+    muscles: ["Shoulders", "Triceps", "Legs"],
+    videoUrl: "https://www.youtube.com/embed/iaBVSJm78ko",
+    tips: ["Quick dip at knees", "Explosive leg drive", "Catch overhead with locked arms", "Lower with control"]
+  },
+  {
+    name: "Cable Lateral Raises",
+    description: "Cable lateral raises provide constant tension throughout the movement. Stand sideways to the cable and raise your arm out to the side.",
+    muscles: ["Side Deltoids"],
+    videoUrl: "https://www.youtube.com/embed/PPrzBWZDOhA",
+    tips: ["Stand sideways to cable", "Cable behind or in front", "Raise to shoulder height", "Constant tension throughout"]
+  },
+  {
+    name: "Machine Lateral Raises",
+    description: "Machine lateral raises provide a fixed path for consistent side deltoid isolation.",
+    muscles: ["Side Deltoids"],
+    videoUrl: "https://www.youtube.com/embed/E6Axtw4gJhU",
+    tips: ["Adjust seat height properly", "Lead with elbows", "Control the negative", "Don't use momentum"]
+  },
+  {
+    name: "Rear Delt Flyes",
+    description: "Rear delt flyes specifically target the posterior deltoids. Bend forward and raise dumbbells out to the sides.",
+    muscles: ["Rear Deltoids", "Rhomboids"],
+    videoUrl: "https://www.youtube.com/embed/oLrBaVNVdkE",
+    tips: ["Bend at hips 45-90 degrees", "Raise out to sides", "Lead with elbows", "Squeeze rear delts at top"]
+  },
+  {
+    name: "Dumbbell Shrugs",
+    description: "Dumbbell shrugs allow for natural arm position and greater range of motion than barbell shrugs.",
+    muscles: ["Traps"],
+    videoUrl: "https://www.youtube.com/embed/g6qbq4Lf1FI",
+    tips: ["Hold dumbbells at sides", "Shrug straight up", "Hold at top", "Don't roll shoulders"]
+  },
+  {
+    name: "Barbell Shrugs",
+    description: "Barbell shrugs allow you to use heavier weight for trap development. Hold barbell in front and shrug shoulders toward ears.",
+    muscles: ["Traps"],
+    videoUrl: "https://www.youtube.com/embed/NAqCVe2mwzM",
+    tips: ["Grip slightly wider than shoulders", "Shrug straight up", "Hold at top briefly", "Control the descent"]
+  },
 
   // ARMS - BICEPS
   {
@@ -215,6 +404,48 @@ const exerciseData: ExerciseInfo[] = [
     muscles: ["Biceps"],
     videoUrl: "https://www.youtube.com/embed/0AUGkch3tzc",
     tips: ["Brace elbow on thigh", "Curl with control", "Squeeze at top", "Full extension at bottom"]
+  },
+  {
+    name: "Incline Dumbbell Curl",
+    description: "Incline dumbbell curls stretch the bicep at the start position for greater muscle activation. Lie back on an incline bench and curl.",
+    muscles: ["Biceps"],
+    videoUrl: "https://www.youtube.com/embed/soxrZlIl35U",
+    tips: ["Set bench to 45-60 degrees", "Let arms hang straight down", "Curl without moving upper arms", "Great stretch at bottom"]
+  },
+  {
+    name: "Cable Curl",
+    description: "Cable curls provide constant tension throughout the entire range of motion. Stand at a cable station and curl the bar or rope.",
+    muscles: ["Biceps"],
+    videoUrl: "https://www.youtube.com/embed/NFzTWp2qpiE",
+    tips: ["Keep elbows at sides", "Constant tension throughout", "Squeeze at top", "Control the negative"]
+  },
+  {
+    name: "EZ Bar Curl",
+    description: "EZ bar curls reduce wrist strain compared to straight bar curls. The angled grip is easier on the joints.",
+    muscles: ["Biceps"],
+    videoUrl: "https://www.youtube.com/embed/zG2xJ0Q5QtI",
+    tips: ["Use angled grip", "Keep elbows stationary", "Easier on wrists", "Full range of motion"]
+  },
+  {
+    name: "Spider Curl",
+    description: "Spider curls are performed face down on an incline bench, eliminating momentum and isolating the biceps.",
+    muscles: ["Biceps"],
+    videoUrl: "https://www.youtube.com/embed/58JOk_J1ZfI",
+    tips: ["Lie face down on incline", "Arms hang straight down", "Curl without swinging", "Constant tension"]
+  },
+  {
+    name: "Reverse Curl",
+    description: "Reverse curls target the brachioradialis and forearms by curling with palms facing down.",
+    muscles: ["Forearms", "Brachioradialis", "Biceps"],
+    videoUrl: "https://www.youtube.com/embed/nRgxYX2Ve9w",
+    tips: ["Palms face down", "Keep elbows at sides", "Targets forearms", "Use lighter weight"]
+  },
+  {
+    name: "21s",
+    description: "21s are a bicep curl variation: 7 reps bottom half, 7 reps top half, 7 reps full range for maximum pump.",
+    muscles: ["Biceps"],
+    videoUrl: "https://www.youtube.com/embed/P3PAL3sIU30",
+    tips: ["7 lower half reps", "7 upper half reps", "7 full range reps", "Great for pump and burn"]
   },
 
   // ARMS - TRICEPS
@@ -259,6 +490,55 @@ const exerciseData: ExerciseInfo[] = [
     muscles: ["Triceps", "Chest", "Shoulders"],
     videoUrl: "https://www.youtube.com/embed/J0DnG1_S92I",
     tips: ["Hands form diamond shape", "Elbows stay close to body", "Lower chest to hands", "Full extension at top"]
+  },
+  {
+    name: "Rope Tricep Pushdown",
+    description: "Rope pushdowns allow you to spread the rope at the bottom for a greater tricep contraction and squeeze.",
+    muscles: ["Triceps"],
+    videoUrl: "https://www.youtube.com/embed/vB5OHsJ3EME",
+    tips: ["Keep elbows at sides", "Spread rope at bottom", "Squeeze triceps hard", "Control the return"]
+  },
+  {
+    name: "Straight Bar Tricep Pushdown",
+    description: "Straight bar pushdowns emphasize the lateral head of the triceps. Push the bar down while keeping elbows pinned.",
+    muscles: ["Triceps"],
+    videoUrl: "https://www.youtube.com/embed/2-LAMcpzODU",
+    tips: ["Grip bar overhand", "Keep elbows at sides", "Full extension", "Don't lean forward too much"]
+  },
+  {
+    name: "Cable Overhead Tricep Extension",
+    description: "Cable overhead extensions provide constant tension on the triceps. Face away from the cable and extend overhead.",
+    muscles: ["Triceps"],
+    videoUrl: "https://www.youtube.com/embed/xFAv3p5dETs",
+    tips: ["Face away from cable", "Extend overhead", "Keep elbows close to head", "Squeeze at full extension"]
+  },
+  {
+    name: "Dumbbell Kickback",
+    description: "Tricep kickbacks isolate the triceps. Bend at the hips, keep upper arm parallel to floor, and extend the dumbbell back.",
+    muscles: ["Triceps"],
+    videoUrl: "https://www.youtube.com/embed/6SS6K3lAwZ8",
+    tips: ["Upper arm parallel to floor", "Extend fully behind you", "Squeeze at top", "Don't swing the weight"]
+  },
+  {
+    name: "Bench Dips",
+    description: "Bench dips are done with hands on a bench behind you. Lower your body by bending elbows, then push back up.",
+    muscles: ["Triceps", "Chest", "Shoulders"],
+    videoUrl: "https://www.youtube.com/embed/6kALZikXxLc",
+    tips: ["Hands grip bench edge", "Keep back close to bench", "Lower to 90 degree elbows", "Don't go too deep"]
+  },
+  {
+    name: "JM Press",
+    description: "JM Press is a hybrid between close grip bench and skull crushers, targeting the triceps with heavy weight.",
+    muscles: ["Triceps", "Chest"],
+    videoUrl: "https://www.youtube.com/embed/k3K6VPMa7c8",
+    tips: ["Lower bar to chin/throat area", "Elbows tuck in", "Hybrid movement", "Great for tricep strength"]
+  },
+  {
+    name: "Tate Press",
+    description: "Tate press is performed by lowering dumbbells to your chest with elbows pointing out, then extending back up.",
+    muscles: ["Triceps"],
+    videoUrl: "https://www.youtube.com/embed/v4E2hkFzjOk",
+    tips: ["Lie on flat bench", "Elbows point outward", "Lower dumbbells to chest", "Extend by straightening arms"]
   },
 
   // LEGS
@@ -339,6 +619,139 @@ const exerciseData: ExerciseInfo[] = [
     videoUrl: "https://www.youtube.com/embed/dQqApCGd5Ss",
     tips: ["Drive through front heel", "Don't push off back foot", "Control the descent", "Keep torso upright"]
   },
+  {
+    name: "Front Squat",
+    description: "Front squat places the bar on front shoulders, emphasizing quads and requiring more core stability.",
+    muscles: ["Quads", "Glutes", "Core"],
+    videoUrl: "https://www.youtube.com/embed/m4ytaCJZpl0",
+    tips: ["Bar rests on front delts", "Elbows up high", "Stay more upright", "Great for quad focus"]
+  },
+  {
+    name: "Back Squat",
+    description: "Back squat is the traditional squat with barbell on upper back. The king of leg exercises for overall development.",
+    muscles: ["Quads", "Glutes", "Hamstrings", "Core"],
+    videoUrl: "https://www.youtube.com/embed/bEv6CCg2BC8",
+    tips: ["Bar on upper traps", "Brace core tight", "Knees track over toes", "Drive through heels"]
+  },
+  {
+    name: "Hack Squat",
+    description: "Hack squat machine allows heavy quad training with reduced lower back stress. Shoulders under pads, feet on platform.",
+    muscles: ["Quads", "Glutes"],
+    videoUrl: "https://www.youtube.com/embed/0tn5K9NlCfo",
+    tips: ["Shoulders under pads", "Feet placement affects focus", "Don't lock out knees", "Control the descent"]
+  },
+  {
+    name: "Box Squat",
+    description: "Box squat teaches proper squat depth and develops explosive power. Squat down to a box, pause, then stand.",
+    muscles: ["Quads", "Glutes", "Hamstrings"],
+    videoUrl: "https://www.youtube.com/embed/vYijF-hqg0E",
+    tips: ["Sit back to box", "Pause on box briefly", "Explode up powerfully", "Great for learning depth"]
+  },
+  {
+    name: "Sumo Squat",
+    description: "Sumo squat uses a wide stance to emphasize inner thighs and glutes. Feet wide, toes pointed out.",
+    muscles: ["Inner Thighs", "Glutes", "Quads"],
+    videoUrl: "https://www.youtube.com/embed/9ZuXKqRbT9k",
+    tips: ["Wide stance", "Toes pointed outward", "Knees track over toes", "Squeeze glutes at top"]
+  },
+  {
+    name: "Walking Lunges",
+    description: "Walking lunges are a dynamic lunge variation. Step forward into a lunge, then bring the back foot forward and continue.",
+    muscles: ["Quads", "Glutes", "Hamstrings"],
+    videoUrl: "https://www.youtube.com/embed/L8fvypPrzzs",
+    tips: ["Take long strides", "Back knee toward floor", "Keep torso upright", "Drive through front heel"]
+  },
+  {
+    name: "Reverse Lunges",
+    description: "Reverse lunges step backward instead of forward, which is easier on the knees and emphasizes glutes more.",
+    muscles: ["Glutes", "Quads", "Hamstrings"],
+    videoUrl: "https://www.youtube.com/embed/xrPteyQLGAo",
+    tips: ["Step backward", "Easier on knees than forward", "Lower back knee to floor", "Push through front heel"]
+  },
+  {
+    name: "Lateral Lunges",
+    description: "Lateral lunges work the inner and outer thighs by stepping to the side. Step wide, push hips back, and return.",
+    muscles: ["Inner Thighs", "Outer Thighs", "Glutes"],
+    videoUrl: "https://www.youtube.com/embed/gwWv7aPcD88",
+    tips: ["Step wide to side", "Push hips back", "Keep other leg straight", "Return to center"]
+  },
+  {
+    name: "Sissy Squat",
+    description: "Sissy squat is an advanced quad isolation exercise. Lean back while rising on toes and bending knees forward.",
+    muscles: ["Quads"],
+    videoUrl: "https://www.youtube.com/embed/032Xl1gfKKE",
+    tips: ["Rise onto toes", "Lean torso back", "Knees travel forward", "Extreme quad isolation"]
+  },
+  {
+    name: "Standing Calf Raises",
+    description: "Standing calf raises emphasize the gastrocnemius (outer calf). Stand on a platform and raise up onto your toes.",
+    muscles: ["Calves"],
+    videoUrl: "https://www.youtube.com/embed/gwLzBJYoWlI",
+    tips: ["Full range of motion", "Pause at top", "Control the negative", "Legs straight or slightly bent"]
+  },
+  {
+    name: "Seated Calf Raises",
+    description: "Seated calf raises target the soleus (inner calf). Sit with pads on thighs and raise heels.",
+    muscles: ["Calves"],
+    videoUrl: "https://www.youtube.com/embed/JbyjNymZOt0",
+    tips: ["Knees bent at 90 degrees", "Full range of motion", "Pause at top", "Targets soleus muscle"]
+  },
+  {
+    name: "Donkey Calf Raises",
+    description: "Donkey calf raises allow for a deep stretch at the bottom. Bend at hips and raise heels.",
+    muscles: ["Calves"],
+    videoUrl: "https://www.youtube.com/embed/jxPO_yqbnPQ",
+    tips: ["Bend at hips 90 degrees", "Great stretch at bottom", "Rise onto toes", "Classic bodybuilding exercise"]
+  },
+  {
+    name: "Single Leg Leg Press",
+    description: "Single leg leg press helps address muscle imbalances. Use one leg at a time on the leg press machine.",
+    muscles: ["Quads", "Glutes"],
+    videoUrl: "https://www.youtube.com/embed/NQJAq4cGxwU",
+    tips: ["One leg at a time", "Control the weight", "Don't lock knee", "Great for imbalances"]
+  },
+  {
+    name: "Lying Leg Curl",
+    description: "Lying leg curl isolates the hamstrings. Lie face down and curl the pad toward your glutes.",
+    muscles: ["Hamstrings"],
+    videoUrl: "https://www.youtube.com/embed/1Tq3QdYUuHs",
+    tips: ["Lie face down", "Keep hips on pad", "Curl all the way up", "Control the negative"]
+  },
+  {
+    name: "Seated Leg Curl",
+    description: "Seated leg curl provides a different angle for hamstring training. Sit with pad behind ankles and curl toward glutes.",
+    muscles: ["Hamstrings"],
+    videoUrl: "https://www.youtube.com/embed/Orxowest56U",
+    tips: ["Adjust pad position", "Curl toward glutes", "Control the movement", "Don't use momentum"]
+  },
+  {
+    name: "Good Mornings",
+    description: "Good mornings are a hip hinge movement targeting posterior chain. Bar on upper back, hinge at hips while keeping legs nearly straight.",
+    muscles: ["Hamstrings", "Glutes", "Lower Back"],
+    videoUrl: "https://www.youtube.com/embed/Ixa0qfVorjY",
+    tips: ["Bar on upper back", "Push hips back", "Slight knee bend", "Keep back flat"]
+  },
+  {
+    name: "Glute Bridge",
+    description: "Glute bridge is a hip extension exercise for glutes. Lie on back, feet flat, and drive hips up.",
+    muscles: ["Glutes", "Hamstrings"],
+    videoUrl: "https://www.youtube.com/embed/wPM8icPu6H8",
+    tips: ["Feet flat on floor", "Drive through heels", "Squeeze glutes at top", "Don't hyperextend back"]
+  },
+  {
+    name: "Single Leg Hip Thrust",
+    description: "Single leg hip thrust increases difficulty and addresses imbalances. Perform hip thrust with one leg extended.",
+    muscles: ["Glutes", "Hamstrings"],
+    videoUrl: "https://www.youtube.com/embed/EqjGKsiIMCE",
+    tips: ["One leg extended", "Other foot drives into floor", "Squeeze glute at top", "Keep hips level"]
+  },
+  {
+    name: "Cable Pull Through",
+    description: "Cable pull through is a hip hinge movement using a cable between your legs. Great for teaching hip hinge pattern.",
+    muscles: ["Glutes", "Hamstrings"],
+    videoUrl: "https://www.youtube.com/embed/MJB8eJYhdL4",
+    tips: ["Face away from cable", "Grip between legs", "Hip hinge movement", "Squeeze glutes at top"]
+  },
 
   // CORE
   {
@@ -404,6 +817,55 @@ const exerciseData: ExerciseInfo[] = [
     videoUrl: "https://www.youtube.com/embed/K2VljzCC16g",
     tips: ["Stack feet or stagger them", "Keep hips elevated", "Body in straight line", "Breathe normally"]
   },
+  {
+    name: "Bicycle Crunches",
+    description: "Bicycle crunches work the entire core with a twisting motion. Alternate elbow to opposite knee while cycling legs.",
+    muscles: ["Abs", "Obliques"],
+    videoUrl: "https://www.youtube.com/embed/9FGilxCbdz8",
+    tips: ["Hands behind head", "Elbow to opposite knee", "Extend other leg", "Don't pull on neck"]
+  },
+  {
+    name: "V-Ups",
+    description: "V-ups are an advanced core exercise. Simultaneously lift legs and torso to form a V shape.",
+    muscles: ["Abs", "Hip Flexors"],
+    videoUrl: "https://www.youtube.com/embed/7UVgs18Y1P4",
+    tips: ["Start flat on back", "Lift legs and torso together", "Touch toes at top", "Lower with control"]
+  },
+  {
+    name: "Flutter Kicks",
+    description: "Flutter kicks target the lower abs. Lie on back and alternate kicking legs up and down.",
+    muscles: ["Lower Abs", "Hip Flexors"],
+    videoUrl: "https://www.youtube.com/embed/eEG9uXQp1Lc",
+    tips: ["Keep lower back pressed down", "Small controlled kicks", "Don't let feet touch floor", "Keep core engaged"]
+  },
+  {
+    name: "Toe Touches",
+    description: "Toe touches target the upper abs. Lie on back with legs vertical and reach hands toward toes.",
+    muscles: ["Abs"],
+    videoUrl: "https://www.youtube.com/embed/9z0m9z6JBGA",
+    tips: ["Legs straight up", "Reach toward toes", "Lift shoulders off floor", "Don't swing"]
+  },
+  {
+    name: "Cable Woodchops",
+    description: "Cable woodchops work the obliques through rotation. Pull the cable diagonally across your body.",
+    muscles: ["Obliques", "Core"],
+    videoUrl: "https://www.youtube.com/embed/pAplQXk3dkU",
+    tips: ["Rotate through core", "Keep arms relatively straight", "Control the movement", "Do both sides"]
+  },
+  {
+    name: "Pallof Press",
+    description: "Pallof press trains anti-rotation core stability. Hold a cable and press it straight out, resisting rotation.",
+    muscles: ["Core", "Obliques"],
+    videoUrl: "https://www.youtube.com/embed/AH_QZLm_0-s",
+    tips: ["Stand sideways to cable", "Press straight out", "Resist rotation", "Hold at full extension"]
+  },
+  {
+    name: "Reverse Crunches",
+    description: "Reverse crunches target the lower abs by bringing knees toward chest.",
+    muscles: ["Lower Abs"],
+    videoUrl: "https://www.youtube.com/embed/hyv14e2QDq0",
+    tips: ["Curl hips off floor", "Bring knees toward chest", "Control the negative", "Don't use momentum"]
+  },
 
   // CARDIO / CONDITIONING
   {
@@ -454,6 +916,104 @@ const exerciseData: ExerciseInfo[] = [
     muscles: ["Quads", "Glutes", "Calves"],
     videoUrl: "https://www.youtube.com/embed/L-Bm7yB7bHI",
     tips: ["Land softly", "Keep torso upright", "Drive through front heel", "Scale to alternating lunges if needed"]
+  },
+  {
+    name: "High Knees",
+    description: "High knees are a cardio exercise that elevates heart rate. Run in place bringing knees up high toward chest.",
+    muscles: ["Hip Flexors", "Core", "Cardio"],
+    videoUrl: "https://www.youtube.com/embed/D0FTqUgEcSI",
+    tips: ["Drive knees up high", "Stay on balls of feet", "Pump arms", "Keep a quick pace"]
+  },
+  {
+    name: "Butt Kicks",
+    description: "Butt kicks are a cardio warm-up exercise. Run in place kicking heels up toward glutes.",
+    muscles: ["Hamstrings", "Cardio"],
+    videoUrl: "https://www.youtube.com/embed/3OGoR-vDvqM",
+    tips: ["Kick heels to glutes", "Stay light on feet", "Good warm-up exercise", "Keep steady rhythm"]
+  },
+  {
+    name: "Jump Squats",
+    description: "Jump squats build explosive leg power. Squat down and explosively jump up, landing softly back into a squat.",
+    muscles: ["Quads", "Glutes", "Calves"],
+    videoUrl: "https://www.youtube.com/embed/U4s4mEQ5VqU",
+    tips: ["Squat to parallel", "Explode up", "Land softly with bent knees", "Use arm swing for power"]
+  },
+  {
+    name: "Skater Jumps",
+    description: "Skater jumps are lateral plyometric exercises. Jump side to side, landing on one foot like a speed skater.",
+    muscles: ["Glutes", "Outer Thighs", "Cardio"],
+    videoUrl: "https://www.youtube.com/embed/d3k2iSHhyxU",
+    tips: ["Jump laterally", "Land on one foot", "Touch floor with opposite hand", "Stay low"]
+  },
+  {
+    name: "Squat Thrusts",
+    description: "Squat thrusts are similar to burpees but without the push-up and jump. Squat, jump feet back, then return.",
+    muscles: ["Full Body", "Cardio"],
+    videoUrl: "https://www.youtube.com/embed/DpYhVpUIq44",
+    tips: ["Squat down", "Jump feet back to plank", "Jump feet forward", "Stand and repeat"]
+  },
+  {
+    name: "Plyo Push-ups",
+    description: "Plyo push-ups are explosive push-ups where hands leave the ground. Great for building chest power.",
+    muscles: ["Chest", "Triceps", "Shoulders"],
+    videoUrl: "https://www.youtube.com/embed/EYwWCgM198U",
+    tips: ["Explode up from push-up", "Hands leave ground", "Land with soft elbows", "Progress gradually"]
+  },
+  {
+    name: "Treadmill Sprints",
+    description: "Treadmill sprints are high-intensity intervals on a treadmill. Sprint for short bursts followed by rest.",
+    muscles: ["Legs", "Cardio"],
+    videoUrl: "https://www.youtube.com/embed/g8Eo-e5xJ6o",
+    tips: ["Warm up first", "Sprint 20-30 seconds", "Rest or walk between", "Use safety clip"]
+  },
+  {
+    name: "Stair Climber",
+    description: "The stair climber machine provides steady-state cardio that targets legs and glutes.",
+    muscles: ["Quads", "Glutes", "Calves", "Cardio"],
+    videoUrl: "https://www.youtube.com/embed/VpXfdS3ER8I",
+    tips: ["Stand upright", "Don't lean on rails", "Take full steps", "Great for glutes"]
+  },
+  {
+    name: "Elliptical",
+    description: "The elliptical provides low-impact cardio with arm involvement. Great for joint-friendly conditioning.",
+    muscles: ["Full Body", "Cardio"],
+    videoUrl: "https://www.youtube.com/embed/pqLvFJCvbpA",
+    tips: ["Use arms actively", "Maintain good posture", "Low impact on joints", "Vary resistance and incline"]
+  },
+  {
+    name: "Assault Bike",
+    description: "The assault bike provides brutal full-body cardio. Both arms and legs work together for maximum calorie burn.",
+    muscles: ["Full Body", "Cardio"],
+    videoUrl: "https://www.youtube.com/embed/nKdMnzFWSU4",
+    tips: ["Push and pull with arms", "Drive with legs", "Pace yourself", "Great for HIIT"]
+  },
+  {
+    name: "Sled Push",
+    description: "Sled push is a conditioning exercise. Load a sled and push it for distance or time.",
+    muscles: ["Quads", "Glutes", "Core", "Cardio"],
+    videoUrl: "https://www.youtube.com/embed/W8lsGy7EPaE",
+    tips: ["Drive with legs", "Keep body at 45 degrees", "Short choppy steps", "Great for leg conditioning"]
+  },
+  {
+    name: "Sled Pull",
+    description: "Sled pull works the posterior chain. Attach a rope and pull the sled toward you.",
+    muscles: ["Back", "Biceps", "Hamstrings"],
+    videoUrl: "https://www.youtube.com/embed/qYpjkTJBqxk",
+    tips: ["Sit back and pull", "Hand over hand motion", "Engage back and legs", "Great for grip strength"]
+  },
+  {
+    name: "Farmer's Walk",
+    description: "Farmer's walk builds grip, core, and overall conditioning. Carry heavy weights and walk for distance or time.",
+    muscles: ["Grip", "Core", "Traps", "Full Body"],
+    videoUrl: "https://www.youtube.com/embed/Fkzk_RqlYig",
+    tips: ["Heavy weight", "Stand tall", "Quick short steps", "Keep core braced"]
+  },
+  {
+    name: "Bear Crawl",
+    description: "Bear crawl is a full-body conditioning exercise. Crawl on hands and feet with knees hovering off ground.",
+    muscles: ["Core", "Shoulders", "Full Body"],
+    videoUrl: "https://www.youtube.com/embed/pv00BmEBU3k",
+    tips: ["Hands under shoulders", "Knees hover off ground", "Move opposite arm and leg", "Keep hips low"]
   },
 ];
 

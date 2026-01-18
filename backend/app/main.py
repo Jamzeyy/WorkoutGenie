@@ -19,20 +19,57 @@ if os.getenv("SENTRY_DSN"):
     print("[Sentry] Initialized for error tracking")
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Startup: Create tables and seed admin
-    Base.metadata.create_all(bind=engine)
-    
-    # Add is_admin column if it doesn't exist (migration for existing databases)
+def run_migrations():
+    """Run database migrations for new columns."""
     from sqlalchemy import text, inspect
+    
     with engine.connect() as conn:
         inspector = inspect(engine)
-        columns = [col['name'] for col in inspector.get_columns('users')]
-        if 'is_admin' not in columns:
-            print("[Migration] Adding is_admin column to users table")
-            conn.execute(text("ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT 0"))
-            conn.commit()
+        
+        # Users table migrations
+        user_columns = [col['name'] for col in inspector.get_columns('users')]
+        
+        user_migrations = [
+            ('is_admin', 'BOOLEAN DEFAULT 0'),
+            ('height_cm', 'REAL'),
+            ('weight_kg', 'REAL'),
+            ('age', 'INTEGER'),
+            ('gender', 'VARCHAR(20)'),
+            ('fitness_goal', 'VARCHAR(100)'),
+            ('activity_level', 'VARCHAR(50)'),
+        ]
+        
+        for col_name, col_type in user_migrations:
+            if col_name not in user_columns:
+                print(f"[Migration] Adding {col_name} column to users table")
+                conn.execute(text(f"ALTER TABLE users ADD COLUMN {col_name} {col_type}"))
+        
+        # Workouts table migrations
+        workout_columns = [col['name'] for col in inspector.get_columns('workouts')]
+        
+        workout_migrations = [
+            ('completed_at', 'DATETIME'),
+            ('plan_id', 'INTEGER'),
+            ('plan_week', 'INTEGER'),
+            ('plan_day', 'INTEGER'),
+        ]
+        
+        for col_name, col_type in workout_migrations:
+            if col_name not in workout_columns:
+                print(f"[Migration] Adding {col_name} column to workouts table")
+                conn.execute(text(f"ALTER TABLE workouts ADD COLUMN {col_name} {col_type}"))
+        
+        conn.commit()
+        print("[Migration] Database migrations complete")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: Create tables and run migrations
+    Base.metadata.create_all(bind=engine)
+    
+    # Run database migrations for new columns
+    run_migrations()
     
     db = SessionLocal()
     try:

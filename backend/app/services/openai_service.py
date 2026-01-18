@@ -27,70 +27,70 @@ def generate_workout_plan(questionnaire_data: dict, cycle_type: str) -> dict:
     }
     cycle_weeks = cycle_weeks_map.get(cycle_type, 4)
     
+    # For longer plans, create a template-based approach to avoid token limits
+    weeks_instruction = ""
+    if cycle_weeks > 1:
+        weeks_instruction = f"""
+IMPORTANT: To keep the response concise, for multi-week plans:
+- Provide detailed workouts for Week 1 only
+- For weeks 2-{cycle_weeks}, just provide the week theme and brief notes on progression changes
+- Keep exercise descriptions brief (no lengthy form tips)"""
+    
     # Build the prompt
-    prompt = f"""You are an expert fitness coach and personal trainer. Create a detailed, personalized workout plan based on the following information:
+    prompt = f"""Create a personalized {cycle_type} workout plan ({cycle_weeks} week(s)).
 
 **User Profile:**
 - Fitness Level: {questionnaire_data.get('fitness_level', 'intermediate')}
 - Primary Goal: {questionnaire_data.get('primary_goal', 'general_fitness')}
 - Workout Days Per Week: {questionnaire_data.get('workout_days_per_week', 3)}
-- Preferred Workout Duration: {questionnaire_data.get('workout_duration_minutes', 45)} minutes
-- Available Equipment: {', '.join(questionnaire_data.get('available_equipment', ['bodyweight']))}
+- Workout Duration: {questionnaire_data.get('workout_duration_minutes', 45)} minutes
+- Equipment: {', '.join(questionnaire_data.get('available_equipment', ['bodyweight']))}
 - Focus Areas: {', '.join(questionnaire_data.get('focus_areas', ['full body']))}
 - Injuries/Limitations: {questionnaire_data.get('injuries_limitations', 'None')}
 - Additional Notes: {questionnaire_data.get('extra_comments', 'None')}
+{weeks_instruction}
 
-**Plan Requirements:**
-- Create a {cycle_type} plan ({cycle_weeks} week(s))
-- Include specific exercises with sets, reps, and rest periods
-- Progress the difficulty appropriately over the cycle
-- Include warm-up and cool-down recommendations
-- Provide exercise alternatives where applicable
-
-Return the response as a valid JSON object with this exact structure:
+Return valid JSON with this structure:
 {{
-    "plan_name": "Descriptive plan name",
-    "plan_description": "Brief overview of the plan and its goals",
+    "plan_name": "Plan name",
+    "plan_description": "Brief overview",
     "weekly_schedule": [
         {{
             "week_number": 1,
-            "theme": "Week theme or focus",
+            "theme": "Week focus",
             "days": [
                 {{
                     "day_number": 1,
                     "day_name": "Monday",
                     "workout_name": "Workout name",
-                    "focus": "Muscle groups or type",
+                    "focus": "Muscle groups",
                     "duration_minutes": 45,
-                    "warmup": "Warmup description",
+                    "warmup": "5 min cardio + dynamic stretches",
                     "exercises": [
-                        {{
-                            "name": "Exercise name",
-                            "sets": 3,
-                            "reps": "10-12",
-                            "rest_seconds": 60,
-                            "notes": "Form tips or alternatives"
-                        }}
+                        {{"name": "Exercise", "sets": 3, "reps": "10-12", "rest_seconds": 60, "notes": ""}}
                     ],
-                    "cooldown": "Cooldown description"
+                    "cooldown": "5 min stretching"
                 }}
             ]
         }}
     ],
-    "tips": ["General tips for following the plan"],
-    "progression_notes": "How to progress after completing the cycle"
+    "tips": ["Tip 1", "Tip 2"],
+    "progression_notes": "How to progress"
 }}
 
-Ensure the JSON is valid and complete. Only return the JSON object, no additional text."""
+Return ONLY valid JSON, no markdown."""
 
     client = get_openai_client()
+    
+    # Use higher token limit for longer plans
+    max_tokens = 8000 if cycle_weeks <= 4 else 12000
     
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
             {
                 "role": "system",
-                "content": "You are an expert fitness coach. Always respond with valid JSON only, no markdown formatting or code blocks."
+                "content": "You are an expert fitness coach. Respond with valid, complete JSON only. Be concise but thorough."
             },
             {
                 "role": "user",
@@ -98,7 +98,7 @@ Ensure the JSON is valid and complete. Only return the JSON object, no additiona
             }
         ],
         temperature=0.7,
-        max_tokens=4000
+        max_tokens=max_tokens
     )
     
     response_text = response.choices[0].message.content.strip()
@@ -106,9 +106,35 @@ Ensure the JSON is valid and complete. Only return the JSON object, no additiona
     # Clean up response if it has markdown code blocks
     if response_text.startswith("```"):
         lines = response_text.split("\n")
-        response_text = "\n".join(lines[1:-1] if lines[-1] == "```" else lines[1:])
+        # Find the closing ```
+        end_idx = len(lines) - 1
+        for i in range(len(lines) - 1, 0, -1):
+            if lines[i].strip() == "```":
+                end_idx = i
+                break
+        response_text = "\n".join(lines[1:end_idx])
     
-    plan_data = json.loads(response_text)
+    # Try to parse JSON, with error recovery
+    try:
+        plan_data = json.loads(response_text)
+    except json.JSONDecodeError as e:
+        print(f"[OpenAI] JSON parse error: {e}")
+        print(f"[OpenAI] Response length: {len(response_text)} chars")
+        # Try to fix common issues - truncated JSON
+        if not response_text.rstrip().endswith("}"):
+            # Try to close the JSON properly
+            response_text = response_text.rstrip()
+            # Count open braces and brackets
+            open_braces = response_text.count("{") - response_text.count("}")
+            open_brackets = response_text.count("[") - response_text.count("]")
+            # Close them
+            response_text += "]" * open_brackets + "}" * open_braces
+            try:
+                plan_data = json.loads(response_text)
+            except json.JSONDecodeError:
+                raise ValueError(f"Failed to parse workout plan response. The AI response was incomplete. Please try again with a shorter plan duration.")
+        else:
+            raise ValueError(f"Failed to parse workout plan: {str(e)}")
     
     return {
         "plan_name": plan_data.get("plan_name", "Custom Workout Plan"),

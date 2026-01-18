@@ -43,6 +43,90 @@ const exerciseData: ExerciseInfo[] = [
     tips: ["Keep your body in a straight line", "Hands slightly wider than shoulders", "Lower until chest is near floor", "Engage your core throughout"]
   },
   {
+    name: "Pike Push-ups",
+    description: "Pike push-ups target the shoulders by placing your body in an inverted V position. This is a great progression toward handstand push-ups.",
+    muscles: ["Shoulders", "Triceps", "Upper Chest"],
+    videoUrl: "https://www.youtube.com/embed/sposDXWEB0A",
+    tips: ["Form an inverted V with body", "Head goes toward floor between hands", "Emphasizes shoulders over chest", "Great for shoulder strength"]
+  },
+  {
+    name: "Pike Push-up",
+    description: "Pike push-ups target the shoulders by placing your body in an inverted V position. This is a great progression toward handstand push-ups.",
+    muscles: ["Shoulders", "Triceps", "Upper Chest"],
+    videoUrl: "https://www.youtube.com/embed/sposDXWEB0A",
+    tips: ["Form an inverted V with body", "Head goes toward floor between hands", "Emphasizes shoulders over chest", "Great for shoulder strength"]
+  },
+  {
+    name: "Decline Push-ups",
+    description: "Decline push-ups elevate your feet to emphasize the upper chest and shoulders. Place feet on a bench or step.",
+    muscles: ["Upper Chest", "Shoulders", "Triceps"],
+    videoUrl: "https://www.youtube.com/embed/SKPab2YC8BE",
+    tips: ["Feet elevated on bench", "Targets upper chest more", "Keep body straight", "Harder than regular push-ups"]
+  },
+  {
+    name: "Incline Push-ups",
+    description: "Incline push-ups are an easier variation with hands elevated. Great for beginners or high rep burnouts.",
+    muscles: ["Chest", "Shoulders", "Triceps"],
+    videoUrl: "https://www.youtube.com/embed/cfns5VDVVvk",
+    tips: ["Hands on bench or step", "Easier than floor push-ups", "Great for beginners", "Good for high reps"]
+  },
+  {
+    name: "Wide Push-ups",
+    description: "Wide push-ups place hands wider than shoulder width to emphasize the chest more than triceps.",
+    muscles: ["Chest", "Shoulders"],
+    videoUrl: "https://www.youtube.com/embed/pQUsUHvyoI0",
+    tips: ["Hands wider than shoulders", "More chest emphasis", "Less tricep involvement", "Keep elbows at 45 degrees"]
+  },
+  {
+    name: "Close Grip Push-ups",
+    description: "Close grip push-ups place hands close together to emphasize the triceps. Similar to diamond push-ups.",
+    muscles: ["Triceps", "Chest", "Shoulders"],
+    videoUrl: "https://www.youtube.com/embed/Ky9L7I_EQAY",
+    tips: ["Hands close together", "Elbows stay close to body", "More tricep focus", "Harder than regular push-ups"]
+  },
+  {
+    name: "Archer Push-ups",
+    description: "Archer push-ups shift weight to one arm at a time, building unilateral strength. Great progression toward one-arm push-ups.",
+    muscles: ["Chest", "Shoulders", "Triceps", "Core"],
+    videoUrl: "https://www.youtube.com/embed/M6RXvC6S3zE",
+    tips: ["Shift weight to one arm", "Other arm extends out", "Alternate sides", "Progression to one-arm"]
+  },
+  {
+    name: "Spiderman Push-ups",
+    description: "Spiderman push-ups add a knee drive to the side during each rep, engaging the obliques and hip flexors.",
+    muscles: ["Chest", "Shoulders", "Obliques", "Hip Flexors"],
+    videoUrl: "https://www.youtube.com/embed/5_xFbT-37kc",
+    tips: ["Bring knee to elbow", "Alternate sides", "Engages core more", "Great for total body"]
+  },
+  {
+    name: "Hindu Push-ups",
+    description: "Hindu push-ups are a flowing movement that works shoulders, chest, and back through a swooping motion.",
+    muscles: ["Shoulders", "Chest", "Back", "Triceps"],
+    videoUrl: "https://www.youtube.com/embed/yJGsAqT6kcs",
+    tips: ["Start in downward dog", "Swoop down and through", "End in upward dog", "Reverse the motion"]
+  },
+  {
+    name: "Clap Push-ups",
+    description: "Clap push-ups are plyometric push-ups where you explode up and clap before landing.",
+    muscles: ["Chest", "Shoulders", "Triceps"],
+    videoUrl: "https://www.youtube.com/embed/EYwWCgM198U",
+    tips: ["Explode up powerfully", "Clap at the top", "Land with soft elbows", "Advanced exercise"]
+  },
+  {
+    name: "Staggered Push-ups",
+    description: "Staggered push-ups place one hand forward and one back, creating uneven loading and more core engagement.",
+    muscles: ["Chest", "Shoulders", "Triceps", "Core"],
+    videoUrl: "https://www.youtube.com/embed/V7nhgW8SSgs",
+    tips: ["One hand forward, one back", "Switch hand positions", "More core engagement", "Builds unilateral strength"]
+  },
+  {
+    name: "Handstand Push-ups",
+    description: "Handstand push-ups are an advanced shoulder exercise performed upside down against a wall.",
+    muscles: ["Shoulders", "Triceps", "Core"],
+    videoUrl: "https://www.youtube.com/embed/HI8V0VR7iMY",
+    tips: ["Kick up against wall", "Lower head to floor", "Press back up", "Very advanced exercise"]
+  },
+  {
     name: "Chest Flyes",
     description: "Chest flyes isolate the pectoral muscles by eliminating tricep involvement. Lie on a bench with dumbbells extended above your chest, then lower them out to the sides in an arc motion before squeezing them back together.",
     muscles: ["Chest"],
@@ -762,6 +846,41 @@ const exerciseData: ExerciseInfo[] = [
     tips: ["Keep body in straight line", "Don't let hips sag or pike", "Engage glutes and core", "Breathe normally"]
   },
   {
+    name: "High Plank",
+    description: "High plank is performed with arms straight rather than on forearms. Also known as the push-up position hold.",
+    muscles: ["Core", "Shoulders", "Chest"],
+    videoUrl: "https://www.youtube.com/embed/sZxrs1CvpjE",
+    tips: ["Arms straight", "Hands under shoulders", "Body in straight line", "Engage core throughout"]
+  },
+  {
+    name: "Low Plank",
+    description: "Low plank is the traditional forearm plank. Rest on forearms with elbows under shoulders.",
+    muscles: ["Core", "Shoulders"],
+    videoUrl: "https://www.youtube.com/embed/ASdvN_XEl_c",
+    tips: ["Forearms on ground", "Elbows under shoulders", "Body straight", "Don't let hips drop"]
+  },
+  {
+    name: "Plank with Shoulder Taps",
+    description: "Plank with shoulder taps adds an anti-rotation challenge. In high plank, tap each shoulder alternately.",
+    muscles: ["Core", "Shoulders", "Obliques"],
+    videoUrl: "https://www.youtube.com/embed/LEZq7QZ8ySQ",
+    tips: ["Keep hips still", "Tap opposite shoulder", "Don't rotate hips", "Widen feet for stability"]
+  },
+  {
+    name: "Plank to Push-up",
+    description: "Plank to push-up transitions between forearm and high plank positions, working arms and core.",
+    muscles: ["Core", "Triceps", "Shoulders"],
+    videoUrl: "https://www.youtube.com/embed/L4oFJRDAU4M",
+    tips: ["Alternate which arm leads", "Keep hips stable", "Don't sway side to side", "Controlled movement"]
+  },
+  {
+    name: "RKC Plank",
+    description: "RKC plank is an intense plank variation with maximum tension. Squeeze glutes, quads, and pull elbows toward toes.",
+    muscles: ["Core", "Glutes", "Full Body"],
+    videoUrl: "https://www.youtube.com/embed/6TKktamzq4o",
+    tips: ["Maximum full body tension", "Squeeze glutes hard", "Pull elbows toward toes", "Very intense, shorter holds"]
+  },
+  {
     name: "Crunches",
     description: "Crunches target the rectus abdominis (six-pack muscles). Lie on your back with knees bent and curl your shoulders off the ground.",
     muscles: ["Abs"],
@@ -1026,19 +1145,33 @@ exerciseData.forEach(ex => {
 export function getExerciseInfo(name: string): ExerciseInfo | null {
   const normalized = normalizeExerciseName(name);
   
-  // Exact match
+  // Exact match first
   if (exerciseMap.has(normalized)) {
     return exerciseMap.get(normalized)!;
   }
   
-  // Partial match - find if exercise name contains a known exercise
+  // Find all partial matches and pick the best one (longest match = most specific)
+  let bestMatch: ExerciseInfo | null = null;
+  let bestMatchLength = 0;
+  
   for (const [key, value] of exerciseMap.entries()) {
-    if (normalized.includes(key) || key.includes(normalized)) {
-      return value;
+    // Check if the search term contains the exercise name
+    if (normalized.includes(key)) {
+      if (key.length > bestMatchLength) {
+        bestMatchLength = key.length;
+        bestMatch = value;
+      }
+    }
+    // Check if the exercise name contains the search term
+    else if (key.includes(normalized)) {
+      if (normalized.length > bestMatchLength) {
+        bestMatchLength = normalized.length;
+        bestMatch = value;
+      }
     }
   }
   
-  return null;
+  return bestMatch;
 }
 
 export function getAllExercises(): ExerciseInfo[] {

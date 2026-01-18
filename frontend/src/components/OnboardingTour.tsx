@@ -14,7 +14,20 @@ interface TourStep {
   targetSelector?: string;
   position?: 'top' | 'bottom' | 'left' | 'right';
   tips?: { emoji: string; text: string }[];
+  image?: string; // URL to screenshot/preview image
 }
+
+// Tutorial screenshot images - replace these URLs with your actual screenshots
+const TOUR_IMAGES = {
+  welcome: '/tutorial/welcome.png',
+  aiChat: '/tutorial/ai-chat.png',
+  generate: '/tutorial/generate.png',
+  workouts: '/tutorial/workouts.png',
+  plans: '/tutorial/plans.png',
+  profile: '/tutorial/profile.png',
+  proTips: '/tutorial/pro-tips.png',
+  complete: '/tutorial/complete.png',
+};
 
 const TOUR_STEPS: TourStep[] = [
   {
@@ -22,6 +35,7 @@ const TOUR_STEPS: TourStep[] = [
     title: 'Welcome to WorkoutGenie! 🧞‍♂️',
     description: "Your AI-powered fitness companion. Let me show you around - this will only take a moment.",
     icon: <Rocket className="w-8 h-8" />,
+    image: TOUR_IMAGES.welcome,
   },
   {
     id: 'ai-chat',
@@ -30,6 +44,7 @@ const TOUR_STEPS: TourStep[] = [
     icon: <MessageSquare className="w-6 h-6" />,
     targetSelector: '[data-tour="ai-chat"]',
     position: 'bottom',
+    image: TOUR_IMAGES.aiChat,
   },
   {
     id: 'generate',
@@ -38,6 +53,7 @@ const TOUR_STEPS: TourStep[] = [
     icon: <Sparkles className="w-6 h-6" />,
     targetSelector: '[data-tour="generate"]',
     position: 'bottom',
+    image: TOUR_IMAGES.generate,
   },
   {
     id: 'workouts',
@@ -46,6 +62,7 @@ const TOUR_STEPS: TourStep[] = [
     icon: <Dumbbell className="w-6 h-6" />,
     targetSelector: '[data-tour="workouts"]',
     position: 'top',
+    image: TOUR_IMAGES.workouts,
   },
   {
     id: 'plans',
@@ -54,6 +71,7 @@ const TOUR_STEPS: TourStep[] = [
     icon: <Calendar className="w-6 h-6" />,
     targetSelector: '[data-tour="plans"]',
     position: 'top',
+    image: TOUR_IMAGES.plans,
   },
   {
     id: 'profile',
@@ -62,6 +80,7 @@ const TOUR_STEPS: TourStep[] = [
     icon: <User className="w-6 h-6" />,
     targetSelector: '[data-tour="profile"]',
     position: 'top',
+    image: TOUR_IMAGES.profile,
   },
   {
     id: 'pro-tips',
@@ -73,12 +92,14 @@ const TOUR_STEPS: TourStep[] = [
       { emoji: '▶️', text: 'Inside a plan, tap "Start Workout" to log it directly' },
       { emoji: '📊', text: 'Your stats update automatically as you complete workouts' },
     ],
+    image: TOUR_IMAGES.proTips,
   },
   {
     id: 'complete',
     title: "You're All Set! 💪",
     description: "Start by chatting with me or generating your first workout plan. Let's crush those goals!",
     icon: <CheckCircle2 className="w-8 h-8" />,
+    image: TOUR_IMAGES.complete,
   },
 ];
 
@@ -217,8 +238,34 @@ export default function OnboardingTour() {
                 </div>
               </div>
 
+              {/* Screenshot Preview */}
+              {step.image && (
+                <div className="px-5 pt-4">
+                  <div className="relative rounded-xl overflow-hidden border border-dark-600 bg-dark-900">
+                    {/* Phone-style frame */}
+                    <div className="absolute top-0 left-0 right-0 h-6 bg-dark-800 flex items-center justify-center z-10">
+                      <div className="w-16 h-1 rounded-full bg-dark-600" />
+                    </div>
+                    {/* Image with gradient overlay */}
+                    <div className="relative pt-6">
+                      <img 
+                        src={step.image} 
+                        alt={`${step.title} preview`}
+                        className="w-full h-40 object-cover object-top"
+                        onError={(e) => {
+                          // Hide image container if image fails to load
+                          (e.target as HTMLImageElement).parentElement!.parentElement!.style.display = 'none';
+                        }}
+                      />
+                      {/* Gradient fade at bottom */}
+                      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-dark-800 to-transparent" />
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Content */}
-              <div className="p-5">
+              <div className="p-5 pt-4">
                 {step.description && (
                   <p className="text-dark-300 text-sm leading-relaxed mb-5">
                     {step.description}

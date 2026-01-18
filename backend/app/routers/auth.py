@@ -91,9 +91,9 @@ def register(user_data: UserRegister, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
     
-    # Create token
+    # Create token (sub must be a string)
     access_token = create_access_token(
-        data={"sub": user.id},
+        data={"sub": str(user.id)},
         expires_delta=timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
     )
     
@@ -122,9 +122,9 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
             detail="Invalid email or password"
         )
     
-    # Create token
+    # Create token (sub must be a string)
     access_token = create_access_token(
-        data={"sub": user.id},
+        data={"sub": str(user.id)},
         expires_delta=timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
     )
     

@@ -111,6 +111,19 @@ export default function OnboardingTour() {
   const [highlightPosition, setHighlightPosition] = useState<DOMRect | null>(null);
 
   useEffect(() => {
+    // Check for force show via URL parameter (for testing)
+    const urlParams = new URLSearchParams(window.location.search);
+    const forceShow = urlParams.get('tour') === '1';
+    
+    if (forceShow) {
+      // Clear the completion flag and show tour
+      localStorage.removeItem(ONBOARDING_KEY);
+      setIsVisible(true);
+      // Clean up URL
+      window.history.replaceState({}, '', window.location.pathname);
+      return;
+    }
+    
     // Check if user has completed onboarding
     const hasCompleted = localStorage.getItem(ONBOARDING_KEY);
     if (!hasCompleted) {

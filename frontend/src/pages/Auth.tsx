@@ -194,6 +194,15 @@ export default function Auth() {
               {isLogin ? 'Sign up' : 'Sign in'}
             </button>
           </p>
+          
+          {!isLogin && (
+            <p className="text-center text-xs text-dark-500 mt-4">
+              By signing up, you agree to our{' '}
+              <a href="/terms" className="text-dark-400 hover:text-dark-300 underline">Terms of Service</a>
+              {' '}and{' '}
+              <a href="/privacy" className="text-dark-400 hover:text-dark-300 underline">Privacy Policy</a>
+            </p>
+          )}
         </div>
       </motion.div>
     </div>

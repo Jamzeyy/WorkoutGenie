@@ -20,11 +20,14 @@ import Plans from './pages/Plans';
 import PlanDetail from './pages/PlanDetail';
 import Profile from './pages/Profile';
 import Pricing from './pages/Pricing';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
 import Auth from './pages/Auth';
 import AdminDashboard from './pages/AdminDashboard';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { SubscriptionProvider } from './context/SubscriptionContext';
 import AdBanner from './components/AdBanner';
+import Footer from './components/Footer';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -52,6 +55,8 @@ function AppRoutes() {
       <ScrollToTop />
       <Routes>
         <Route path="/auth" element={user ? <Navigate to="/" replace /> : <Auth />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
         <Route
           path="/*"
           element={
@@ -74,6 +79,7 @@ function AppRoutes() {
                     </Routes>
                   </div>
                 </main>
+                <Footer />
                 <AdBanner position="bottom" />
               </div>
             </SubscriptionProvider>

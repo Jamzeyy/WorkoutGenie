@@ -31,12 +31,16 @@ export default function AdminDashboard() {
       setError('');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to load users';
-      // If unauthorized, token is invalid - log out and redirect
-      if (message.includes('Invalid') || message.includes('expired') || message.includes('401')) {
+      console.error('[Admin] Load users error:', message);
+      
+      // Only logout on actual token issues, not on permission issues
+      if (message.toLowerCase().includes('invalid') && message.toLowerCase().includes('token')) {
         logout();
         navigate('/auth');
         return;
       }
+      
+      // For "Admin access required" (403) - show error but don't logout
       setError(message);
     } finally {
       setLoading(false);

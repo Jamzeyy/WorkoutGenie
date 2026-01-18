@@ -70,19 +70,49 @@ class CheckoutResponse(BaseModel):
     customer_email: str
 
 
-def verify_paddle_signature(payload: bytes, signature: str) -> bool:
-    """Verify Paddle webhook signature."""
+def verify_paddle_signature(payload: bytes, signature_header: str) -> bool:
+    """Verify Paddle webhook signature.
+    
+    Paddle signature format: ts=1234567890;h1=abc123...
+    Signed payload format: ts:payload
+    """
     if not PADDLE_WEBHOOK_SECRET:
-        print("[Paddle] Warning: No webhook secret configured")
+        print("[Paddle] Warning: No webhook secret configured, skipping verification")
         return True  # Allow in development
     
-    expected = hmac.new(
-        PADDLE_WEBHOOK_SECRET.encode(),
-        payload,
-        hashlib.sha256
-    ).hexdigest()
-    
-    return hmac.compare_digest(expected, signature)
+    try:
+        # Parse signature header
+        parts = {}
+        for part in signature_header.split(";"):
+            if "=" in part:
+                key, value = part.split("=", 1)
+                parts[key] = value
+        
+        timestamp = parts.get("ts", "")
+        signature = parts.get("h1", "")
+        
+        if not timestamp or not signature:
+            print(f"[Paddle] Invalid signature format: {signature_header}")
+            return False
+        
+        # Build signed payload: ts:payload
+        signed_payload = f"{timestamp}:{payload.decode('utf-8')}"
+        
+        # Calculate expected signature
+        expected = hmac.new(
+            PADDLE_WEBHOOK_SECRET.encode(),
+            signed_payload.encode('utf-8'),
+            hashlib.sha256
+        ).hexdigest()
+        
+        is_valid = hmac.compare_digest(expected, signature)
+        if not is_valid:
+            print(f"[Paddle] Signature mismatch. Expected: {expected[:20]}..., Got: {signature[:20]}...")
+        
+        return is_valid
+    except Exception as e:
+        print(f"[Paddle] Signature verification error: {e}")
+        return False
 
 
 def get_user_limits(user: User) -> dict:

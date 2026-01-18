@@ -1,5 +1,6 @@
 import os
 import json
+import re
 from openai import OpenAI
 from dotenv import load_dotenv
 
@@ -17,6 +18,71 @@ def get_openai_client():
     return OpenAI(api_key=api_key)
 
 
+def repair_truncated_json(text: str) -> str:
+    """Attempt to repair truncated JSON by finding the last valid point and closing properly."""
+    text = text.rstrip()
+    
+    # If already valid, return as-is
+    try:
+        json.loads(text)
+        return text
+    except:
+        pass
+    
+    # Find and remove any incomplete string at the end
+    # Look for the last complete key-value pair or array element
+    
+    # Try progressively shorter versions until we find parseable JSON
+    # First, try to find the last complete object/array
+    
+    # Remove trailing incomplete string (text after last complete quote pair)
+    # Find last occurrence of ": " or ", " followed by incomplete content
+    
+    # Strategy: find the last valid comma or closing bracket position
+    last_valid = len(text)
+    
+    # Check if we're in the middle of a string
+    in_string = False
+    escape_next = False
+    last_string_end = 0
+    
+    for i, char in enumerate(text):
+        if escape_next:
+            escape_next = False
+            continue
+        if char == '\\':
+            escape_next = True
+            continue
+        if char == '"':
+            in_string = not in_string
+            if not in_string:
+                last_string_end = i
+    
+    # If we ended in a string, truncate to last string end
+    if in_string:
+        text = text[:last_string_end + 1]
+    
+    # Now try to close the JSON properly
+    text = text.rstrip()
+    
+    # Remove trailing comma if any
+    if text.endswith(','):
+        text = text[:-1]
+    
+    # Remove incomplete key (like `"notes":` without value)
+    text = re.sub(r',?\s*"[^"]*":\s*$', '', text)
+    
+    # Count and close brackets/braces
+    open_braces = text.count('{') - text.count('}')
+    open_brackets = text.count('[') - text.count(']')
+    
+    # Close in reverse order - arrays first, then objects
+    text += ']' * max(0, open_brackets)
+    text += '}' * max(0, open_braces)
+    
+    return text
+
+
 def generate_workout_plan(questionnaire_data: dict, cycle_type: str) -> dict:
     """Generate a personalized workout plan using ChatGPT."""
     
@@ -27,70 +93,45 @@ def generate_workout_plan(questionnaire_data: dict, cycle_type: str) -> dict:
     }
     cycle_weeks = cycle_weeks_map.get(cycle_type, 4)
     
-    # For longer plans, create a template-based approach to avoid token limits
-    weeks_instruction = ""
-    if cycle_weeks > 1:
-        weeks_instruction = f"""
-IMPORTANT: To keep the response concise, for multi-week plans:
-- Provide detailed workouts for Week 1 only
-- For weeks 2-{cycle_weeks}, just provide the week theme and brief notes on progression changes
-- Keep exercise descriptions brief (no lengthy form tips)"""
+    # Limit workout days for longer plans to reduce output size
+    workout_days = min(int(questionnaire_data.get('workout_days_per_week', 3)), 5)
     
-    # Build the prompt
-    prompt = f"""Create a personalized {cycle_type} workout plan ({cycle_weeks} week(s)).
+    # For longer plans, create a template-based approach to avoid token limits
+    if cycle_weeks == 1:
+        weeks_instruction = f"Create detailed workouts for all {workout_days} days."
+    elif cycle_weeks <= 4:
+        weeks_instruction = f"""For this {cycle_weeks}-week plan:
+- Week 1: Full detail for all {workout_days} workout days
+- Weeks 2-{cycle_weeks}: Just provide week theme and one key progression note (no full exercise lists)"""
+    else:
+        weeks_instruction = f"""For this {cycle_weeks}-week plan:
+- Week 1: Full detail for all {workout_days} workout days  
+- Weeks 2-{cycle_weeks}: ONLY provide week number, theme, and 1 progression note. NO exercise lists for weeks 2+."""
+    
+    # Build the prompt - optimized for shorter output
+    prompt = f"""Create a {cycle_type} workout plan ({cycle_weeks} weeks, {workout_days} days/week).
 
-**User Profile:**
-- Fitness Level: {questionnaire_data.get('fitness_level', 'intermediate')}
-- Primary Goal: {questionnaire_data.get('primary_goal', 'general_fitness')}
-- Workout Days Per Week: {questionnaire_data.get('workout_days_per_week', 3)}
-- Workout Duration: {questionnaire_data.get('workout_duration_minutes', 45)} minutes
-- Equipment: {', '.join(questionnaire_data.get('available_equipment', ['bodyweight']))}
-- Focus Areas: {', '.join(questionnaire_data.get('focus_areas', ['full body']))}
-- Injuries/Limitations: {questionnaire_data.get('injuries_limitations', 'None')}
-- Additional Notes: {questionnaire_data.get('extra_comments', 'None')}
+User: {questionnaire_data.get('fitness_level', 'intermediate')} level, goal: {questionnaire_data.get('primary_goal', 'general_fitness')}
+Duration: {questionnaire_data.get('workout_duration_minutes', 45)} min
+Equipment: {', '.join(questionnaire_data.get('available_equipment', ['bodyweight']))}
+Focus: {', '.join(questionnaire_data.get('focus_areas', ['full body']))}
+Limitations: {questionnaire_data.get('injuries_limitations', 'None')}
+Notes: {questionnaire_data.get('extra_comments', 'None')}
+
 {weeks_instruction}
 
-Return valid JSON with this structure:
-{{
-    "plan_name": "Plan name",
-    "plan_description": "Brief overview",
-    "weekly_schedule": [
-        {{
-            "week_number": 1,
-            "theme": "Week focus",
-            "days": [
-                {{
-                    "day_number": 1,
-                    "day_name": "Monday",
-                    "workout_name": "Workout name",
-                    "focus": "Muscle groups",
-                    "duration_minutes": 45,
-                    "warmup": "5 min cardio + dynamic stretches",
-                    "exercises": [
-                        {{"name": "Exercise", "sets": 3, "reps": "10-12", "rest_seconds": 60, "notes": ""}}
-                    ],
-                    "cooldown": "5 min stretching"
-                }}
-            ]
-        }}
-    ],
-    "tips": ["Tip 1", "Tip 2"],
-    "progression_notes": "How to progress"
-}}
-
-Return ONLY valid JSON, no markdown."""
+Keep exercise notes very short (max 10 words). Return JSON:
+{{"plan_name":"","plan_description":"","weekly_schedule":[{{"week_number":1,"theme":"","days":[{{"day_number":1,"day_name":"","workout_name":"","focus":"","duration_minutes":45,"warmup":"","exercises":[{{"name":"","sets":3,"reps":"","rest_seconds":60,"notes":""}}],"cooldown":""}}]}}],"tips":[""],"progression_notes":""}}"""
 
     client = get_openai_client()
     
-    # Use higher token limit for longer plans
-    max_tokens = 8000 if cycle_weeks <= 4 else 12000
-    
+    # Use JSON mode for guaranteed valid JSON structure
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
             {
                 "role": "system",
-                "content": "You are an expert fitness coach. Respond with valid, complete JSON only. Be concise but thorough."
+                "content": "You are a fitness coach. Return ONLY valid JSON. Keep responses concise. Max 10 words per notes field."
             },
             {
                 "role": "user",
@@ -98,43 +139,30 @@ Return ONLY valid JSON, no markdown."""
             }
         ],
         temperature=0.7,
-        max_tokens=max_tokens
+        max_tokens=16000,  # Increased significantly
+        response_format={"type": "json_object"}  # Force JSON output
     )
     
     response_text = response.choices[0].message.content.strip()
+    print(f"[OpenAI] Response length: {len(response_text)} chars, finish_reason: {response.choices[0].finish_reason}")
     
-    # Clean up response if it has markdown code blocks
-    if response_text.startswith("```"):
-        lines = response_text.split("\n")
-        # Find the closing ```
-        end_idx = len(lines) - 1
-        for i in range(len(lines) - 1, 0, -1):
-            if lines[i].strip() == "```":
-                end_idx = i
-                break
-        response_text = "\n".join(lines[1:end_idx])
+    # Check if response was truncated
+    if response.choices[0].finish_reason == "length":
+        print("[OpenAI] WARNING: Response was truncated due to length limit")
+        response_text = repair_truncated_json(response_text)
     
-    # Try to parse JSON, with error recovery
+    # Try to parse JSON
     try:
         plan_data = json.loads(response_text)
     except json.JSONDecodeError as e:
         print(f"[OpenAI] JSON parse error: {e}")
-        print(f"[OpenAI] Response length: {len(response_text)} chars")
-        # Try to fix common issues - truncated JSON
-        if not response_text.rstrip().endswith("}"):
-            # Try to close the JSON properly
-            response_text = response_text.rstrip()
-            # Count open braces and brackets
-            open_braces = response_text.count("{") - response_text.count("}")
-            open_brackets = response_text.count("[") - response_text.count("]")
-            # Close them
-            response_text += "]" * open_brackets + "}" * open_braces
-            try:
-                plan_data = json.loads(response_text)
-            except json.JSONDecodeError:
-                raise ValueError(f"Failed to parse workout plan response. The AI response was incomplete. Please try again with a shorter plan duration.")
-        else:
-            raise ValueError(f"Failed to parse workout plan: {str(e)}")
+        # Try to repair
+        repaired = repair_truncated_json(response_text)
+        try:
+            plan_data = json.loads(repaired)
+            print("[OpenAI] Successfully repaired truncated JSON")
+        except json.JSONDecodeError:
+            raise ValueError(f"Failed to parse workout plan. Please try a shorter plan (weekly instead of monthly).")
     
     return {
         "plan_name": plan_data.get("plan_name", "Custom Workout Plan"),

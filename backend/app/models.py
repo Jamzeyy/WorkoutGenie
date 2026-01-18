@@ -64,6 +64,7 @@ class WorkoutPlan(Base):
     __tablename__ = "workout_plans"
     
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # nullable for migration
     name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
     cycle_type = Column(String(50), nullable=False)  # weekly, monthly, bi-monthly
@@ -73,3 +74,5 @@ class WorkoutPlan(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    user = relationship("User", back_populates="plans")

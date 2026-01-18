@@ -7,6 +7,8 @@ import { useSubscription } from '../context/SubscriptionContext';
 const ADSENSE_CLIENT = import.meta.env.VITE_ADSENSE_CLIENT || '';
 const ADSENSE_ENABLED = import.meta.env.VITE_ADSENSE_ENABLED === 'true';
 const ADSENSE_SLOT_BANNER = import.meta.env.VITE_ADSENSE_SLOT_BANNER || '';
+const ADSENSE_SLOT_INLINE = import.meta.env.VITE_ADSENSE_SLOT_INLINE || '';
+const ADSENSE_LAYOUT_KEY = import.meta.env.VITE_ADSENSE_LAYOUT_KEY || '-gs-3+1f-3d+2z';
 
 interface AdBannerProps {
   position?: 'top' | 'bottom' | 'inline';
@@ -60,7 +62,8 @@ export default function AdBanner({
     if (shouldShowGoogleAds && !showUpgrade) {
       return (
         <div className="my-4">
-          <GoogleAdInline slot={ADSENSE_SLOT_BANNER} />
+          <p className="text-[10px] text-dark-500 text-center mb-1 uppercase tracking-wider">Sponsored</p>
+          <GoogleAdInline slot={ADSENSE_SLOT_INLINE || ADSENSE_SLOT_BANNER} isInFeed={true} />
         </div>
       );
     }
@@ -146,8 +149,12 @@ export default function AdBanner({
   );
 }
 
-// Inline Google Ad component
-function GoogleAdInline({ slot, format = 'auto' }: { slot: string; format?: 'auto' | 'horizontal' }) {
+// Inline Google Ad component (supports both banner and in-feed formats)
+function GoogleAdInline({ slot, format = 'auto', isInFeed = false }: { 
+  slot: string; 
+  format?: 'auto' | 'horizontal' | 'fluid';
+  isInFeed?: boolean;
+}) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -184,6 +191,23 @@ function GoogleAdInline({ slot, format = 'auto' }: { slot: string; format?: 'aut
 
   if (!slot) return null;
 
+  // In-feed ad format (fluid)
+  if (isInFeed) {
+    return (
+      <div className="flex items-center justify-center min-h-[80px] bg-dark-800/20 rounded-lg my-2">
+        <ins
+          className="adsbygoogle"
+          style={{ display: 'block' }}
+          data-ad-client={ADSENSE_CLIENT}
+          data-ad-slot={slot}
+          data-ad-format="fluid"
+          data-ad-layout-key={ADSENSE_LAYOUT_KEY}
+        />
+      </div>
+    );
+  }
+
+  // Banner ad format
   return (
     <div className="flex items-center justify-center min-h-[50px] bg-dark-800/20 rounded">
       <ins

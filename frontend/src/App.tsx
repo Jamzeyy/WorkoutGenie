@@ -1,5 +1,17 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import Navigation from './components/Navigation';
+
+// Scroll to top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  
+  return null;
+}
 import Dashboard from './pages/Dashboard';
 import Workouts from './pages/Workouts';
 import WorkoutDetail from './pages/WorkoutDetail';
@@ -33,15 +45,17 @@ function AppRoutes() {
   const { user } = useAuth();
   
   return (
-    <Routes>
-      <Route path="/auth" element={user ? <Navigate to="/" replace /> : <Auth />} />
-      <Route
-        path="/*"
-        element={
-          <ProtectedRoute>
-            <div className="min-h-screen bg-pattern">
-              <Navigation />
-              <main className="md:ml-20 pb-24 md:pb-8">
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/auth" element={user ? <Navigate to="/" replace /> : <Auth />} />
+        <Route
+          path="/*"
+          element={
+            <ProtectedRoute>
+              <div className="min-h-screen bg-pattern">
+                <Navigation />
+                <main className="md:ml-20 pb-24 md:pb-8">
                 <div className="max-w-4xl mx-auto px-4 py-6 md:py-8">
                   <Routes>
                     <Route path="/" element={<Dashboard />} />
@@ -58,8 +72,9 @@ function AppRoutes() {
             </div>
           </ProtectedRoute>
         }
-      />
-    </Routes>
+        />
+      </Routes>
+    </>
   );
 }
 

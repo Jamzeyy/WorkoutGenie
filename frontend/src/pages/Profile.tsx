@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { 
   User, Edit2, Save, X, Flame, Target, Trophy, Calendar,
@@ -36,6 +36,7 @@ export default function Profile() {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editForm, setEditForm] = useState<Partial<UserProfile>>({});
+  const personalDataRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     loadData();
@@ -67,6 +68,10 @@ export default function Profile() {
       activity_level: profile?.activity_level,
     });
     setEditing(true);
+    // Scroll to personal data section after state update
+    setTimeout(() => {
+      personalDataRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   }
 
   async function saveProfile() {
@@ -247,12 +252,13 @@ export default function Profile() {
       </Card>
 
       {/* Personal Data */}
-      <Card animate={false}>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Activity className="w-5 h-5 text-genie-400" />
-            <h2 className="text-lg font-semibold text-white">Personal Data</h2>
-          </div>
+      <div ref={personalDataRef}>
+        <Card animate={false}>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Activity className="w-5 h-5 text-genie-400" />
+              <h2 className="text-lg font-semibold text-white">Personal Data</h2>
+            </div>
           {editing && (
             <div className="flex gap-2">
               <button
@@ -407,7 +413,8 @@ export default function Profile() {
             </div>
           </div>
         )}
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }

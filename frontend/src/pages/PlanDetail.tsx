@@ -190,14 +190,69 @@ export default function PlanDetail() {
                   <div className="mt-4 space-y-3">
                     {/* Handle weeks without detailed days (summary-only weeks) */}
                     {(!week.days || week.days.length === 0) ? (
-                      <div className="bg-dark-800/50 rounded-xl p-6 text-center">
-                        <Info className="w-8 h-8 text-genie-400 mx-auto mb-3" />
-                        <p className="text-white font-medium mb-2">
-                          Week {week.week_number}: {week.theme}
-                        </p>
-                        <p className="text-dark-400 text-sm">
-                          This week follows the same workout structure as Week 1 with progressive intensity.
-                          Refer to Week 1 for the detailed exercises.
+                      <div className="bg-dark-800/50 rounded-xl p-6">
+                        <div className="flex items-start gap-4 mb-4">
+                          <div className="p-3 bg-genie-500/20 rounded-xl">
+                            <Sparkles className="w-6 h-6 text-genie-400" />
+                          </div>
+                          <div>
+                            <p className="text-white font-semibold text-lg mb-1">
+                              {week.theme || `Week ${week.week_number} Progression`}
+                            </p>
+                            <p className="text-dark-400 text-sm">
+                              Follow the same exercises from Week 1 with these adjustments:
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-dark-700/50 rounded-xl p-4 space-y-3">
+                          <div className="flex items-start gap-3">
+                            <div className="w-6 h-6 rounded-full bg-genie-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                              <span className="text-genie-400 text-xs font-bold">1</span>
+                            </div>
+                            <div>
+                              <p className="text-white font-medium">
+                                {week.week_number === 2 && "Increase weight by 5-10%"}
+                                {week.week_number === 3 && "Add 1-2 extra reps per set"}
+                                {week.week_number === 4 && "Reduce rest time by 15 seconds"}
+                                {week.week_number > 4 && "Continue progressive overload"}
+                              </p>
+                              <p className="text-dark-400 text-xs">
+                                {week.week_number === 2 && "Your muscles are adapting - time to challenge them more"}
+                                {week.week_number === 3 && "Build endurance while maintaining weight"}
+                                {week.week_number === 4 && "Peak intensity week - push your limits"}
+                                {week.week_number > 4 && "Maintain consistency with gradual increases"}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-start gap-3">
+                            <div className="w-6 h-6 rounded-full bg-genie-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                              <span className="text-genie-400 text-xs font-bold">2</span>
+                            </div>
+                            <div>
+                              <p className="text-white font-medium">Focus on form quality</p>
+                              <p className="text-dark-400 text-xs">
+                                As intensity increases, maintain strict form to prevent injury
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-start gap-3">
+                            <div className="w-6 h-6 rounded-full bg-genie-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                              <span className="text-genie-400 text-xs font-bold">3</span>
+                            </div>
+                            <div>
+                              <p className="text-white font-medium">Track your progress</p>
+                              <p className="text-dark-400 text-xs">
+                                Log weights/reps to ensure you're progressing each week
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <p className="text-dark-500 text-xs mt-4 text-center">
+                          💡 Go to Week 1 to start a workout with the base exercises
                         </p>
                       </div>
                     ) : week.days.map((day: PlanDay, dayIndex: number) => {

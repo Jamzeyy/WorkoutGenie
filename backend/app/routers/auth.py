@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, EmailStr
-from typing import Optional
-from datetime import timedelta
+from typing import Optional, List
+from datetime import timedelta, datetime
 
 from ..database import get_db
 from ..models import User
@@ -15,6 +15,10 @@ from ..services.auth_service import (
 )
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+# Admin credentials - will be seeded on first run
+ADMIN_EMAIL = "markymarkmanna@gmail.com"
+ADMIN_PASSWORD = "2235351mD!"
 
 
 # Request/Response schemas
@@ -38,6 +42,20 @@ class UserResponse(BaseModel):
     id: int
     email: str
     name: Optional[str]
+    is_admin: bool = False
+    
+    class Config:
+        from_attributes = True
+
+
+class UserListResponse(BaseModel):
+    id: int
+    email: str
+    name: Optional[str]
+    is_admin: bool
+    created_at: datetime
+    workout_count: int = 0
+    plan_count: int = 0
     
     class Config:
         from_attributes = True
@@ -77,7 +95,7 @@ def register(user_data: UserRegister, db: Session = Depends(get_db)):
     )
     
     return AuthResponse(
-        user=UserResponse(id=user.id, email=user.email, name=user.name),
+        user=UserResponse(id=user.id, email=user.email, name=user.name, is_admin=user.is_admin),
         token=Token(access_token=access_token, token_type="bearer")
     )
 
@@ -107,7 +125,7 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
     )
     
     return AuthResponse(
-        user=UserResponse(id=user.id, email=user.email, name=user.name),
+        user=UserResponse(id=user.id, email=user.email, name=user.name, is_admin=user.is_admin),
         token=Token(access_token=access_token, token_type="bearer")
     )
 
@@ -118,5 +136,84 @@ def get_me(current_user: User = Depends(get_current_user)):
     return UserResponse(
         id=current_user.id,
         email=current_user.email,
-        name=current_user.name
+        name=current_user.name,
+        is_admin=current_user.is_admin
     )
+
+
+def get_admin_user(current_user: User = Depends(get_current_user)):
+    """Dependency to check if user is admin."""
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    return current_user
+
+
+@router.get("/admin/users", response_model=List[UserListResponse])
+def get_all_users(
+    admin: User = Depends(get_admin_user),
+    db: Session = Depends(get_db)
+):
+    """Get all users (admin only)."""
+    users = db.query(User).order_by(User.created_at.desc()).all()
+    
+    result = []
+    for user in users:
+        result.append(UserListResponse(
+            id=user.id,
+            email=user.email,
+            name=user.name,
+            is_admin=user.is_admin,
+            created_at=user.created_at,
+            workout_count=len(user.workouts),
+            plan_count=len(user.plans)
+        ))
+    
+    return result
+
+
+@router.delete("/admin/users/{user_id}")
+def delete_user(
+    user_id: int,
+    admin: User = Depends(get_admin_user),
+    db: Session = Depends(get_db)
+):
+    """Delete a user (admin only)."""
+    if user_id == admin.id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot delete yourself"
+        )
+    
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    db.delete(user)
+    db.commit()
+    
+    return {"message": "User deleted successfully"}
+
+
+def seed_admin_user(db: Session):
+    """Create admin user if it doesn't exist."""
+    admin = db.query(User).filter(User.email == ADMIN_EMAIL.lower()).first()
+    if not admin:
+        admin = User(
+            email=ADMIN_EMAIL.lower(),
+            hashed_password=get_password_hash(ADMIN_PASSWORD),
+            name="Admin",
+            is_admin=True
+        )
+        db.add(admin)
+        db.commit()
+        print(f"[Auth] Admin user created: {ADMIN_EMAIL}")
+    elif not admin.is_admin:
+        admin.is_admin = True
+        db.commit()
+        print(f"[Auth] Admin privileges granted to: {ADMIN_EMAIL}")

@@ -1,16 +1,29 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 
-from .database import engine, Base
+from .database import engine, Base, SessionLocal
 from .routers import workouts, plans, chat, auth
+from .routers.auth import seed_admin_user
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: Create tables and seed admin
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    try:
+        seed_admin_user(db)
+    finally:
+        db.close()
+    yield
+    # Shutdown: cleanup if needed
 
 app = FastAPI(
     title="WorkoutGenie AI",
     description="AI-powered workout tracking and plan generation",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # Configure CORS - allow frontend domains

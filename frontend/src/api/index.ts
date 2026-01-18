@@ -1,4 +1,4 @@
-import { Workout, WorkoutPlan, QuestionnaireData, GeneratePlanResponse } from '../types';
+import { Workout, WorkoutPlan, QuestionnaireData, GeneratePlanResponse, AdminUser } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://workoutgenie-production.up.railway.app/api';
 
@@ -184,5 +184,23 @@ export const chatApi = {
     if (!response.ok) throw new Error('Chat request failed');
     const data = await response.json();
     return data.message;
+  },
+};
+
+// Admin API
+export const adminApi = {
+  getUsers: async (): Promise<AdminUser[]> => {
+    const response = await fetch(`${API_BASE}/auth/admin/users`, {
+      headers: getAuthHeaders(),
+    });
+    return handleResponse<AdminUser[]>(response);
+  },
+
+  deleteUser: async (userId: number): Promise<void> => {
+    const response = await fetch(`${API_BASE}/auth/admin/users/${userId}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+    if (!response.ok) throw new Error('Failed to delete user');
   },
 };

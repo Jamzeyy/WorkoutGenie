@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Dumbbell, Sparkles, Calendar, Menu, X, LogOut } from 'lucide-react';
+import { Home, Dumbbell, Sparkles, Calendar, Menu, X, LogOut, Shield } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -46,8 +46,25 @@ export default function Navigation() {
           ))}
         </div>
         
-        {/* User & Logout */}
-        <div className="mt-auto pt-4 border-t border-dark-700">
+        {/* Admin & Logout */}
+        <div className="mt-auto pt-4 border-t border-dark-700 flex flex-col gap-2">
+          {user?.is_admin && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                `w-12 h-12 rounded-xl flex items-center justify-center transition-all group relative ${
+                  isActive
+                    ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/30'
+                    : 'text-amber-400 hover:text-amber-300 hover:bg-dark-800'
+                }`
+              }
+            >
+              <Shield className="w-5 h-5" />
+              <span className="absolute left-16 px-3 py-1.5 bg-dark-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                Admin
+              </span>
+            </NavLink>
+          )}
           {user && (
             <button
               onClick={logout}
@@ -127,10 +144,27 @@ export default function Navigation() {
                   </NavLink>
                 ))}
                 
+                {user?.is_admin && (
+                  <NavLink
+                    to="/admin"
+                    onClick={() => setMobileOpen(false)}
+                    className={({ isActive }) =>
+                      `flex items-center gap-4 px-6 py-4 rounded-xl transition-all mt-4 ${
+                        isActive
+                          ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                          : 'bg-amber-500/10 text-amber-400 hover:bg-amber-500/20'
+                      }`
+                    }
+                  >
+                    <Shield className="w-5 h-5" />
+                    <span className="font-medium">Admin Dashboard</span>
+                  </NavLink>
+                )}
+                
                 {user && (
                   <button
                     onClick={() => { logout(); setMobileOpen(false); }}
-                    className="flex items-center gap-4 px-6 py-4 rounded-xl transition-all bg-red-500/10 text-red-400 hover:bg-red-500/20 mt-4"
+                    className="flex items-center gap-4 px-6 py-4 rounded-xl transition-all bg-red-500/10 text-red-400 hover:bg-red-500/20 mt-2"
                   >
                     <LogOut className="w-5 h-5" />
                     <span className="font-medium">Logout</span>

@@ -90,3 +90,20 @@ export interface GeneratePlanResponse {
   cycle_type: string;
   cycle_weeks: number;
 }
+
+export interface User {
+  id: number;
+  email: string;
+  name?: string;
+  is_admin: boolean;
+}
+
+export interface AdminUser {
+  id: number;
+  email: string;
+  name?: string;
+  is_admin: boolean;
+  created_at: string;
+  workout_count: number;
+  plan_count: number;
+}

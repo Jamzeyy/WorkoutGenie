@@ -208,29 +208,29 @@ export default function OnboardingTour() {
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             className={`fixed z-[102] ${
               isFullScreenStep 
-                ? 'inset-0 flex items-center justify-center p-4' 
-                : 'bottom-24 left-4 right-4 md:left-auto md:right-8 md:max-w-sm'
+                ? 'inset-0 flex items-center justify-center p-3 md:p-4' 
+                : 'bottom-20 left-3 right-3 md:left-auto md:right-8 md:max-w-sm'
             }`}
           >
-            <div className={`bg-dark-800 border border-dark-600 rounded-2xl shadow-2xl overflow-hidden ${
+            <div className={`bg-dark-800 border border-dark-600 rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] overflow-y-auto ${
               isFullScreenStep ? 'max-w-md w-full' : 'w-full'
             }`}>
               {/* Header with gradient */}
-              <div className="bg-gradient-to-r from-genie-600 to-emerald-500 p-4 relative">
+              <div className="bg-gradient-to-r from-genie-600 to-emerald-500 p-3 md:p-4 relative">
                 <button
                   onClick={handleSkip}
-                  className="absolute top-3 right-3 p-1.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                  className="absolute top-2 right-2 md:top-3 md:right-3 p-1.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
                   aria-label="Skip tour"
                 >
                   <X className="w-4 h-4 text-white" />
                 </button>
                 
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-white">
+                <div className="flex items-center gap-2 md:gap-3">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white/20 flex items-center justify-center text-white flex-shrink-0">
                     {step.icon}
                   </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-white">{step.title}</h3>
+                  <div className="min-w-0">
+                    <h3 className="text-base md:text-lg font-bold text-white truncate">{step.title}</h3>
                     <p className="text-xs text-white/70">
                       Step {currentStep + 1} of {TOUR_STEPS.length}
                     </p>
@@ -240,48 +240,42 @@ export default function OnboardingTour() {
 
               {/* Screenshot Preview */}
               {step.image && (
-                <div className="px-5 pt-4">
+                <div className="px-4 pt-3">
                   <div className="relative rounded-xl overflow-hidden border border-dark-600 bg-dark-900">
-                    {/* Phone-style frame */}
-                    <div className="absolute top-0 left-0 right-0 h-6 bg-dark-800 flex items-center justify-center z-10">
-                      <div className="w-16 h-1 rounded-full bg-dark-600" />
-                    </div>
-                    {/* Image with gradient overlay */}
-                    <div className="relative pt-6">
+                    {/* Image container */}
+                    <div className="relative">
                       <img 
                         src={step.image} 
                         alt={`${step.title} preview`}
-                        className="w-full h-40 object-cover object-top"
+                        className="w-full max-h-32 md:max-h-40 object-contain bg-dark-900"
                         onError={(e) => {
                           // Hide image container if image fails to load
                           (e.target as HTMLImageElement).parentElement!.parentElement!.style.display = 'none';
                         }}
                       />
-                      {/* Gradient fade at bottom */}
-                      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-dark-800 to-transparent" />
                     </div>
                   </div>
                 </div>
               )}
 
               {/* Content */}
-              <div className="p-5 pt-4">
+              <div className="p-3 md:p-5 pt-3">
                 {step.description && (
-                  <p className="text-dark-300 text-sm leading-relaxed mb-5">
+                  <p className="text-dark-300 text-sm leading-relaxed mb-4">
                     {step.description}
                   </p>
                 )}
 
                 {/* Pro tips list */}
                 {step.tips && (
-                  <div className="space-y-3 mb-5">
+                  <div className="space-y-2 mb-4">
                     {step.tips.map((tip, index) => (
                       <div 
                         key={index}
-                        className="flex items-start gap-3 p-3 bg-dark-700/50 rounded-xl border border-dark-600"
+                        className="flex items-start gap-2 p-2.5 bg-dark-700/50 rounded-xl border border-dark-600"
                       >
-                        <span className="text-xl flex-shrink-0">{tip.emoji}</span>
-                        <p className="text-sm text-dark-300 leading-relaxed">{tip.text}</p>
+                        <span className="text-lg flex-shrink-0">{tip.emoji}</span>
+                        <p className="text-xs md:text-sm text-dark-300 leading-relaxed">{tip.text}</p>
                       </div>
                     ))}
                   </div>
@@ -289,7 +283,7 @@ export default function OnboardingTour() {
 
                 {/* Feature cards for welcome screen */}
                 {step.id === 'welcome' && (
-                  <div className="grid grid-cols-2 gap-2 mb-5">
+                  <div className="grid grid-cols-2 gap-2 mb-4">
                     {[
                       { icon: <MessageSquare className="w-4 h-4" />, label: 'AI Coach' },
                       { icon: <Sparkles className="w-4 h-4" />, label: 'Custom Plans' },
@@ -298,7 +292,7 @@ export default function OnboardingTour() {
                     ].map((feature) => (
                       <div 
                         key={feature.label}
-                        className="flex items-center gap-2 p-2.5 rounded-lg bg-dark-700/50 border border-dark-600"
+                        className="flex items-center gap-2 p-2 rounded-lg bg-dark-700/50 border border-dark-600"
                       >
                         <span className="text-genie-400">{feature.icon}</span>
                         <span className="text-xs text-dark-300">{feature.label}</span>
@@ -308,14 +302,14 @@ export default function OnboardingTour() {
                 )}
 
                 {/* Progress dots */}
-                <div className="flex items-center justify-center gap-1.5 mb-5">
+                <div className="flex items-center justify-center gap-1 mb-4">
                   {TOUR_STEPS.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentStep(index)}
-                      className={`w-2 h-2 rounded-full transition-all ${
+                      className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full transition-all ${
                         index === currentStep 
-                          ? 'bg-genie-500 w-6' 
+                          ? 'bg-genie-500 w-4 md:w-6' 
                           : index < currentStep 
                             ? 'bg-genie-500/50' 
                             : 'bg-dark-600'
@@ -329,7 +323,7 @@ export default function OnboardingTour() {
                   {!isFirstStep && (
                     <button
                       onClick={handlePrev}
-                      className="flex-1 flex items-center justify-center gap-1 px-4 py-2.5 rounded-xl bg-dark-700 text-dark-300 hover:bg-dark-600 hover:text-white transition-colors text-sm"
+                      className="flex-1 flex items-center justify-center gap-1 px-3 py-2 md:px-4 md:py-2.5 rounded-xl bg-dark-700 text-dark-300 hover:bg-dark-600 hover:text-white transition-colors text-sm"
                     >
                       <ChevronLeft className="w-4 h-4" />
                       Back
@@ -339,6 +333,7 @@ export default function OnboardingTour() {
                   <Button
                     onClick={handleNext}
                     className="flex-1"
+                    size="sm"
                     icon={isLastStep ? <CheckCircle2 className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                   >
                     {isFirstStep ? "Let's Go!" : isLastStep ? "Get Started" : 'Next'}
@@ -349,7 +344,7 @@ export default function OnboardingTour() {
                 {!isLastStep && (
                   <button
                     onClick={handleSkip}
-                    className="w-full mt-3 text-xs text-dark-500 hover:text-dark-400 transition-colors"
+                    className="w-full mt-2 text-xs text-dark-500 hover:text-dark-400 transition-colors"
                   >
                     Skip tutorial
                   </button>

@@ -288,3 +288,51 @@ export const adminApi = {
     if (!response.ok) throw new Error('Failed to delete user');
   },
 };
+
+// Feedback API
+export interface FeedbackReport {
+  id: number;
+  user_id?: number;
+  exercise_name: string;
+  issue_type: string;
+  message?: string;
+  status: string;
+  created_at: string;
+  resolved_at?: string;
+}
+
+export const feedbackApi = {
+  submit: async (data: { exercise_name: string; issue_type: string; message?: string }): Promise<FeedbackReport> => {
+    const response = await fetch(`${API_BASE}/feedback/report`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+    return handleResponse<FeedbackReport>(response);
+  },
+
+  getAll: async (status?: string): Promise<FeedbackReport[]> => {
+    const url = status ? `${API_BASE}/feedback/reports?status=${status}` : `${API_BASE}/feedback/reports`;
+    const response = await fetch(url, {
+      headers: getAuthHeaders(),
+    });
+    return handleResponse<FeedbackReport[]>(response);
+  },
+
+  updateStatus: async (id: number, status: string): Promise<FeedbackReport> => {
+    const response = await fetch(`${API_BASE}/feedback/reports/${id}`, {
+      method: 'PATCH',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ status }),
+    });
+    return handleResponse<FeedbackReport>(response);
+  },
+
+  delete: async (id: number): Promise<void> => {
+    const response = await fetch(`${API_BASE}/feedback/reports/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+    if (!response.ok) throw new Error('Failed to delete report');
+  },
+};

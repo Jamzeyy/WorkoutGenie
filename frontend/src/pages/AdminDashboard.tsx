@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Users, Trash2, Shield, Dumbbell, Calendar, AlertCircle, RefreshCw } from 'lucide-react';
+import { Users, Trash2, Shield, Dumbbell, Calendar, AlertCircle, RefreshCw, AlertTriangle, Check, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { adminApi } from '../api';
+import { adminApi, feedbackApi, FeedbackReport } from '../api';
 import { AdminUser } from '../types';
 import Button from '../components/Button';
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState<AdminUser[]>([]);
+  const [feedbackReports, setFeedbackReports] = useState<FeedbackReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
@@ -23,7 +24,35 @@ export default function AdminDashboard() {
       return;
     }
     loadUsers();
+    loadFeedbackReports();
   }, [user, navigate]);
+
+  async function loadFeedbackReports() {
+    try {
+      const reports = await feedbackApi.getAll();
+      setFeedbackReports(reports);
+    } catch (err) {
+      console.error('Failed to load feedback reports:', err);
+    }
+  }
+
+  async function handleResolveReport(id: number) {
+    try {
+      await feedbackApi.updateStatus(id, 'resolved');
+      setFeedbackReports(feedbackReports.map(r => r.id === id ? { ...r, status: 'resolved' } : r));
+    } catch (err) {
+      console.error('Failed to resolve report:', err);
+    }
+  }
+
+  async function handleDismissReport(id: number) {
+    try {
+      await feedbackApi.updateStatus(id, 'dismissed');
+      setFeedbackReports(feedbackReports.filter(r => r.id !== id));
+    } catch (err) {
+      console.error('Failed to dismiss report:', err);
+    }
+  }
 
   async function loadUsers(isRefresh = false) {
     if (isRefresh) setRefreshing(true);
@@ -143,6 +172,54 @@ export default function AdminDashboard() {
           <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3">
             <AlertCircle className="w-5 h-5 text-red-400" />
             <p className="text-red-400">{error}</p>
+          </div>
+        )}
+
+        {/* Feedback Reports */}
+        {feedbackReports.filter(r => r.status === 'pending').length > 0 && (
+          <div className="bg-dark-800/50 backdrop-blur border border-yellow-500/30 rounded-2xl overflow-hidden">
+            <div className="p-4 border-b border-dark-700 flex items-center gap-3">
+              <AlertTriangle className="w-5 h-5 text-yellow-400" />
+              <h2 className="text-lg font-semibold text-white">Video Reports</h2>
+              <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded-full text-xs">
+                {feedbackReports.filter(r => r.status === 'pending').length} pending
+              </span>
+            </div>
+            <div className="divide-y divide-dark-700">
+              {feedbackReports.filter(r => r.status === 'pending').map((report) => (
+                <div key={report.id} className="p-4 flex items-center justify-between gap-4">
+                  <div className="flex-1">
+                    <p className="text-white font-medium">{report.exercise_name}</p>
+                    <p className="text-dark-400 text-sm">
+                      {report.issue_type === 'video_private' && '🔒 Video is Private'}
+                      {report.issue_type === 'video_wrong' && '❌ Wrong Exercise'}
+                      {report.issue_type === 'video_broken' && '⚠️ Video Not Loading'}
+                      {report.issue_type === 'other' && '📝 Other Issue'}
+                      {report.message && ` - ${report.message}`}
+                    </p>
+                    <p className="text-dark-500 text-xs mt-1">
+                      {new Date(report.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleResolveReport(report.id)}
+                      className="p-2 bg-green-500/10 hover:bg-green-500/20 text-green-400 rounded-lg transition-colors"
+                      title="Mark as resolved"
+                    >
+                      <Check className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDismissReport(report.id)}
+                      className="p-2 bg-dark-600 hover:bg-dark-500 text-dark-300 rounded-lg transition-colors"
+                      title="Dismiss"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

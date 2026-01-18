@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from .database import engine, Base, SessionLocal
-from .routers import workouts, plans, chat, auth, profile, subscriptions
+from .routers import workouts, plans, chat, auth, profile, subscriptions, feedback
 from .routers.auth import seed_admin_user
 
 # Initialize Sentry for error tracking
@@ -152,6 +152,7 @@ app.include_router(plans.router, prefix="/api")
 app.include_router(chat.router, prefix="/api")
 app.include_router(profile.router, prefix="/api")
 app.include_router(subscriptions.router, prefix="/api")
+app.include_router(feedback.router, prefix="/api")
 
 
 @app.get("/")

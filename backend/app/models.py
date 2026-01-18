@@ -106,3 +106,16 @@ class WorkoutPlan(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     user = relationship("User", back_populates="plans")
+
+
+class FeedbackReport(Base):
+    __tablename__ = "feedback_reports"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    exercise_name = Column(String(255), nullable=False)
+    issue_type = Column(String(50), nullable=False)  # video_private, video_wrong, video_broken, other
+    message = Column(Text, nullable=True)
+    status = Column(String(20), default="pending")  # pending, resolved, dismissed
+    created_at = Column(DateTime, default=datetime.utcnow)
+    resolved_at = Column(DateTime, nullable=True)

@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Dumbbell, Target, Lightbulb, PlayCircle } from 'lucide-react';
+import { X, Dumbbell, Target, Lightbulb, PlayCircle, AlertTriangle, Check } from 'lucide-react';
 import { ExerciseInfo } from '../data/exerciseDatabase';
+import { feedbackApi } from '../api';
 
 interface ExerciseInfoModalProps {
   exercise: ExerciseInfo | null;
@@ -8,7 +10,26 @@ interface ExerciseInfoModalProps {
 }
 
 export default function ExerciseInfoModal({ exercise, onClose }: ExerciseInfoModalProps) {
+  const [showReportMenu, setShowReportMenu] = useState(false);
+  const [reportSent, setReportSent] = useState(false);
+  const [reportError, setReportError] = useState('');
+
   if (!exercise) return null;
+
+  const handleReport = async (issueType: string) => {
+    try {
+      await feedbackApi.submit({
+        exercise_name: exercise.name,
+        issue_type: issueType,
+      });
+      setReportSent(true);
+      setShowReportMenu(false);
+      setTimeout(() => setReportSent(false), 3000);
+    } catch (err) {
+      setReportError('Failed to send report');
+      setTimeout(() => setReportError(''), 3000);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -99,15 +120,69 @@ export default function ExerciseInfoModal({ exercise, onClose }: ExerciseInfoMod
           {/* Footer */}
           <div className="p-4 border-t border-dark-700 bg-dark-850">
             <div className="flex items-center justify-between">
-              <a
-                href={exercise.videoUrl.replace('/embed/', '/watch?v=')}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-genie-400 hover:text-genie-300 transition-colors text-sm"
-              >
-                <PlayCircle className="w-4 h-4" />
-                Watch on YouTube
-              </a>
+              <div className="flex items-center gap-3">
+                <a
+                  href={exercise.videoUrl.replace('/embed/', '/watch?v=')}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-genie-400 hover:text-genie-300 transition-colors text-sm"
+                >
+                  <PlayCircle className="w-4 h-4" />
+                  Watch on YouTube
+                </a>
+                
+                {/* Report Issue Button */}
+                <div className="relative">
+                  {reportSent ? (
+                    <span className="flex items-center gap-1 text-green-400 text-sm">
+                      <Check className="w-4 h-4" />
+                      Reported!
+                    </span>
+                  ) : reportError ? (
+                    <span className="text-red-400 text-sm">{reportError}</span>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => setShowReportMenu(!showReportMenu)}
+                        className="flex items-center gap-1 text-dark-400 hover:text-yellow-400 transition-colors text-sm"
+                      >
+                        <AlertTriangle className="w-4 h-4" />
+                        Report Issue
+                      </button>
+                      
+                      {showReportMenu && (
+                        <div className="absolute bottom-full left-0 mb-2 bg-dark-700 border border-dark-600 rounded-lg shadow-xl py-1 min-w-[180px] z-10">
+                          <button
+                            onClick={() => handleReport('video_private')}
+                            className="w-full px-3 py-2 text-left text-sm text-dark-200 hover:bg-dark-600 transition-colors"
+                          >
+                            🔒 Video is Private
+                          </button>
+                          <button
+                            onClick={() => handleReport('video_wrong')}
+                            className="w-full px-3 py-2 text-left text-sm text-dark-200 hover:bg-dark-600 transition-colors"
+                          >
+                            ❌ Wrong Exercise
+                          </button>
+                          <button
+                            onClick={() => handleReport('video_broken')}
+                            className="w-full px-3 py-2 text-left text-sm text-dark-200 hover:bg-dark-600 transition-colors"
+                          >
+                            ⚠️ Video Not Loading
+                          </button>
+                          <button
+                            onClick={() => handleReport('other')}
+                            className="w-full px-3 py-2 text-left text-sm text-dark-200 hover:bg-dark-600 transition-colors"
+                          >
+                            📝 Other Issue
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+              
               <button
                 onClick={onClose}
                 className="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-white rounded-lg transition-colors"

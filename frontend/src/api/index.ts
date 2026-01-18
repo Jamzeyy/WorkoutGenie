@@ -1,6 +1,6 @@
 import { Workout, WorkoutPlan, QuestionnaireData, GeneratePlanResponse } from '../types';
 
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'https://workoutgenie-production.up.railway.app/api';
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {

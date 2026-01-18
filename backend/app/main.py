@@ -13,10 +13,18 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configure CORS
+# Configure CORS - allow frontend domains
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5174", "http://localhost:3000", "http://127.0.0.1:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:5174", 
+        "http://localhost:3000",
+        "http://127.0.0.1:5173",
+        "https://workout-genie.vercel.app",
+        "https://workout-genie-*.vercel.app",  # Preview deployments
+    ],
+    allow_origin_regex=r"https://.*\.vercel\.app",  # All Vercel deployments
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

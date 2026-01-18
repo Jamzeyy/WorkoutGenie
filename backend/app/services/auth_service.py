@@ -14,6 +14,10 @@ SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production-u
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_DAYS = 7
 
+# Log the key being used (masked for security)
+_masked_key = SECRET_KEY[:10] + "..." + SECRET_KEY[-4:] if len(SECRET_KEY) > 14 else "***"
+print(f"[Auth] JWT SECRET_KEY loaded: {_masked_key}")
+
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -44,7 +48,9 @@ def decode_token(token: str) -> Optional[dict]:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    except JWTError:
+    except JWTError as e:
+        print(f"[Auth] Token decode failed: {e}")
+        print(f"[Auth] Using SECRET_KEY: {SECRET_KEY[:10]}...{SECRET_KEY[-4:] if len(SECRET_KEY) > 14 else '***'}")
         return None
 
 

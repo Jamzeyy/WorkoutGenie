@@ -68,6 +68,7 @@ export interface PlanData {
   plan_description: string;
   weekly_schedule: PlanWeek[];
   tips: string[];
+  personal_tips?: string[];
   progression_notes: string;
 }
 

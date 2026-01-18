@@ -210,3 +210,53 @@ def create_workout_from_plan(
     db.commit()
     db.refresh(workout)
     return workout
+
+
+@router.post("/{workout_id}/complete", response_model=WorkoutResponse)
+def complete_workout(
+    workout_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_user)
+):
+    """Mark a workout as completed."""
+    query = db.query(Workout).filter(Workout.id == workout_id)
+    if current_user:
+        query = query.filter(Workout.user_id == current_user.id)
+    
+    workout = query.first()
+    if not workout:
+        raise HTTPException(status_code=404, detail="Workout not found")
+    
+    # Mark workout as completed
+    workout.completed_at = datetime.utcnow()
+    
+    # Mark all sets as completed if not already
+    for exercise in workout.exercises:
+        for exercise_set in exercise.sets:
+            if not exercise_set.completed:
+                exercise_set.completed = True
+    
+    db.commit()
+    db.refresh(workout)
+    return workout
+
+
+@router.post("/{workout_id}/uncomplete", response_model=WorkoutResponse)
+def uncomplete_workout(
+    workout_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_user)
+):
+    """Unmark a workout as completed."""
+    query = db.query(Workout).filter(Workout.id == workout_id)
+    if current_user:
+        query = query.filter(Workout.user_id == current_user.id)
+    
+    workout = query.first()
+    if not workout:
+        raise HTTPException(status_code=404, detail="Workout not found")
+    
+    workout.completed_at = None
+    db.commit()
+    db.refresh(workout)
+    return workout

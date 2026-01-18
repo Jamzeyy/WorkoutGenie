@@ -53,13 +53,34 @@ def get_plan(
 
 
 @router.post("/generate", response_model=GeneratePlanResponse)
-async def generate_plan(request: GeneratePlanRequest):
+async def generate_plan(
+    request: GeneratePlanRequest,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_user)
+):
     """Generate a workout plan using AI based on the questionnaire data."""
     try:
         print(f"[Generate] Starting plan generation...")
+        
+        # Build user profile data if available
+        user_profile = None
+        if current_user:
+            user_profile = {
+                "height_cm": current_user.height_cm,
+                "weight_kg": current_user.weight_kg,
+                "age": current_user.age,
+                "gender": current_user.gender,
+                "fitness_goal": current_user.fitness_goal,
+                "activity_level": current_user.activity_level,
+            }
+            # Filter out None values
+            user_profile = {k: v for k, v in user_profile.items() if v is not None}
+            print(f"[Generate] User profile: {user_profile}")
+        
         result = generate_workout_plan(
             questionnaire_data=request.questionnaire_data.model_dump(),
-            cycle_type=request.cycle_type
+            cycle_type=request.cycle_type,
+            user_profile=user_profile
         )
         print(f"[Generate] Plan generated successfully!")
         return GeneratePlanResponse(**result)

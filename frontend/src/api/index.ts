@@ -99,6 +99,22 @@ export const workoutsApi = {
     });
     if (!response.ok) throw new Error('Failed to update set');
   },
+
+  complete: async (id: number): Promise<Workout> => {
+    const response = await fetch(`${API_BASE}/workouts/${id}/complete`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+    });
+    return handleResponse<Workout>(response);
+  },
+
+  uncomplete: async (id: number): Promise<Workout> => {
+    const response = await fetch(`${API_BASE}/workouts/${id}/uncomplete`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+    });
+    return handleResponse<Workout>(response);
+  },
 };
 
 // Plans API
@@ -184,6 +200,74 @@ export const chatApi = {
     if (!response.ok) throw new Error('Chat request failed');
     const data = await response.json();
     return data.message;
+  },
+};
+
+// Profile API
+export interface UserProfile {
+  id: number;
+  email: string;
+  name?: string;
+  height_cm?: number;
+  weight_kg?: number;
+  age?: number;
+  gender?: string;
+  fitness_goal?: string;
+  activity_level?: string;
+  bmi?: number;
+  created_at: string;
+}
+
+export interface WorkoutStat {
+  date: string;
+  completed: boolean;
+  workout_name?: string;
+  workout_id?: number;
+}
+
+export interface Milestone {
+  name: string;
+  description: string;
+  target: number;
+  current: number;
+  completed: boolean;
+  icon: string;
+}
+
+export interface UserStats {
+  total_workouts: number;
+  completed_workouts: number;
+  current_streak: number;
+  longest_streak: number;
+  this_week: number;
+  this_month: number;
+  total_exercises: number;
+  workout_calendar: WorkoutStat[];
+  milestones: Milestone[];
+}
+
+export const profileApi = {
+  get: async (): Promise<UserProfile> => {
+    const response = await fetch(`${API_BASE}/profile/`, {
+      headers: getAuthHeaders(),
+    });
+    return handleResponse<UserProfile>(response);
+  },
+
+  update: async (data: Partial<UserProfile>): Promise<UserProfile> => {
+    const response = await fetch(`${API_BASE}/profile/`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+    return handleResponse<UserProfile>(response);
+  },
+
+  getStats: async (): Promise<UserStats> => {
+    const response = await fetch(`${API_BASE}/profile/stats`, {
+      headers: getAuthHeaders(),
+    });
+    return handleResponse<UserStats>(response);
   },
 };
 

@@ -3,8 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, Plus, Check, X, Clock, 
-  ChevronDown, ChevronUp, HelpCircle
+  ChevronDown, ChevronUp, HelpCircle, Trophy, CheckCircle2
 } from 'lucide-react';
+import posthog from 'posthog-js';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -29,7 +30,27 @@ export default function WorkoutDetail() {
   const [newExerciseName, setNewExerciseName] = useState('');
   const [expandedExercises, setExpandedExercises] = useState<Set<number>>(new Set());
   const [saving, setSaving] = useState(false);
+  const [completing, setCompleting] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<ExerciseInfo | null>(null);
+
+  async function handleCompleteWorkout() {
+    if (!workout?.id) return;
+    
+    setCompleting(true);
+    try {
+      const updated = await workoutsApi.complete(workout.id);
+      setWorkout(updated);
+      posthog.capture('workout_completed', { workout_name: workout.name });
+      // Show success and redirect to profile
+      setTimeout(() => {
+        navigate('/profile');
+      }, 1500);
+    } catch (error) {
+      console.error('Failed to complete workout:', error);
+    } finally {
+      setCompleting(false);
+    }
+  }
 
   function handleExerciseClick(exerciseName: string) {
     const info = getExerciseInfo(exerciseName);
@@ -395,6 +416,44 @@ export default function WorkoutDetail() {
           className="w-full px-4 py-3 bg-dark-800 border border-dark-700 rounded-xl text-white placeholder-dark-500 resize-none focus:border-genie-500"
         />
       </Card>
+
+      {/* Complete Workout Button */}
+      {workout.completed_at ? (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="p-6 bg-gradient-to-r from-emerald-500/20 to-genie-500/20 border border-emerald-500/30 rounded-2xl text-center"
+        >
+          <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-2" />
+          <h3 className="text-xl font-bold text-emerald-400">Workout Complete!</h3>
+          <p className="text-dark-300 mt-1">
+            Finished on {format(new Date(workout.completed_at), 'MMM d, yyyy \'at\' h:mm a')}
+          </p>
+          <Button
+            variant="secondary"
+            className="mt-4"
+            onClick={() => navigate('/profile')}
+          >
+            <Trophy className="w-4 h-4 mr-2" />
+            View Progress
+          </Button>
+        </motion.div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="sticky bottom-20 md:bottom-4"
+        >
+          <Button
+            onClick={handleCompleteWorkout}
+            loading={completing}
+            className="w-full py-4 text-lg bg-gradient-to-r from-emerald-500 to-genie-500 hover:from-emerald-600 hover:to-genie-600"
+          >
+            <Trophy className="w-5 h-5 mr-2" />
+            Complete Workout
+          </Button>
+        </motion.div>
+      )}
 
       {/* Exercise Info Modal */}
       <ExerciseInfoModal

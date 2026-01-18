@@ -6,6 +6,7 @@ import WorkoutDetail from './pages/WorkoutDetail';
 import AIGenerator from './pages/AIGenerator';
 import Plans from './pages/Plans';
 import PlanDetail from './pages/PlanDetail';
+import Profile from './pages/Profile';
 import Auth from './pages/Auth';
 import AdminDashboard from './pages/AdminDashboard';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -49,6 +50,7 @@ function AppRoutes() {
                     <Route path="/generate" element={<AIGenerator />} />
                     <Route path="/plans" element={<Plans />} />
                     <Route path="/plans/:id" element={<PlanDetail />} />
+                    <Route path="/profile" element={<Profile />} />
                     <Route path="/admin" element={<AdminDashboard />} />
                   </Routes>
                 </div>

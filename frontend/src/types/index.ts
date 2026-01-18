@@ -24,6 +24,7 @@ export interface Workout {
   notes?: string;
   exercises: Exercise[];
   created_at?: string;
+  completed_at?: string;
 }
 
 export interface QuestionnaireData {

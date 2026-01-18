@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Dumbbell, Sparkles, Calendar, Menu, X, LogOut, Shield } from 'lucide-react';
+import { Home, Dumbbell, Sparkles, Calendar, Menu, X, LogOut, Shield, User } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -9,6 +9,7 @@ const navItems = [
   { to: '/workouts', icon: Dumbbell, label: 'Workouts' },
   { to: '/generate', icon: Sparkles, label: 'AI Generate' },
   { to: '/plans', icon: Calendar, label: 'Plans' },
+  { to: '/profile', icon: User, label: 'Profile' },
 ];
 
 export default function Navigation() {

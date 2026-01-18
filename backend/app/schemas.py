@@ -60,6 +60,7 @@ class WorkoutCreate(WorkoutBase):
 class WorkoutResponse(WorkoutBase):
     id: int
     created_at: datetime
+    completed_at: Optional[datetime] = None
     exercises: List[ExerciseResponse] = []
     
     class Config:

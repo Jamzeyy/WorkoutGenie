@@ -97,7 +97,7 @@ def repair_truncated_json(text: str) -> str:
     return text
 
 
-def generate_workout_plan(questionnaire_data: dict, cycle_type: str) -> dict:
+def generate_workout_plan(questionnaire_data: dict, cycle_type: str, user_profile: dict = None) -> dict:
     """Generate a personalized workout plan using ChatGPT."""
     
     cycle_weeks_map = {
@@ -122,6 +122,29 @@ def generate_workout_plan(questionnaire_data: dict, cycle_type: str) -> dict:
 - Week 1: Full detail for all {workout_days} workout days  
 - Weeks 2-{cycle_weeks}: ONLY provide week number, theme, and 1 progression note. NO exercise lists for weeks 2+."""
     
+    # Build user profile section if available
+    profile_section = ""
+    if user_profile:
+        profile_parts = []
+        if user_profile.get('age'):
+            profile_parts.append(f"Age: {user_profile['age']}")
+        if user_profile.get('gender'):
+            profile_parts.append(f"Gender: {user_profile['gender']}")
+        if user_profile.get('height_cm'):
+            profile_parts.append(f"Height: {user_profile['height_cm']}cm")
+        if user_profile.get('weight_kg'):
+            profile_parts.append(f"Weight: {user_profile['weight_kg']}kg")
+        if user_profile.get('height_cm') and user_profile.get('weight_kg'):
+            bmi = user_profile['weight_kg'] / ((user_profile['height_cm'] / 100) ** 2)
+            profile_parts.append(f"BMI: {bmi:.1f}")
+        if user_profile.get('activity_level'):
+            profile_parts.append(f"Activity: {user_profile['activity_level']}")
+        if user_profile.get('fitness_goal'):
+            profile_parts.append(f"Goal: {user_profile['fitness_goal']}")
+        
+        if profile_parts:
+            profile_section = f"\nUser Profile: {', '.join(profile_parts)}"
+    
     # Build the prompt - optimized for shorter output
     prompt = f"""Create a {cycle_type} workout plan ({cycle_weeks} weeks, {workout_days} days/week).
 
@@ -130,11 +153,11 @@ Duration: {questionnaire_data.get('workout_duration_minutes', 45)} min
 Equipment: {', '.join(questionnaire_data.get('available_equipment', ['bodyweight']))}
 Focus: {', '.join(questionnaire_data.get('focus_areas', ['full body']))}
 Limitations: {questionnaire_data.get('injuries_limitations', 'None')}
-Notes: {questionnaire_data.get('extra_comments', 'None')}
+Notes: {questionnaire_data.get('extra_comments', 'None')}{profile_section}
 
 {weeks_instruction}
 
-Keep exercise notes very short (max 10 words). Return JSON:
+Tailor the workout intensity, exercise selection, and rep ranges based on the user's profile data (age, weight, BMI, activity level). Keep exercise notes very short (max 10 words). Return JSON:
 {{"plan_name":"","plan_description":"","weekly_schedule":[{{"week_number":1,"theme":"","days":[{{"day_number":1,"day_name":"","workout_name":"","focus":"","duration_minutes":45,"warmup":"","exercises":[{{"name":"","sets":3,"reps":"","rest_seconds":60,"notes":""}}],"cooldown":""}}]}}],"tips":[""],"progression_notes":""}}"""
 
     client = get_openai_client()

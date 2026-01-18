@@ -14,6 +14,14 @@ class User(Base):
     is_admin = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     
+    # Profile data for personalized plans
+    height_cm = Column(Float, nullable=True)  # Height in centimeters
+    weight_kg = Column(Float, nullable=True)  # Weight in kilograms
+    age = Column(Integer, nullable=True)
+    gender = Column(String(20), nullable=True)  # male, female, other
+    fitness_goal = Column(String(100), nullable=True)  # Build muscle, lose weight, etc.
+    activity_level = Column(String(50), nullable=True)  # sedentary, light, moderate, active, very_active
+    
     workouts = relationship("Workout", back_populates="user", cascade="all, delete-orphan")
     plans = relationship("WorkoutPlan", back_populates="user", cascade="all, delete-orphan")
 
@@ -28,6 +36,10 @@ class Workout(Base):
     duration_minutes = Column(Integer, nullable=True)
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    completed_at = Column(DateTime, nullable=True)  # When workout was marked complete
+    plan_id = Column(Integer, ForeignKey("workout_plans.id"), nullable=True)  # Link to plan if from a plan
+    plan_week = Column(Integer, nullable=True)  # Which week in the plan
+    plan_day = Column(Integer, nullable=True)  # Which day in the week
     
     user = relationship("User", back_populates="workouts")
     exercises = relationship("Exercise", back_populates="workout", cascade="all, delete-orphan")

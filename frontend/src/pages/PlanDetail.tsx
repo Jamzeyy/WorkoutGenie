@@ -104,6 +104,102 @@ export default function PlanDetail() {
   }
 
   const planData = plan.plan_data;
+  const primaryGoal = plan.questionnaire_data?.primary_goal || 'general_fitness';
+  
+  // Get week-specific instructions based on the plan's goal
+  function getWeekInstructions(weekNum: number): { title: string; desc: string }[] {
+    const goalInstructions: Record<string, { title: string; desc: string }[][]> = {
+      // Muscle Building / Strength
+      build_muscle: [
+        [], // Week 1 has full details
+        [
+          { title: "Increase weight by 5-10%", desc: "Your muscles are adapting - time to challenge them" },
+          { title: "Maintain rep ranges", desc: "Focus on the same reps with heavier weight" },
+          { title: "Rest 2-3 minutes between sets", desc: "Allow full recovery for strength gains" },
+        ],
+        [
+          { title: "Add 1-2 extra reps per set", desc: "Build muscular endurance at this weight" },
+          { title: "Focus on mind-muscle connection", desc: "Quality contractions over speed" },
+          { title: "Increase time under tension", desc: "Slow down the eccentric (lowering) phase" },
+        ],
+        [
+          { title: "Test your new max", desc: "Try to hit personal records this week" },
+          { title: "Reduce rest to 60-90 seconds", desc: "Peak intensity for maximum adaptation" },
+          { title: "Prepare for deload next cycle", desc: "Push hard knowing recovery is coming" },
+        ],
+      ],
+      // Fat Loss / Weight Loss
+      lose_weight: [
+        [],
+        [
+          { title: "Reduce rest periods to 30-45 seconds", desc: "Keep heart rate elevated for fat burning" },
+          { title: "Add 5 minutes of cardio finisher", desc: "HIIT or steady state after lifting" },
+          { title: "Increase workout intensity", desc: "Move faster between exercises" },
+        ],
+        [
+          { title: "Add supersets where possible", desc: "Pair exercises back-to-back for efficiency" },
+          { title: "Increase total workout volume", desc: "Add 1 extra set to compound movements" },
+          { title: "Focus on full-body movements", desc: "Burns more calories than isolation" },
+        ],
+        [
+          { title: "Circuit training format", desc: "Minimal rest, maximum calorie burn" },
+          { title: "Add plyometric elements", desc: "Jump variations to spike metabolism" },
+          { title: "Active recovery between sets", desc: "Light movement instead of sitting" },
+        ],
+      ],
+      // Endurance
+      improve_endurance: [
+        [],
+        [
+          { title: "Add 2-3 more reps per set", desc: "Build muscular endurance capacity" },
+          { title: "Reduce rest to 45 seconds", desc: "Train your recovery ability" },
+          { title: "Maintain steady pace throughout", desc: "Consistency over intensity" },
+        ],
+        [
+          { title: "Increase total workout duration", desc: "Add 10 minutes to your session" },
+          { title: "Add cardio intervals", desc: "30 seconds high intensity between exercises" },
+          { title: "Focus on breathing rhythm", desc: "Controlled breathing improves endurance" },
+        ],
+        [
+          { title: "Test endurance capacity", desc: "Try AMRAP (as many reps as possible) sets" },
+          { title: "Minimal rest challenge", desc: "Complete workout with 30-second rests only" },
+          { title: "Add finisher challenge", desc: "End with a timed circuit" },
+        ],
+      ],
+      // General Fitness (default)
+      general_fitness: [
+        [],
+        [
+          { title: "Slightly increase difficulty", desc: "Add weight, reps, or reduce rest" },
+          { title: "Focus on form improvement", desc: "Perfect your technique this week" },
+          { title: "Track your numbers", desc: "Note weights and reps for progress" },
+        ],
+        [
+          { title: "Challenge yourself more", desc: "Push past comfortable limits" },
+          { title: "Try exercise variations", desc: "Switch grips or stances for variety" },
+          { title: "Add core work", desc: "Include planks or ab exercises" },
+        ],
+        [
+          { title: "Peak performance week", desc: "Give maximum effort on all exercises" },
+          { title: "Test your improvements", desc: "See how far you've come since Week 1" },
+          { title: "Plan your next cycle", desc: "Set goals for the next training block" },
+        ],
+      ],
+    };
+    
+    // Normalize goal names
+    let goalKey = primaryGoal.toLowerCase().replace(/\s+/g, '_');
+    if (goalKey.includes('muscle') || goalKey.includes('strength')) goalKey = 'build_muscle';
+    if (goalKey.includes('weight') || goalKey.includes('fat') || goalKey.includes('lose')) goalKey = 'lose_weight';
+    if (goalKey.includes('endurance') || goalKey.includes('cardio')) goalKey = 'improve_endurance';
+    
+    const instructions = goalInstructions[goalKey] || goalInstructions.general_fitness;
+    const weekIndex = Math.min(weekNum, instructions.length) - 1;
+    
+    return instructions[weekIndex] || instructions[instructions.length - 1] || [
+      { title: "Continue progressing", desc: "Maintain consistency with gradual improvements" },
+    ];
+  }
 
   return (
     <div className="space-y-6">
@@ -206,49 +302,17 @@ export default function PlanDetail() {
                         </div>
                         
                         <div className="bg-dark-700/50 rounded-xl p-4 space-y-3">
-                          <div className="flex items-start gap-3">
-                            <div className="w-6 h-6 rounded-full bg-genie-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                              <span className="text-genie-400 text-xs font-bold">1</span>
+                          {getWeekInstructions(week.week_number).map((instruction, idx) => (
+                            <div key={idx} className="flex items-start gap-3">
+                              <div className="w-6 h-6 rounded-full bg-genie-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span className="text-genie-400 text-xs font-bold">{idx + 1}</span>
+                              </div>
+                              <div>
+                                <p className="text-white font-medium">{instruction.title}</p>
+                                <p className="text-dark-400 text-xs">{instruction.desc}</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-white font-medium">
-                                {week.week_number === 2 && "Increase weight by 5-10%"}
-                                {week.week_number === 3 && "Add 1-2 extra reps per set"}
-                                {week.week_number === 4 && "Reduce rest time by 15 seconds"}
-                                {week.week_number > 4 && "Continue progressive overload"}
-                              </p>
-                              <p className="text-dark-400 text-xs">
-                                {week.week_number === 2 && "Your muscles are adapting - time to challenge them more"}
-                                {week.week_number === 3 && "Build endurance while maintaining weight"}
-                                {week.week_number === 4 && "Peak intensity week - push your limits"}
-                                {week.week_number > 4 && "Maintain consistency with gradual increases"}
-                              </p>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-start gap-3">
-                            <div className="w-6 h-6 rounded-full bg-genie-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                              <span className="text-genie-400 text-xs font-bold">2</span>
-                            </div>
-                            <div>
-                              <p className="text-white font-medium">Focus on form quality</p>
-                              <p className="text-dark-400 text-xs">
-                                As intensity increases, maintain strict form to prevent injury
-                              </p>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-start gap-3">
-                            <div className="w-6 h-6 rounded-full bg-genie-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                              <span className="text-genie-400 text-xs font-bold">3</span>
-                            </div>
-                            <div>
-                              <p className="text-white font-medium">Track your progress</p>
-                              <p className="text-dark-400 text-xs">
-                                Log weights/reps to ensure you're progressing each week
-                              </p>
-                            </div>
-                          </div>
+                          ))}
                         </div>
                         
                         <p className="text-dark-500 text-xs mt-4 text-center">

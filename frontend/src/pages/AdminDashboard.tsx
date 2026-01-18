@@ -13,7 +13,7 @@ export default function AdminDashboard() {
   const [error, setError] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
   
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,8 +28,16 @@ export default function AdminDashboard() {
     try {
       const data = await adminApi.getUsers();
       setUsers(data);
+      setError('');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load users');
+      const message = err instanceof Error ? err.message : 'Failed to load users';
+      // If unauthorized, token is invalid - log out and redirect
+      if (message.includes('Invalid') || message.includes('expired') || message.includes('401')) {
+        logout();
+        navigate('/auth');
+        return;
+      }
+      setError(message);
     } finally {
       setLoading(false);
     }

@@ -49,6 +49,7 @@ def run_migrations():
             ('daily_chat_count', 'INTEGER DEFAULT 0'),
             ('daily_chat_reset', 'DATETIME'),
             ('trial_ends_at', 'DATETIME'),  # Free trial expiration
+            ('has_seen_onboarding', 'BOOLEAN DEFAULT 0'),  # Tutorial completion
         ]
         
         for col_name, col_type in user_migrations:

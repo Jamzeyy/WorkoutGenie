@@ -6,6 +6,7 @@ interface User {
   email: string;
   name?: string;
   is_admin: boolean;
+  has_seen_onboarding: boolean;
 }
 
 interface AuthContextType {
@@ -15,6 +16,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name?: string) => Promise<void>;
   logout: () => void;
+  markOnboardingComplete: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -103,8 +105,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     posthog.reset();
   };
 
+  const markOnboardingComplete = async () => {
+    if (!token || !user) return;
+    
+    try {
+      const response = await fetch(`${API_BASE}/auth/complete-onboarding`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
+      });
+
+      if (response.ok) {
+        // Update local user state
+        const updatedUser = { ...user, has_seen_onboarding: true };
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      }
+    } catch (error) {
+      console.error('Failed to mark onboarding complete:', error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout, markOnboardingComplete }}>
       {children}
     </AuthContext.Provider>
   );

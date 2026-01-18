@@ -39,6 +39,9 @@ class User(Base):
     daily_chat_count = Column(Integer, default=0)
     daily_chat_reset = Column(DateTime, default=datetime.utcnow)
     
+    # Onboarding
+    has_seen_onboarding = Column(Boolean, default=False)
+    
     workouts = relationship("Workout", back_populates="user", cascade="all, delete-orphan")
     plans = relationship("WorkoutPlan", back_populates="user", cascade="all, delete-orphan")
 

@@ -5,6 +5,7 @@ import {
   Dumbbell, Calendar, User, CheckCircle2, Rocket
 } from 'lucide-react';
 import Button from './Button';
+import { useAuth } from '../context/AuthContext';
 
 interface TourStep {
   id: string;
@@ -106,6 +107,7 @@ const TOUR_STEPS: TourStep[] = [
 const ONBOARDING_KEY = 'workoutgenie_onboarding_complete';
 
 export default function OnboardingTour() {
+  const { user, markOnboardingComplete } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [highlightPosition, setHighlightPosition] = useState<DOMRect | null>(null);
@@ -124,14 +126,16 @@ export default function OnboardingTour() {
       return;
     }
     
-    // Check if user has completed onboarding
-    const hasCompleted = localStorage.getItem(ONBOARDING_KEY);
-    if (!hasCompleted) {
+    // Check if user has completed onboarding (from backend or localStorage fallback)
+    const hasCompletedBackend = user?.has_seen_onboarding === true;
+    const hasCompletedLocal = localStorage.getItem(ONBOARDING_KEY) === 'true';
+    
+    if (!hasCompletedBackend && !hasCompletedLocal) {
       // Small delay to let the page render first
       const timer = setTimeout(() => setIsVisible(true), 800);
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     // Update highlight position when step changes
@@ -149,7 +153,10 @@ export default function OnboardingTour() {
     }
   }, [currentStep]);
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
+    // Mark complete in backend (persists across devices)
+    await markOnboardingComplete();
+    // Also set localStorage as fallback
     localStorage.setItem(ONBOARDING_KEY, 'true');
     setIsVisible(false);
   };

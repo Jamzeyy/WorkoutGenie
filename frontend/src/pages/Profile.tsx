@@ -6,6 +6,8 @@ import {
   TrendingUp, Dumbbell, Scale, Ruler, Activity, Crown, Zap, HelpCircle
 } from 'lucide-react';
 import { resetOnboarding } from '../components/OnboardingTour';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://workoutgenie-production.up.railway.app/api';
 import { useAuth } from '../context/AuthContext';
 import { useSubscription } from '../context/SubscriptionContext';
 import { profileApi, UserProfile, UserStats, Milestone } from '../api';
@@ -488,7 +490,20 @@ export default function Profile() {
           
           <div className="space-y-3">
             <button
-              onClick={() => {
+              onClick={async () => {
+                // Reset in backend
+                const token = localStorage.getItem('token');
+                if (token) {
+                  try {
+                    await fetch(`${API_BASE}/auth/reset-onboarding`, {
+                      method: 'POST',
+                      headers: { 'Authorization': `Bearer ${token}` },
+                    });
+                  } catch (e) {
+                    console.error('Failed to reset onboarding:', e);
+                  }
+                }
+                // Also reset localStorage
                 resetOnboarding();
                 window.location.reload();
               }}

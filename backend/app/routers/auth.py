@@ -46,6 +46,7 @@ class UserResponse(BaseModel):
     email: str
     name: Optional[str]
     is_admin: bool = False
+    has_seen_onboarding: bool = False
     
     class Config:
         from_attributes = True
@@ -106,7 +107,13 @@ def register(user_data: UserRegister, db: Session = Depends(get_db)):
     )
     
     return AuthResponse(
-        user=UserResponse(id=user.id, email=user.email, name=user.name, is_admin=user.is_admin),
+        user=UserResponse(
+            id=user.id, 
+            email=user.email, 
+            name=user.name, 
+            is_admin=user.is_admin,
+            has_seen_onboarding=user.has_seen_onboarding or False
+        ),
         token=Token(access_token=access_token, token_type="bearer")
     )
 
@@ -137,7 +144,13 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
     )
     
     return AuthResponse(
-        user=UserResponse(id=user.id, email=user.email, name=user.name, is_admin=user.is_admin),
+        user=UserResponse(
+            id=user.id, 
+            email=user.email, 
+            name=user.name, 
+            is_admin=user.is_admin,
+            has_seen_onboarding=user.has_seen_onboarding or False
+        ),
         token=Token(access_token=access_token, token_type="bearer")
     )
 
@@ -149,8 +162,25 @@ def get_me(current_user: User = Depends(get_current_user)):
         id=current_user.id,
         email=current_user.email,
         name=current_user.name,
-        is_admin=current_user.is_admin
+        is_admin=current_user.is_admin,
+        has_seen_onboarding=current_user.has_seen_onboarding or False
     )
+
+
+@router.post("/complete-onboarding")
+def complete_onboarding(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Mark onboarding tutorial as completed for current user."""
+    current_user.has_seen_onboarding = True
+    db.commit()
+    return {"success": True}
+
+
+@router.post("/reset-onboarding")
+def reset_onboarding(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Reset onboarding tutorial so it shows again."""
+    current_user.has_seen_onboarding = False
+    db.commit()
+    return {"success": True}
 
 
 def get_admin_user(current_user: User = Depends(get_current_user)):

@@ -28,8 +28,78 @@ export default function Dashboard() {
   const [inputValue, setInputValue] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const inputContainerRef = useRef<HTMLDivElement>(null);
+
+  // Handle mobile keyboard open/close
+  useEffect(() => {
+    const handleViewportResize = () => {
+      if (!window.visualViewport) return;
+      
+      // Detect if keyboard is open by comparing viewport height to window height
+      const viewportHeight = window.visualViewport.height;
+      const windowHeight = window.innerHeight;
+      const isKeyboard = windowHeight - viewportHeight > 150;
+      
+      setKeyboardOpen(isKeyboard);
+      
+      if (isKeyboard && inputContainerRef.current) {
+        // Keyboard opened - scroll input into view with smooth behavior
+        setTimeout(() => {
+          inputContainerRef.current?.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'end'
+          });
+        }, 100);
+      } else if (!isKeyboard && chatContainerRef.current) {
+        // Keyboard closed - scroll to show the full chat from the top
+        setTimeout(() => {
+          chatContainerRef.current?.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start'
+          });
+        }, 100);
+      }
+    };
+
+    // Listen to visualViewport changes (mobile keyboard detection)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleViewportResize);
+    }
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleViewportResize);
+      }
+    };
+  }, []);
+
+  // Handle input focus - ensure input is visible on mobile
+  const handleInputFocus = () => {
+    // Small delay to wait for keyboard to appear
+    setTimeout(() => {
+      inputContainerRef.current?.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'end'
+      });
+    }, 300);
+  };
+
+  // Handle input blur - scroll back to show full chat
+  const handleInputBlur = () => {
+    // Small delay to ensure keyboard is closing
+    setTimeout(() => {
+      if (!keyboardOpen) {
+        chatContainerRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start'
+        });
+      }
+    }, 150);
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -97,6 +167,7 @@ export default function Dashboard() {
     <div className="space-y-8">
       {/* AI Chat Section */}
       <motion.div
+        ref={chatContainerRef}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-genie-600 via-genie-500 to-emerald-400 p-1"
@@ -189,7 +260,7 @@ export default function Dashboard() {
           </div>
 
           {/* Input */}
-          <div className="p-4 pt-2 border-t border-dark-700/50">
+          <div ref={inputContainerRef} className="p-4 pt-2 border-t border-dark-700/50">
             <div className="flex gap-2">
               <input
                 ref={inputRef}
@@ -197,6 +268,8 @@ export default function Dashboard() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
                 placeholder="Ask me anything about fitness..."
                 disabled={isSending}
                 className="flex-1 px-4 py-3 bg-dark-700/50 border border-dark-600 rounded-xl text-white placeholder:text-dark-500 focus:border-genie-500 focus:outline-none disabled:opacity-50"

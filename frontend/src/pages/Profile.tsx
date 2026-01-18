@@ -32,7 +32,7 @@ const FITNESS_GOALS = [
 
 export default function Profile() {
   const { user } = useAuth();
-  const { subscription, isPro, limits } = useSubscription();
+  const { subscription, isPro, inTrial, trialDaysRemaining, limits } = useSubscription();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -188,27 +188,41 @@ export default function Profile() {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-lg font-semibold text-white">
-                  {isPro ? 'Pro Member' : 'Free Plan'}
+                  {inTrial ? 'Free Trial' : isPro ? 'Pro Member' : 'Free Plan'}
                 </h3>
-                {isPro && (
+                {inTrial && (
+                  <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
+                    trialDaysRemaining <= 2 
+                      ? 'bg-red-500/20 text-red-400' 
+                      : 'bg-genie-500/20 text-genie-400'
+                  }`}>
+                    {trialDaysRemaining === 0 
+                      ? 'Ends today!' 
+                      : `${trialDaysRemaining} days left`
+                    }
+                  </span>
+                )}
+                {isPro && !inTrial && subscription?.plan && (
                   <span className="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs font-medium rounded-full">
-                    {subscription?.plan === 'two_year' ? '2 Year' : subscription?.plan === 'annual' ? 'Annual' : 'Monthly'}
+                    {subscription.plan === 'two_year' ? '2 Year' : subscription.plan === 'annual' ? 'Annual' : 'Monthly'}
                   </span>
                 )}
               </div>
               <p className="text-sm text-dark-400">
-                {isPro 
-                  ? `Renews ${subscription?.ends_at ? new Date(subscription.ends_at).toLocaleDateString() : 'soon'}`
-                  : `${limits?.workouts_used || 0}/${limits?.monthly_workouts} workouts • ${limits?.chat_used || 0}/${limits?.daily_chat_messages} chats today`
+                {inTrial 
+                  ? `Enjoy unlimited Pro features! Trial ends ${subscription?.trial_ends_at ? new Date(subscription.trial_ends_at).toLocaleDateString() : 'soon'}`
+                  : isPro 
+                    ? `Renews ${subscription?.ends_at ? new Date(subscription.ends_at).toLocaleDateString() : 'soon'}`
+                    : `${limits?.workouts_used || 0}/${limits?.monthly_workouts} workouts • ${limits?.chat_used || 0}/${limits?.daily_chat_messages} chats today`
                 }
               </p>
             </div>
           </div>
-          {!isPro && (
+          {(inTrial || !isPro) && (
             <Link to="/pricing">
               <Button size="sm" className="bg-gradient-to-r from-genie-500 to-purple-500">
                 <Crown className="w-4 h-4 mr-1" />
-                Upgrade
+                {inTrial ? 'Keep Pro' : 'Upgrade'}
               </Button>
             </Link>
           )}

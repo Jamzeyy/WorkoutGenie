@@ -30,6 +30,9 @@ class User(Base):
     subscription_plan = Column(String(20), nullable=True)  # monthly, annual, two_year
     subscription_ends_at = Column(DateTime, nullable=True)
     
+    # Free trial (7 days of Pro access for new users)
+    trial_ends_at = Column(DateTime, nullable=True)  # When free trial expires
+    
     # Usage tracking for free tier limits
     monthly_workouts_count = Column(Integer, default=0)
     monthly_workouts_reset = Column(DateTime, default=datetime.utcnow)

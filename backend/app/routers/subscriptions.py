@@ -53,11 +53,15 @@ FREE_TIER_LIMITS = {
 
 class SubscriptionStatus(BaseModel):
     tier: str  # free, pro
-    status: str  # none, active, cancelled, past_due
+    status: str  # none, active, cancelled, past_due, trial
     plan: Optional[str]  # monthly, annual, two_year
     ends_at: Optional[datetime]
     limits: dict
     is_pro: bool
+    # Trial info
+    in_trial: bool = False
+    trial_ends_at: Optional[datetime] = None
+    trial_days_remaining: int = 0
 
 
 class CheckoutRequest(BaseModel):
@@ -115,9 +119,35 @@ def verify_paddle_signature(payload: bytes, signature_header: str) -> bool:
         return False
 
 
-def get_user_limits(user: User) -> dict:
-    """Get feature limits based on user's subscription."""
+def is_user_in_trial(user: User) -> bool:
+    """Check if user is currently in their free trial period."""
+    if not user.trial_ends_at:
+        return False
+    return datetime.utcnow() < user.trial_ends_at
+
+
+def get_trial_days_remaining(user: User) -> int:
+    """Get number of days remaining in trial."""
+    if not user.trial_ends_at:
+        return 0
+    remaining = user.trial_ends_at - datetime.utcnow()
+    return max(0, remaining.days)
+
+
+def is_user_pro(user: User) -> bool:
+    """Check if user has Pro access (paid or trial)."""
+    # Paid Pro subscriber
     if user.subscription_tier == "pro" and user.subscription_status == "active":
+        return True
+    # In trial period
+    if is_user_in_trial(user):
+        return True
+    return False
+
+
+def get_user_limits(user: User) -> dict:
+    """Get feature limits based on user's subscription or trial status."""
+    if is_user_pro(user):
         return {
             "monthly_workouts": -1,  # Unlimited
             "daily_chat_messages": -1,
@@ -157,7 +187,7 @@ def check_and_reset_limits(user: User, db: Session):
 
 def can_create_workout(user: User, db: Session) -> tuple[bool, str]:
     """Check if user can create a workout."""
-    if user.subscription_tier == "pro" and user.subscription_status == "active":
+    if is_user_pro(user):
         return True, ""
     
     check_and_reset_limits(user, db)
@@ -170,7 +200,7 @@ def can_create_workout(user: User, db: Session) -> tuple[bool, str]:
 
 def can_send_chat(user: User, db: Session) -> tuple[bool, str]:
     """Check if user can send a chat message."""
-    if user.subscription_tier == "pro" and user.subscription_status == "active":
+    if is_user_pro(user):
         return True, ""
     
     check_and_reset_limits(user, db)
@@ -183,7 +213,7 @@ def can_send_chat(user: User, db: Session) -> tuple[bool, str]:
 
 def can_generate_plan(user: User) -> tuple[bool, str]:
     """Check if user can generate AI plans."""
-    if user.subscription_tier == "pro" and user.subscription_status == "active":
+    if is_user_pro(user):
         return True, ""
     return False, "AI Plan Generation is a Pro feature. Upgrade to create personalized workout plans!"
 
@@ -213,13 +243,26 @@ def get_subscription_status(
     limits["workouts_used"] = current_user.monthly_workouts_count or 0
     limits["chat_used"] = current_user.daily_chat_count or 0
     
+    # Check trial status
+    in_trial = is_user_in_trial(current_user)
+    trial_days = get_trial_days_remaining(current_user)
+    
+    # Determine effective status
+    if in_trial and current_user.subscription_status != "active":
+        effective_status = "trial"
+    else:
+        effective_status = current_user.subscription_status or "none"
+    
     return SubscriptionStatus(
         tier=current_user.subscription_tier or "free",
-        status=current_user.subscription_status or "none",
+        status=effective_status,
         plan=current_user.subscription_plan,
         ends_at=current_user.subscription_ends_at,
         limits=limits,
-        is_pro=current_user.subscription_tier == "pro" and current_user.subscription_status == "active"
+        is_pro=is_user_pro(current_user),
+        in_trial=in_trial,
+        trial_ends_at=current_user.trial_ends_at,
+        trial_days_remaining=trial_days
     )
 
 

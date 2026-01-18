@@ -48,6 +48,7 @@ def run_migrations():
             ('monthly_workouts_reset', 'DATETIME'),
             ('daily_chat_count', 'INTEGER DEFAULT 0'),
             ('daily_chat_reset', 'DATETIME'),
+            ('trial_ends_at', 'DATETIME'),  # Free trial expiration
         ]
         
         for col_name, col_type in user_migrations:

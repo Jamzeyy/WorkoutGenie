@@ -28,6 +28,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { SubscriptionProvider } from './context/SubscriptionContext';
 import AdBanner from './components/AdBanner';
 import Footer from './components/Footer';
+import TrialBanner from './components/TrialBanner';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -63,6 +64,7 @@ function AppRoutes() {
           <ProtectedRoute>
             <SubscriptionProvider>
               <div className="min-h-screen bg-pattern">
+                <TrialBanner />
                 <Navigation />
                 <main className="md:ml-20 pb-24 md:pb-8">
                   <div className="max-w-4xl mx-auto px-4 py-6 md:py-8">

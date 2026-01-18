@@ -17,17 +17,23 @@ interface SubscriptionLimits {
 
 interface SubscriptionStatus {
   tier: 'free' | 'pro';
-  status: 'none' | 'active' | 'cancelled' | 'past_due';
+  status: 'none' | 'active' | 'cancelled' | 'past_due' | 'trial';
   plan: string | null;
   ends_at: string | null;
   limits: SubscriptionLimits;
   is_pro: boolean;
+  // Trial info
+  in_trial: boolean;
+  trial_ends_at: string | null;
+  trial_days_remaining: number;
 }
 
 interface SubscriptionContextType {
   subscription: SubscriptionStatus | null;
   loading: boolean;
   isPro: boolean;
+  inTrial: boolean;
+  trialDaysRemaining: number;
   limits: SubscriptionLimits | null;
   refresh: () => Promise<void>;
   canCreateWorkout: () => { allowed: boolean; message: string };
@@ -51,6 +57,8 @@ const SubscriptionContext = createContext<SubscriptionContextType>({
   subscription: null,
   loading: true,
   isPro: false,
+  inTrial: false,
+  trialDaysRemaining: 0,
   limits: defaultLimits,
   refresh: async () => {},
   canCreateWorkout: () => ({ allowed: true, message: '' }),
@@ -100,6 +108,8 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   }, [user, token]);
 
   const isPro = subscription?.is_pro || false;
+  const inTrial = subscription?.in_trial || false;
+  const trialDaysRemaining = subscription?.trial_days_remaining || 0;
   const limits = subscription?.limits || defaultLimits;
 
   function canCreateWorkout() {
@@ -146,6 +156,8 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         subscription,
         loading,
         isPro,
+        inTrial,
+        trialDaysRemaining,
         limits,
         refresh: fetchSubscription,
         canCreateWorkout,

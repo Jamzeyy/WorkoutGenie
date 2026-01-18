@@ -4,6 +4,9 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import timedelta, datetime
 
+# Trial period duration
+TRIAL_DAYS = 7
+
 from ..database import get_db
 from ..models import User
 from ..services.auth_service import (
@@ -80,16 +83,21 @@ def register(user_data: UserRegister, db: Session = Depends(get_db)):
             detail="Email already registered"
         )
     
-    # Create user with lowercase email
+    # Create user with lowercase email and 7-day free trial
     hashed_password = get_password_hash(user_data.password)
+    trial_end = datetime.utcnow() + timedelta(days=TRIAL_DAYS)
+    
     user = User(
         email=email_lower,
         hashed_password=hashed_password,
-        name=user_data.name
+        name=user_data.name,
+        trial_ends_at=trial_end  # 7-day free trial
     )
     db.add(user)
     db.commit()
     db.refresh(user)
+    
+    print(f"[Auth] New user registered with trial ending: {trial_end}")
     
     # Create token (sub must be a string)
     access_token = create_access_token(

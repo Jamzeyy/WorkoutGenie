@@ -456,23 +456,49 @@ export default function PlanDetail() {
         ))}
       </div>
 
-      {/* Tips */}
-      {planData.tips && planData.tips.length > 0 && (
-        <Card animate={false}>
-          <div className="flex items-center gap-2 mb-4">
-            <Info className="w-5 h-5 text-genie-400" />
-            <h3 className="font-semibold text-white">Tips for Success</h3>
-          </div>
-          <ul className="space-y-2">
-            {planData.tips.map((tip: string, index: number) => (
-              <li key={index} className="flex items-start gap-2 text-sm text-dark-300">
-                <Check className="w-4 h-4 text-genie-400 flex-shrink-0 mt-0.5" />
-                {tip}
-              </li>
-            ))}
-          </ul>
-        </Card>
-      )}
+      {/* Tips Section - Two Cards Side by Side on Desktop */}
+      <div className="grid gap-4 md:grid-cols-2">
+        {/* Personal Tips - Comes First for Emphasis */}
+        {planData.personal_tips && planData.personal_tips.length > 0 && (
+          <Card animate={false} className="bg-gradient-to-br from-genie-900/30 to-dark-800 border border-genie-500/20">
+            <div className="flex items-center gap-2 mb-4">
+              <Sparkles className="w-5 h-5 text-genie-400" />
+              <h3 className="font-semibold text-white">Tips Just For You</h3>
+            </div>
+            <p className="text-xs text-dark-400 mb-3">
+              Based on your profile and this plan's exercises:
+            </p>
+            <ul className="space-y-3">
+              {planData.personal_tips.map((tip: string, index: number) => (
+                <li key={index} className="flex items-start gap-2 text-sm text-dark-200">
+                  <div className="w-5 h-5 rounded-full bg-genie-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-genie-400 text-xs font-bold">{index + 1}</span>
+                  </div>
+                  {tip}
+                </li>
+              ))}
+            </ul>
+          </Card>
+        )}
+
+        {/* General Tips */}
+        {planData.tips && planData.tips.length > 0 && (
+          <Card animate={false}>
+            <div className="flex items-center gap-2 mb-4">
+              <Info className="w-5 h-5 text-dark-400" />
+              <h3 className="font-semibold text-white">Tips for Success</h3>
+            </div>
+            <ul className="space-y-2">
+              {planData.tips.map((tip: string, index: number) => (
+                <li key={index} className="flex items-start gap-2 text-sm text-dark-300">
+                  <Check className="w-4 h-4 text-dark-400 flex-shrink-0 mt-0.5" />
+                  {tip}
+                </li>
+              ))}
+            </ul>
+          </Card>
+        )}
+      </div>
 
       {/* Progression Notes */}
       {planData.progression_notes && (

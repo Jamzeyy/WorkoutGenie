@@ -157,8 +157,14 @@ Notes: {questionnaire_data.get('extra_comments', 'None')}{profile_section}
 
 {weeks_instruction}
 
-Tailor the workout intensity, exercise selection, and rep ranges based on the user's profile data (age, weight, BMI, activity level). Keep exercise notes very short (max 10 words). Return JSON:
-{{"plan_name":"","plan_description":"","weekly_schedule":[{{"week_number":1,"theme":"","days":[{{"day_number":1,"day_name":"","workout_name":"","focus":"","duration_minutes":45,"warmup":"","exercises":[{{"name":"","sets":3,"reps":"","rest_seconds":60,"notes":""}}],"cooldown":""}}]}}],"tips":[""],"progression_notes":""}}"""
+Tailor the workout intensity, exercise selection, and rep ranges based on the user's profile data (age, weight, BMI, activity level). Keep exercise notes very short (max 10 words).
+
+IMPORTANT: Generate TWO types of tips:
+1. "tips" - General success tips for this type of workout
+2. "personal_tips" - 3-4 tips SPECIFIC to THIS user based on their profile, limitations, goals, equipment, and the exercises in this plan. Reference their specific data (age, weight, goal, limitations) in the tips.
+
+Return JSON:
+{{"plan_name":"","plan_description":"","weekly_schedule":[{{"week_number":1,"theme":"","days":[{{"day_number":1,"day_name":"","workout_name":"","focus":"","duration_minutes":45,"warmup":"","exercises":[{{"name":"","sets":3,"reps":"","rest_seconds":60,"notes":""}}],"cooldown":""}}]}}],"tips":[""],"personal_tips":[""],"progression_notes":""}}"""
 
     client = get_openai_client()
     

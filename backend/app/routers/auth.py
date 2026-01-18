@@ -69,18 +69,21 @@ class AuthResponse(BaseModel):
 @router.post("/register", response_model=AuthResponse)
 def register(user_data: UserRegister, db: Session = Depends(get_db)):
     """Register a new user."""
+    # Normalize email to lowercase
+    email_lower = user_data.email.lower()
+    
     # Check if user exists
-    existing_user = db.query(User).filter(User.email == user_data.email).first()
+    existing_user = db.query(User).filter(User.email == email_lower).first()
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email already registered"
         )
     
-    # Create user
+    # Create user with lowercase email
     hashed_password = get_password_hash(user_data.password)
     user = User(
-        email=user_data.email,
+        email=email_lower,
         hashed_password=hashed_password,
         name=user_data.name
     )
@@ -103,8 +106,9 @@ def register(user_data: UserRegister, db: Session = Depends(get_db)):
 @router.post("/login", response_model=AuthResponse)
 def login(user_data: UserLogin, db: Session = Depends(get_db)):
     """Login with email and password."""
-    # Find user
-    user = db.query(User).filter(User.email == user_data.email).first()
+    # Find user (case-insensitive email)
+    email_lower = user_data.email.lower()
+    user = db.query(User).filter(User.email == email_lower).first()
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

@@ -3,13 +3,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, Calendar, Clock, Check, ChevronDown, 
-  ChevronUp, Sparkles, Dumbbell, Timer, Info
+  ChevronUp, Sparkles, Dumbbell, Timer, Info, HelpCircle
 } from 'lucide-react';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
+import ExerciseInfoModal from '../components/ExerciseInfoModal';
 import { plansApi, workoutsApi } from '../api';
 import { WorkoutPlan, PlanWeek, PlanDay } from '../types';
+import { getExerciseInfo, ExerciseInfo } from '../data/exerciseDatabase';
 
 export default function PlanDetail() {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +21,14 @@ export default function PlanDetail() {
   const [startingWorkout, setStartingWorkout] = useState<string | null>(null);
   const [expandedWeeks, setExpandedWeeks] = useState<Set<number>>(new Set([0]));
   const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
+  const [selectedExercise, setSelectedExercise] = useState<ExerciseInfo | null>(null);
+
+  function handleExerciseClick(exerciseName: string) {
+    const info = getExerciseInfo(exerciseName);
+    if (info) {
+      setSelectedExercise(info);
+    }
+  }
 
   useEffect(() => {
     if (id) fetchPlan();
@@ -244,32 +254,53 @@ export default function PlanDetail() {
 
                                   {/* Exercises */}
                                   <div className="space-y-2">
-                                    {day.exercises.map((exercise, exIndex) => (
-                                      <div
-                                        key={exIndex}
-                                        className="flex items-center justify-between py-3 px-4 bg-dark-700/50 rounded-lg"
-                                      >
-                                        <div className="flex items-center gap-3">
-                                          <div className="w-8 h-8 rounded-lg bg-genie-500/20 flex items-center justify-center">
-                                            <Dumbbell className="w-4 h-4 text-genie-400" />
+                                    {/* Hint text */}
+                                    <div className="flex items-center gap-2 px-2 py-1.5 bg-genie-500/10 rounded-lg border border-genie-500/20">
+                                      <HelpCircle className="w-4 h-4 text-genie-400 flex-shrink-0" />
+                                      <p className="text-xs text-genie-300">
+                                        <span className="font-medium">Tip:</span> Tap an exercise name to see how to do it with a video demo
+                                      </p>
+                                    </div>
+                                    
+                                    {day.exercises.map((exercise, exIndex) => {
+                                      const hasInfo = getExerciseInfo(exercise.name) !== null;
+                                      return (
+                                        <div
+                                          key={exIndex}
+                                          className="flex items-center justify-between py-3 px-4 bg-dark-700/50 rounded-lg"
+                                        >
+                                          <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-lg bg-genie-500/20 flex items-center justify-center">
+                                              <Dumbbell className="w-4 h-4 text-genie-400" />
+                                            </div>
+                                            <div>
+                                              <button
+                                                onClick={() => handleExerciseClick(exercise.name)}
+                                                className={`font-medium text-left transition-colors ${
+                                                  hasInfo 
+                                                    ? 'text-genie-400 hover:text-genie-300 underline decoration-dotted underline-offset-2 cursor-pointer' 
+                                                    : 'text-white cursor-default'
+                                                }`}
+                                                disabled={!hasInfo}
+                                              >
+                                                {exercise.name}
+                                              </button>
+                                              {exercise.notes && (
+                                                <p className="text-xs text-dark-500 mt-0.5">{exercise.notes}</p>
+                                              )}
+                                            </div>
                                           </div>
-                                          <div>
-                                            <p className="font-medium text-white">{exercise.name}</p>
-                                            {exercise.notes && (
-                                              <p className="text-xs text-dark-500 mt-0.5">{exercise.notes}</p>
-                                            )}
+                                          <div className="text-right">
+                                            <p className="text-sm font-medium text-genie-400">
+                                              {exercise.sets} × {exercise.reps}
+                                            </p>
+                                            <p className="text-xs text-dark-500">
+                                              Rest: {exercise.rest_seconds}s
+                                            </p>
                                           </div>
                                         </div>
-                                        <div className="text-right">
-                                          <p className="text-sm font-medium text-genie-400">
-                                            {exercise.sets} × {exercise.reps}
-                                          </p>
-                                          <p className="text-xs text-dark-500">
-                                            Rest: {exercise.rest_seconds}s
-                                          </p>
-                                        </div>
-                                      </div>
-                                    ))}
+                                      );
+                                    })}
                                   </div>
 
                                   {/* Cooldown */}
@@ -319,6 +350,12 @@ export default function PlanDetail() {
           <p className="text-sm text-dark-400">{planData.progression_notes}</p>
         </Card>
       )}
+
+      {/* Exercise Info Modal */}
+      <ExerciseInfoModal
+        exercise={selectedExercise}
+        onClose={() => setSelectedExercise(null)}
+      />
     </div>
   );
 }

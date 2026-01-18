@@ -3,13 +3,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, Plus, Check, X, Clock, 
-  ChevronDown, ChevronUp
+  ChevronDown, ChevronUp, HelpCircle
 } from 'lucide-react';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
+import ExerciseInfoModal from '../components/ExerciseInfoModal';
 import { workoutsApi } from '../api';
 import { Workout, ExerciseSet } from '../types';
+import { getExerciseInfo, ExerciseInfo } from '../data/exerciseDatabase';
 import { format } from 'date-fns';
 
 const COMMON_EXERCISES = [
@@ -27,6 +29,14 @@ export default function WorkoutDetail() {
   const [newExerciseName, setNewExerciseName] = useState('');
   const [expandedExercises, setExpandedExercises] = useState<Set<number>>(new Set());
   const [saving, setSaving] = useState(false);
+  const [selectedExercise, setSelectedExercise] = useState<ExerciseInfo | null>(null);
+
+  function handleExerciseClick(exerciseName: string) {
+    const info = getExerciseInfo(exerciseName);
+    if (info) {
+      setSelectedExercise(info);
+    }
+  }
 
   useEffect(() => {
     if (id) fetchWorkout();
@@ -130,25 +140,46 @@ export default function WorkoutDetail() {
 
       {/* Exercises */}
       <div className="space-y-4">
-        {workout.exercises.map((exercise, exerciseIndex) => (
+        {/* Hint text */}
+        {workout.exercises.length > 0 && (
+          <div className="flex items-center gap-2 px-4 py-2 bg-genie-500/10 rounded-xl border border-genie-500/20">
+            <HelpCircle className="w-4 h-4 text-genie-400 flex-shrink-0" />
+            <p className="text-sm text-genie-300">
+              <span className="font-medium">Tip:</span> Tap an exercise name to see how to do it with a video demo
+            </p>
+          </div>
+        )}
+
+        {workout.exercises.map((exercise, exerciseIndex) => {
+          const hasInfo = getExerciseInfo(exercise.name) !== null;
+          return (
           <Card key={exercise.id || exerciseIndex} delay={exerciseIndex * 0.05} animate={false}>
-            <button
-              onClick={() => toggleExpand(exerciseIndex)}
-              className="w-full flex items-center justify-between"
-            >
+            <div className="w-full flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-genie-500/20 flex items-center justify-center text-sm font-bold text-genie-400">
                   {exerciseIndex + 1}
                 </div>
-                <span className="font-semibold text-white">{exercise.name}</span>
+                <button
+                  onClick={() => handleExerciseClick(exercise.name)}
+                  className={`font-semibold text-left transition-colors ${
+                    hasInfo 
+                      ? 'text-genie-400 hover:text-genie-300 underline decoration-dotted underline-offset-2 cursor-pointer' 
+                      : 'text-white cursor-default'
+                  }`}
+                  disabled={!hasInfo}
+                >
+                  {exercise.name}
+                </button>
                 <span className="text-sm text-dark-400">{exercise.sets.length} sets</span>
               </div>
-              {expandedExercises.has(exerciseIndex) ? (
-                <ChevronUp className="w-5 h-5 text-dark-400" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-dark-400" />
-              )}
-            </button>
+              <button onClick={() => toggleExpand(exerciseIndex)}>
+                {expandedExercises.has(exerciseIndex) ? (
+                  <ChevronUp className="w-5 h-5 text-dark-400" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-dark-400" />
+                )}
+              </button>
+            </div>
 
             <AnimatePresence>
               {expandedExercises.has(exerciseIndex) && (
@@ -266,7 +297,8 @@ export default function WorkoutDetail() {
               )}
             </AnimatePresence>
           </Card>
-        ))}
+          );
+        })}
       </div>
 
       {/* Add Exercise */}
@@ -363,6 +395,12 @@ export default function WorkoutDetail() {
           className="w-full px-4 py-3 bg-dark-800 border border-dark-700 rounded-xl text-white placeholder-dark-500 resize-none focus:border-genie-500"
         />
       </Card>
+
+      {/* Exercise Info Modal */}
+      <ExerciseInfoModal
+        exercise={selectedExercise}
+        onClose={() => setSelectedExercise(null)}
+      />
     </div>
   );
 }

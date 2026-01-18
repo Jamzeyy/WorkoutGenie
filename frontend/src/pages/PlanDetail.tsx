@@ -188,7 +188,19 @@ export default function PlanDetail() {
                   className="overflow-hidden"
                 >
                   <div className="mt-4 space-y-3">
-                    {week.days.map((day: PlanDay, dayIndex: number) => {
+                    {/* Handle weeks without detailed days (summary-only weeks) */}
+                    {(!week.days || week.days.length === 0) ? (
+                      <div className="bg-dark-800/50 rounded-xl p-6 text-center">
+                        <Info className="w-8 h-8 text-genie-400 mx-auto mb-3" />
+                        <p className="text-white font-medium mb-2">
+                          Week {week.week_number}: {week.theme}
+                        </p>
+                        <p className="text-dark-400 text-sm">
+                          This week follows the same workout structure as Week 1 with progressive intensity.
+                          Refer to Week 1 for the detailed exercises.
+                        </p>
+                      </div>
+                    ) : week.days.map((day: PlanDay, dayIndex: number) => {
                       const dayKey = `${weekIndex}-${dayIndex}`;
                       const isExpanded = expandedDays.has(dayKey);
                       

@@ -75,6 +75,33 @@ def run_migrations():
         print("[Migration] Database migrations complete")
 
 
+def backfill_user_trials():
+    """Give existing users without a trial a 7-day trial starting now."""
+    from datetime import datetime, timedelta
+    from .models import User
+    
+    db = SessionLocal()
+    try:
+        # Find users without a trial_ends_at set
+        users_without_trial = db.query(User).filter(User.trial_ends_at == None).all()
+        
+        if users_without_trial:
+            trial_end = datetime.utcnow() + timedelta(days=7)
+            for user in users_without_trial:
+                user.trial_ends_at = trial_end
+                print(f"[Migration] Giving trial to user: {user.email}")
+            
+            db.commit()
+            print(f"[Migration] Backfilled {len(users_without_trial)} users with 7-day trial")
+        else:
+            print("[Migration] All users already have trial dates set")
+    except Exception as e:
+        print(f"[Migration] Error backfilling trials: {e}")
+        db.rollback()
+    finally:
+        db.close()
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup: Create tables and run migrations
@@ -82,6 +109,9 @@ async def lifespan(app: FastAPI):
     
     # Run database migrations for new columns
     run_migrations()
+    
+    # Backfill existing users with trial
+    backfill_user_trials()
     
     db = SessionLocal()
     try:

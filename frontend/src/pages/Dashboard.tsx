@@ -30,6 +30,7 @@ export default function Dashboard() {
   const [hasInteracted, setHasInteracted] = useState(false);
   const [keyboardOpen, setKeyboardOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const inputContainerRef = useRef<HTMLDivElement>(null);
@@ -119,10 +120,12 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  // Scroll to bottom when new messages arrive (only after user interaction)
+  // Scroll to bottom of messages area when new messages arrive (only after user interaction)
+  // This scrolls WITHIN the chat container, not the whole page
   useEffect(() => {
-    if (hasInteracted) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (hasInteracted && messagesAreaRef.current) {
+      // Scroll within the messages container only
+      messagesAreaRef.current.scrollTop = messagesAreaRef.current.scrollHeight;
     }
   }, [messages, hasInteracted]);
 
@@ -192,7 +195,7 @@ export default function Dashboard() {
           </div>
 
           {/* Messages */}
-          <div className="h-64 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-dark-600">
+          <div ref={messagesAreaRef} className="h-64 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-dark-600">
             <AnimatePresence>
               {messages.map((msg, index) => (
                 <motion.div

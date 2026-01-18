@@ -140,17 +140,39 @@ export default function OnboardingTour() {
   useEffect(() => {
     // Update highlight position when step changes
     const step = TOUR_STEPS[currentStep];
+    
+    const updatePosition = () => {
+      if (step.targetSelector) {
+        const element = document.querySelector(step.targetSelector);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          setHighlightPosition(rect);
+        }
+      } else {
+        setHighlightPosition(null);
+      }
+    };
+
     if (step.targetSelector) {
       const element = document.querySelector(step.targetSelector);
       if (element) {
-        const rect = element.getBoundingClientRect();
-        setHighlightPosition(rect);
-        // Scroll element into view if needed
+        // Scroll element into view first
         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Wait for scroll to finish, then update position
+        setTimeout(updatePosition, 400);
       }
     } else {
       setHighlightPosition(null);
     }
+
+    // Update position on scroll/resize
+    window.addEventListener('scroll', updatePosition);
+    window.addEventListener('resize', updatePosition);
+    
+    return () => {
+      window.removeEventListener('scroll', updatePosition);
+      window.removeEventListener('resize', updatePosition);
+    };
   }, [currentStep]);
 
   const handleComplete = async () => {
@@ -205,19 +227,42 @@ export default function OnboardingTour() {
 
           {/* Spotlight highlight for targeted elements */}
           {highlightPosition && !isFullScreenStep && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="fixed z-[101] rounded-2xl"
-              style={{
-                top: highlightPosition.top - 8,
-                left: highlightPosition.left - 8,
-                width: highlightPosition.width + 16,
-                height: highlightPosition.height + 16,
-                boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.75), 0 0 30px rgba(16, 185, 129, 0.5)',
-                border: '2px solid rgba(16, 185, 129, 0.6)',
-              }}
-            />
+            <>
+              {/* Dark overlay with cutout */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="fixed inset-0 z-[101] pointer-events-none"
+                style={{
+                  background: `radial-gradient(ellipse ${highlightPosition.width + 80}px ${highlightPosition.height + 80}px at ${highlightPosition.left + highlightPosition.width / 2}px ${highlightPosition.top + highlightPosition.height / 2}px, transparent 0%, transparent 50%, rgba(0,0,0,0.85) 100%)`,
+                }}
+              />
+              {/* Glowing border around target */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ 
+                  opacity: 1, 
+                  scale: 1,
+                  boxShadow: [
+                    '0 0 20px rgba(16, 185, 129, 0.6), 0 0 40px rgba(16, 185, 129, 0.3)',
+                    '0 0 30px rgba(16, 185, 129, 0.8), 0 0 60px rgba(16, 185, 129, 0.4)',
+                    '0 0 20px rgba(16, 185, 129, 0.6), 0 0 40px rgba(16, 185, 129, 0.3)',
+                  ]
+                }}
+                transition={{
+                  boxShadow: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' }
+                }}
+                className="fixed z-[102] rounded-2xl pointer-events-none"
+                style={{
+                  top: highlightPosition.top - 8,
+                  left: highlightPosition.left - 8,
+                  width: highlightPosition.width + 16,
+                  height: highlightPosition.height + 16,
+                  border: '3px solid rgba(16, 185, 129, 0.9)',
+                  background: 'transparent',
+                }}
+              />
+            </>
           )}
 
           {/* Tour card */}
@@ -226,10 +271,10 @@ export default function OnboardingTour() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className={`fixed z-[102] ${
+            className={`fixed z-[103] ${
               isFullScreenStep 
                 ? 'inset-0 flex items-center justify-center p-3 md:p-4' 
-                : 'bottom-20 left-3 right-3 md:left-auto md:right-8 md:max-w-sm'
+                : 'bottom-20 left-3 right-3 md:left-1/2 md:-translate-x-1/2 md:max-w-md md:bottom-8'
             }`}
           >
             <div className={`bg-dark-800 border border-dark-600 rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] overflow-y-auto ${

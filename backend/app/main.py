@@ -1,3 +1,5 @@
+import os
+import sentry_sdk
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
@@ -5,6 +7,16 @@ from contextlib import asynccontextmanager
 from .database import engine, Base, SessionLocal
 from .routers import workouts, plans, chat, auth
 from .routers.auth import seed_admin_user
+
+# Initialize Sentry for error tracking
+if os.getenv("SENTRY_DSN"):
+    sentry_sdk.init(
+        dsn=os.getenv("SENTRY_DSN"),
+        traces_sample_rate=0.1,  # 10% of requests for performance monitoring
+        profiles_sample_rate=0.1,
+        environment=os.getenv("ENVIRONMENT", "development"),
+    )
+    print("[Sentry] Initialized for error tracking")
 
 
 @asynccontextmanager

@@ -6,6 +6,7 @@ import {
   Dumbbell, Target, Clock, Calendar, Zap, 
   Heart, AlertCircle, MessageSquare, Save
 } from 'lucide-react';
+import posthog from 'posthog-js';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import { plansApi } from '../api';
@@ -92,12 +93,22 @@ export default function AIGenerator() {
 
   async function handleGenerate() {
     setGenerating(true);
+    posthog.capture('plan_generation_started', {
+      cycle_type: formData.cycle_type,
+      fitness_level: formData.fitness_level,
+      goal: formData.primary_goal,
+    });
     try {
       const { cycle_type, ...questionnaireData } = formData;
       const result = await plansApi.generate(questionnaireData as QuestionnaireData, cycle_type);
       setGeneratedPlan(result);
+      posthog.capture('plan_generation_completed', {
+        cycle_type: formData.cycle_type,
+        plan_name: result.plan_name,
+      });
     } catch (error) {
       console.error('Failed to generate plan:', error);
+      posthog.capture('plan_generation_failed', { error: String(error) });
       alert('Failed to generate plan. Please check your API key and try again.');
     } finally {
       setGenerating(false);
@@ -117,9 +128,14 @@ export default function AIGenerator() {
         questionnaire_data: questionnaireData as QuestionnaireData,
         plan_data: generatedPlan.plan_data,
       });
+      posthog.capture('plan_saved', {
+        plan_name: generatedPlan.plan_name,
+        cycle_type: generatedPlan.cycle_type,
+      });
       navigate('/plans');
     } catch (error) {
       console.error('Failed to save plan:', error);
+      posthog.capture('plan_save_failed', { error: String(error) });
       alert('Failed to save plan. Please try again.');
     } finally {
       setSaving(false);

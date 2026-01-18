@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import posthog from 'posthog-js';
 
 interface User {
   id: number;
@@ -54,6 +55,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(data.token.access_token);
     localStorage.setItem('token', data.token.access_token);
     localStorage.setItem('user', JSON.stringify(data.user));
+    
+    // Identify user in PostHog
+    posthog.identify(String(data.user.id), {
+      email: data.user.email,
+      name: data.user.name,
+      is_admin: data.user.is_admin,
+    });
+    posthog.capture('user_logged_in');
   };
 
   const register = async (email: string, password: string, name?: string) => {
@@ -73,6 +82,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(data.token.access_token);
     localStorage.setItem('token', data.token.access_token);
     localStorage.setItem('user', JSON.stringify(data.user));
+    
+    // Identify user in PostHog
+    posthog.identify(String(data.user.id), {
+      email: data.user.email,
+      name: data.user.name,
+      is_admin: data.user.is_admin,
+    });
+    posthog.capture('user_registered');
   };
 
   const logout = () => {
@@ -80,6 +97,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    
+    // Reset PostHog user
+    posthog.capture('user_logged_out');
+    posthog.reset();
   };
 
   return (

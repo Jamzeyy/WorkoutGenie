@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Dumbbell, Calendar, Clock, ChevronRight, Trash2, X } from 'lucide-react';
+import posthog from 'posthog-js';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -42,11 +43,13 @@ export default function Workouts() {
         date: new Date().toISOString(),
         exercises: [],
       });
+      posthog.capture('workout_created', { workout_name: newWorkoutName });
       setShowCreateModal(false);
       setNewWorkoutName('');
       navigate(`/workouts/${workout.id}`);
     } catch (error) {
       console.error('Failed to create workout:', error);
+      posthog.capture('workout_create_failed', { error: String(error) });
     } finally {
       setCreating(false);
     }
@@ -60,6 +63,7 @@ export default function Workouts() {
     
     try {
       await workoutsApi.delete(id);
+      posthog.capture('workout_deleted');
       setWorkouts(workouts.filter(w => w.id !== id));
     } catch (error) {
       console.error('Failed to delete workout:', error);

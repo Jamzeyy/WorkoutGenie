@@ -7,6 +7,20 @@ from dotenv import load_dotenv
 # Load .env file from the backend directory
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), '.env'))
 
+# Initialize Langfuse for LLM observability (optional)
+langfuse = None
+if os.getenv("LANGFUSE_SECRET_KEY") and os.getenv("LANGFUSE_PUBLIC_KEY"):
+    try:
+        from langfuse import Langfuse
+        langfuse = Langfuse(
+            secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
+            public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
+            host=os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com")
+        )
+        print("[Langfuse] Initialized for LLM observability")
+    except Exception as e:
+        print(f"[Langfuse] Failed to initialize: {e}")
+
 
 def get_openai_client():
     api_key = os.getenv("OPENAI_API_KEY")
@@ -125,6 +139,20 @@ Keep exercise notes very short (max 10 words). Return JSON:
 
     client = get_openai_client()
     
+    # Start Langfuse trace if available
+    trace = None
+    generation = None
+    if langfuse:
+        trace = langfuse.trace(
+            name="generate_workout_plan",
+            metadata={"cycle_type": cycle_type, "cycle_weeks": cycle_weeks}
+        )
+        generation = trace.generation(
+            name="gpt4o-workout-plan",
+            model="gpt-4o",
+            input={"prompt": prompt[:500] + "..."},  # Truncate for logging
+        )
+    
     # Use JSON mode for guaranteed valid JSON structure
     response = client.chat.completions.create(
         model="gpt-4o",
@@ -145,6 +173,16 @@ Keep exercise notes very short (max 10 words). Return JSON:
     
     response_text = response.choices[0].message.content.strip()
     print(f"[OpenAI] Response length: {len(response_text)} chars, finish_reason: {response.choices[0].finish_reason}")
+    
+    # Log to Langfuse
+    if generation:
+        generation.end(
+            output=response_text[:1000] + "..." if len(response_text) > 1000 else response_text,
+            usage={
+                "input": response.usage.prompt_tokens if response.usage else 0,
+                "output": response.usage.completion_tokens if response.usage else 0,
+            }
+        )
     
     # Check if response was truncated
     if response.choices[0].finish_reason == "length":

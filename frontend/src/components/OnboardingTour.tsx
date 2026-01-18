@@ -13,6 +13,7 @@ interface TourStep {
   icon: React.ReactNode;
   targetSelector?: string;
   position?: 'top' | 'bottom' | 'left' | 'right';
+  tips?: { emoji: string; text: string }[];
 }
 
 const TOUR_STEPS: TourStep[] = [
@@ -61,6 +62,17 @@ const TOUR_STEPS: TourStep[] = [
     icon: <User className="w-6 h-6" />,
     targetSelector: '[data-tour="profile"]',
     position: 'top',
+  },
+  {
+    id: 'pro-tips',
+    title: 'Pro Tips 💡',
+    description: '',
+    icon: <Sparkles className="w-8 h-8" />,
+    tips: [
+      { emoji: '🎬', text: 'Tap any exercise name to see a video tutorial and form tips' },
+      { emoji: '▶️', text: 'Inside a plan, tap "Start Workout" to log it directly' },
+      { emoji: '📊', text: 'Your stats update automatically as you complete workouts' },
+    ],
   },
   {
     id: 'complete',
@@ -129,7 +141,7 @@ export default function OnboardingTour() {
   const step = TOUR_STEPS[currentStep];
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === TOUR_STEPS.length - 1;
-  const isWelcomeOrComplete = step.id === 'welcome' || step.id === 'complete';
+  const isFullScreenStep = step.id === 'welcome' || step.id === 'complete' || step.id === 'pro-tips';
 
   if (!isVisible) return null;
 
@@ -144,14 +156,14 @@ export default function OnboardingTour() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100]"
             style={{ 
-              background: isWelcomeOrComplete 
+              background: isFullScreenStep 
                 ? 'rgba(0, 0, 0, 0.85)' 
                 : 'rgba(0, 0, 0, 0.7)' 
             }}
           />
 
           {/* Spotlight highlight for targeted elements */}
-          {highlightPosition && !isWelcomeOrComplete && (
+          {highlightPosition && !isFullScreenStep && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -174,13 +186,13 @@ export default function OnboardingTour() {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             className={`fixed z-[102] ${
-              isWelcomeOrComplete 
+              isFullScreenStep 
                 ? 'inset-0 flex items-center justify-center p-4' 
                 : 'bottom-24 left-4 right-4 md:left-auto md:right-8 md:max-w-sm'
             }`}
           >
             <div className={`bg-dark-800 border border-dark-600 rounded-2xl shadow-2xl overflow-hidden ${
-              isWelcomeOrComplete ? 'max-w-md w-full' : 'w-full'
+              isFullScreenStep ? 'max-w-md w-full' : 'w-full'
             }`}>
               {/* Header with gradient */}
               <div className="bg-gradient-to-r from-genie-600 to-emerald-500 p-4 relative">
@@ -207,9 +219,26 @@ export default function OnboardingTour() {
 
               {/* Content */}
               <div className="p-5">
-                <p className="text-dark-300 text-sm leading-relaxed mb-5">
-                  {step.description}
-                </p>
+                {step.description && (
+                  <p className="text-dark-300 text-sm leading-relaxed mb-5">
+                    {step.description}
+                  </p>
+                )}
+
+                {/* Pro tips list */}
+                {step.tips && (
+                  <div className="space-y-3 mb-5">
+                    {step.tips.map((tip, index) => (
+                      <div 
+                        key={index}
+                        className="flex items-start gap-3 p-3 bg-dark-700/50 rounded-xl border border-dark-600"
+                      >
+                        <span className="text-xl flex-shrink-0">{tip.emoji}</span>
+                        <p className="text-sm text-dark-300 leading-relaxed">{tip.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 {/* Feature cards for welcome screen */}
                 {step.id === 'welcome' && (

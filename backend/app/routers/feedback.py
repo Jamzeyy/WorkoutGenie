@@ -6,7 +6,8 @@ from datetime import datetime
 
 from ..database import get_db
 from ..models import FeedbackReport
-from ..services.auth_service import get_current_user, get_admin_user, get_optional_user
+from ..services.auth_service import get_current_user, get_optional_user
+from .auth import get_admin_user
 
 router = APIRouter(prefix="/feedback", tags=["feedback"])
 

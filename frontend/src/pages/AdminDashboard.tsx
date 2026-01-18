@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Users, Trash2, Shield, Dumbbell, Calendar, AlertCircle } from 'lucide-react';
+import { Users, Trash2, Shield, Dumbbell, Calendar, AlertCircle, RefreshCw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { adminApi } from '../api';
 import { AdminUser } from '../types';
@@ -10,6 +10,7 @@ import Button from '../components/Button';
 export default function AdminDashboard() {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
   
@@ -24,7 +25,8 @@ export default function AdminDashboard() {
     loadUsers();
   }, [user, navigate]);
 
-  async function loadUsers() {
+  async function loadUsers(isRefresh = false) {
+    if (isRefresh) setRefreshing(true);
     try {
       const data = await adminApi.getUsers();
       setUsers(data);
@@ -44,7 +46,12 @@ export default function AdminDashboard() {
       setError(message);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
+  }
+
+  async function handleRefresh() {
+    await loadUsers(true);
   }
 
   async function handleDelete(userId: number) {
@@ -79,14 +86,24 @@ export default function AdminDashboard() {
         className="space-y-6"
       >
         {/* Header */}
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl">
-            <Shield className="w-8 h-8 text-white" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl">
+              <Shield className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-display text-white">Admin Dashboard</h1>
+              <p className="text-dark-400">Manage users and view statistics</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-display text-white">Admin Dashboard</h1>
-            <p className="text-dark-400">Manage users and view statistics</p>
-          </div>
+          <button
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="p-3 bg-dark-700 hover:bg-dark-600 rounded-xl transition-colors disabled:opacity-50"
+            title="Refresh users"
+          >
+            <RefreshCw className={`w-5 h-5 text-dark-300 ${refreshing ? 'animate-spin' : ''}`} />
+          </button>
         </div>
 
         {/* Stats */}

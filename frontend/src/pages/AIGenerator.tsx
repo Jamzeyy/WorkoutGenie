@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 import Card from '../components/Card';
 import Button from '../components/Button';
-import LoadingSpinner from '../components/LoadingSpinner';
 import { plansApi } from '../api';
 import { QuestionnaireData, GeneratePlanResponse } from '../types';
 

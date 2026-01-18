@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Calendar, Sparkles, ChevronRight, Trash2, 
@@ -13,7 +13,6 @@ import { WorkoutPlan } from '../types';
 import { format } from 'date-fns';
 
 export default function Plans() {
-  const navigate = useNavigate();
   const [plans, setPlans] = useState<WorkoutPlan[]>([]);
   const [loading, setLoading] = useState(true);
 

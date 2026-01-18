@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ArrowLeft, Plus, Trash2, Check, X, Clock, 
-  ChevronDown, ChevronUp, MoreVertical, Save 
+  ArrowLeft, Plus, Check, X, Clock, 
+  ChevronDown, ChevronUp
 } from 'lucide-react';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { workoutsApi } from '../api';
-import { Workout, Exercise, ExerciseSet } from '../types';
+import { Workout, ExerciseSet } from '../types';
 import { format } from 'date-fns';
 
 const COMMON_EXERCISES = [

@@ -410,3 +410,94 @@ def get_exercise_progress(
             ))
     
     return result[:10]  # Return top 10 exercises by frequency
+
+
+class PersonalRecord(BaseModel):
+    exercise_name: str
+    weight: float
+    reps: int
+    date: str
+    workout_id: int
+
+
+@router.get("/prs")
+def get_personal_records(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get personal records for all exercises."""
+    # Get all completed workouts
+    workouts = db.query(Workout).filter(
+        Workout.user_id == current_user.id,
+        Workout.completed_at != None
+    ).all()
+    
+    # Find max weight for each exercise
+    prs = {}
+    
+    for workout in workouts:
+        workout_date = workout.completed_at.date().isoformat() if workout.completed_at else workout.date.date().isoformat()
+        
+        for exercise in workout.exercises:
+            name = exercise.name.lower().strip()
+            
+            for s in exercise.sets:
+                weight = s.weight or 0
+                reps = s.reps or 0
+                
+                if weight > 0:
+                    if name not in prs or weight > prs[name]['weight']:
+                        prs[name] = {
+                            'exercise_name': exercise.name,
+                            'weight': weight,
+                            'reps': reps,
+                            'date': workout_date,
+                            'workout_id': workout.id
+                        }
+                    elif weight == prs[name]['weight'] and reps > prs[name]['reps']:
+                        # Same weight but more reps
+                        prs[name] = {
+                            'exercise_name': exercise.name,
+                            'weight': weight,
+                            'reps': reps,
+                            'date': workout_date,
+                            'workout_id': workout.id
+                        }
+    
+    # Convert to list sorted by weight descending
+    result = [PersonalRecord(**data) for data in prs.values()]
+    result.sort(key=lambda x: x.weight, reverse=True)
+    
+    return result
+
+
+@router.get("/check-pr/{exercise_name}")
+def check_exercise_pr(
+    exercise_name: str,
+    weight: float,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Check if a weight is a new PR for an exercise."""
+    # Get all completed workouts
+    workouts = db.query(Workout).filter(
+        Workout.user_id == current_user.id,
+        Workout.completed_at != None
+    ).all()
+    
+    # Find current max weight for this exercise
+    name_normalized = exercise_name.lower().strip()
+    current_max = 0
+    
+    for workout in workouts:
+        for exercise in workout.exercises:
+            if exercise.name.lower().strip() == name_normalized:
+                for s in exercise.sets:
+                    if (s.weight or 0) > current_max:
+                        current_max = s.weight
+    
+    return {
+        "is_pr": weight > current_max,
+        "current_pr": current_max,
+        "new_weight": weight
+    }

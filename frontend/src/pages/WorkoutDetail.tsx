@@ -11,10 +11,13 @@ import Button from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ExerciseInfoModal from '../components/ExerciseInfoModal';
 import RestTimer from '../components/RestTimer';
+import { PRCelebration } from '../components/PersonalRecords';
 import { workoutsApi } from '../api';
 import { Workout, ExerciseSet } from '../types';
 import { getExerciseInfo, ExerciseInfo } from '../data/exerciseDatabase';
 import { format } from 'date-fns';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://workoutgenie-production.up.railway.app/api';
 
 const COMMON_EXERCISES = [
   'Bench Press', 'Squat', 'Deadlift', 'Overhead Press', 'Barbell Row',
@@ -38,6 +41,12 @@ export default function WorkoutDetail() {
     const saved = localStorage.getItem('workout_auto_rest_timer');
     return saved === 'true';
   });
+  const [prCelebration, setPRCelebration] = useState<{
+    exerciseName: string;
+    newWeight: number;
+    oldWeight: number;
+  } | null>(null);
+  const [knownPRs, setKnownPRs] = useState<Record<string, number>>({});
 
   async function handleCompleteWorkout() {
     if (!workout?.id) return;
@@ -136,12 +145,55 @@ export default function WorkoutDetail() {
     if (updates.completed === true && autoStartTimer) {
       setShowRestTimer(true);
     }
+    
+    // Check for PR when set is marked complete with weight
+    if (updates.completed === true) {
+      const exercise = workout.exercises[exerciseIndex];
+      const set = workout.exercises[exerciseIndex].sets[setIndex];
+      const weight = updates.weight ?? set.weight;
+      if (weight && weight > 0) {
+        checkForPR(exercise.name, weight);
+      }
+    }
   }
 
   function toggleAutoTimer() {
     const newValue = !autoStartTimer;
     setAutoStartTimer(newValue);
     localStorage.setItem('workout_auto_rest_timer', String(newValue));
+  }
+
+  // Check if a weight is a new PR
+  async function checkForPR(exerciseName: string, weight: number) {
+    if (!weight || weight <= 0) return;
+    
+    const normalizedName = exerciseName.toLowerCase().trim();
+    
+    // Skip if we already know this PR or already celebrated
+    if (knownPRs[normalizedName] && weight <= knownPRs[normalizedName]) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(
+        `${API_BASE}/profile/check-pr/${encodeURIComponent(exerciseName)}?weight=${weight}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.is_pr) {
+          setPRCelebration({
+            exerciseName,
+            newWeight: weight,
+            oldWeight: data.current_pr
+          });
+          // Remember this PR so we don't re-celebrate
+          setKnownPRs(prev => ({ ...prev, [normalizedName]: weight }));
+        }
+      }
+    } catch (err) {
+      console.error('Failed to check PR:', err);
+    }
   }
 
   if (loading) {
@@ -509,6 +561,16 @@ export default function WorkoutDetail() {
         isOpen={showRestTimer}
         onClose={() => setShowRestTimer(false)}
       />
+
+      {/* PR Celebration */}
+      {prCelebration && (
+        <PRCelebration
+          exerciseName={prCelebration.exerciseName}
+          newWeight={prCelebration.newWeight}
+          oldWeight={prCelebration.oldWeight}
+          onClose={() => setPRCelebration(null)}
+        />
+      )}
     </div>
   );
 }

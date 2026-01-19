@@ -317,7 +317,7 @@ export default function ProgressCharts() {
         <span className="text-sm text-dark-400">{exercises.length} tracked</span>
       </div>
       
-      {exercises.map((exercise, i) => (
+      {exercises.map((exercise) => (
         <ExerciseCard key={exercise.exercise_name} exercise={exercise} />
       ))}
     </div>

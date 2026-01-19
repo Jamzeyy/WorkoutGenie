@@ -3,13 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, Plus, Check, X, Clock, 
-  ChevronDown, ChevronUp, HelpCircle, Trophy, CheckCircle2
+  ChevronDown, ChevronUp, HelpCircle, Trophy, CheckCircle2, Timer
 } from 'lucide-react';
 import posthog from 'posthog-js';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ExerciseInfoModal from '../components/ExerciseInfoModal';
+import RestTimer from '../components/RestTimer';
 import { workoutsApi } from '../api';
 import { Workout, ExerciseSet } from '../types';
 import { getExerciseInfo, ExerciseInfo } from '../data/exerciseDatabase';
@@ -32,6 +33,11 @@ export default function WorkoutDetail() {
   const [saving, setSaving] = useState(false);
   const [completing, setCompleting] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<ExerciseInfo | null>(null);
+  const [showRestTimer, setShowRestTimer] = useState(false);
+  const [autoStartTimer, setAutoStartTimer] = useState(() => {
+    const saved = localStorage.getItem('workout_auto_rest_timer');
+    return saved === 'true';
+  });
 
   async function handleCompleteWorkout() {
     if (!workout?.id) return;
@@ -125,6 +131,17 @@ export default function WorkoutDetail() {
       ...updates,
     };
     setWorkout(newWorkout);
+    
+    // Auto-start rest timer when set is marked complete
+    if (updates.completed === true && autoStartTimer) {
+      setShowRestTimer(true);
+    }
+  }
+
+  function toggleAutoTimer() {
+    const newValue = !autoStartTimer;
+    setAutoStartTimer(newValue);
+    localStorage.setItem('workout_auto_rest_timer', String(newValue));
   }
 
   if (loading) {
@@ -158,6 +175,32 @@ export default function WorkoutDetail() {
           </div>
         </div>
       </div>
+
+      {/* Rest Timer Controls */}
+      <Card className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowRestTimer(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-genie-500/20 hover:bg-genie-500/30 text-genie-400 rounded-xl transition-colors"
+          >
+            <Timer className="w-5 h-5" />
+            <span className="font-medium">Rest Timer</span>
+          </button>
+        </div>
+        <button
+          onClick={toggleAutoTimer}
+          className="flex items-center gap-2 text-sm"
+        >
+          <div className={`w-10 h-6 rounded-full transition-colors relative ${
+            autoStartTimer ? 'bg-genie-500' : 'bg-dark-600'
+          }`}>
+            <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
+              autoStartTimer ? 'left-5' : 'left-1'
+            }`} />
+          </div>
+          <span className="text-dark-400">Auto-start after set</span>
+        </button>
+      </Card>
 
       {/* Exercises */}
       <div className="space-y-4">
@@ -459,6 +502,12 @@ export default function WorkoutDetail() {
       <ExerciseInfoModal
         exercise={selectedExercise}
         onClose={() => setSelectedExercise(null)}
+      />
+
+      {/* Rest Timer */}
+      <RestTimer
+        isOpen={showRestTimer}
+        onClose={() => setShowRestTimer(false)}
       />
     </div>
   );

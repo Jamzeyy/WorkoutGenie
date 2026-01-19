@@ -46,14 +46,14 @@ const exerciseData: ExerciseInfo[] = [
     name: "Pike Push-ups",
     description: "Pike push-ups target the shoulders by placing your body in an inverted V position. This is a great progression toward handstand push-ups.",
     muscles: ["Shoulders", "Triceps", "Upper Chest"],
-    videoUrl: "https://www.youtube.com/embed/XzfNa6cPFLw",
+    videoUrl: "https://www.youtube.com/embed/EA18S3Z2Fqs",
     tips: ["Form an inverted V with body", "Head goes toward floor between hands", "Emphasizes shoulders over chest", "Great for shoulder strength"]
   },
   {
     name: "Pike Push-up",
     description: "Pike push-ups target the shoulders by placing your body in an inverted V position. This is a great progression toward handstand push-ups.",
     muscles: ["Shoulders", "Triceps", "Upper Chest"],
-    videoUrl: "https://www.youtube.com/embed/XzfNa6cPFLw",
+    videoUrl: "https://www.youtube.com/embed/EA18S3Z2Fqs",
     tips: ["Form an inverted V with body", "Head goes toward floor between hands", "Emphasizes shoulders over chest", "Great for shoulder strength"]
   },
   {
@@ -81,28 +81,28 @@ const exerciseData: ExerciseInfo[] = [
     name: "Close Grip Push-ups",
     description: "Close grip push-ups place hands close together to emphasize the triceps. Similar to diamond push-ups.",
     muscles: ["Triceps", "Chest", "Shoulders"],
-    videoUrl: "https://www.youtube.com/embed/Ky9L7I_EQAY",
+    videoUrl: "https://www.youtube.com/embed/J0DnG1_S92I",
     tips: ["Hands close together", "Elbows stay close to body", "More tricep focus", "Harder than regular push-ups"]
   },
   {
     name: "Archer Push-ups",
     description: "Archer push-ups shift weight to one arm at a time, building unilateral strength. Great progression toward one-arm push-ups.",
     muscles: ["Chest", "Shoulders", "Triceps", "Core"],
-    videoUrl: "https://www.youtube.com/embed/M6RXvC6S3zE",
+    videoUrl: "https://www.youtube.com/embed/ufpZfMhU7ck",
     tips: ["Shift weight to one arm", "Other arm extends out", "Alternate sides", "Progression to one-arm"]
   },
   {
     name: "Spiderman Push-ups",
     description: "Spiderman push-ups add a knee drive to the side during each rep, engaging the obliques and hip flexors.",
     muscles: ["Chest", "Shoulders", "Obliques", "Hip Flexors"],
-    videoUrl: "https://www.youtube.com/embed/5_xFbT-37kc",
+    videoUrl: "https://www.youtube.com/embed/4dF1DOWzf20",
     tips: ["Bring knee to elbow", "Alternate sides", "Engages core more", "Great for total body"]
   },
   {
     name: "Hindu Push-ups",
     description: "Hindu push-ups are a flowing movement that works shoulders, chest, and back through a swooping motion.",
     muscles: ["Shoulders", "Chest", "Back", "Triceps"],
-    videoUrl: "https://www.youtube.com/embed/yJGsAqT6kcs",
+    videoUrl: "https://www.youtube.com/embed/mlmjN-K28us",
     tips: ["Start in downward dog", "Swoop down and through", "End in upward dog", "Reverse the motion"]
   },
   {
@@ -116,14 +116,14 @@ const exerciseData: ExerciseInfo[] = [
     name: "Staggered Push-ups",
     description: "Staggered push-ups place one hand forward and one back, creating uneven loading and more core engagement.",
     muscles: ["Chest", "Shoulders", "Triceps", "Core"],
-    videoUrl: "https://www.youtube.com/embed/V7nhgW8SSgs",
+    videoUrl: "https://www.youtube.com/embed/qHQ_E-f5278",
     tips: ["One hand forward, one back", "Switch hand positions", "More core engagement", "Builds unilateral strength"]
   },
   {
     name: "Handstand Push-ups",
     description: "Handstand push-ups are an advanced shoulder exercise performed upside down against a wall.",
     muscles: ["Shoulders", "Triceps", "Core"],
-    videoUrl: "https://www.youtube.com/embed/HI8V0VR7iMY",
+    videoUrl: "https://www.youtube.com/embed/vDR0FS3NXmc",
     tips: ["Kick up against wall", "Lower head to floor", "Press back up", "Very advanced exercise"]
   },
   {
@@ -165,7 +165,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "Decline Dumbbell Press",
     description: "The decline dumbbell press emphasizes the lower chest. Lie on a decline bench and press dumbbells from the sides of your lower chest.",
     muscles: ["Lower Chest", "Triceps", "Shoulders"],
-    videoUrl: "https://www.youtube.com/embed/0PHxvgQQMGs",
+    videoUrl: "https://www.youtube.com/embed/LfyQBUKR8SE",
     tips: ["Secure feet under pads", "Lower to sides of lower chest", "Press up and together", "Control the descent"]
   },
   {
@@ -179,14 +179,14 @@ const exerciseData: ExerciseInfo[] = [
     name: "Decline Flyes",
     description: "Decline flyes target the lower chest. Lie on a decline bench and perform the fly movement with dumbbells.",
     muscles: ["Lower Chest"],
-    videoUrl: "https://www.youtube.com/embed/N-xCvhP-X4c",
+    videoUrl: "https://www.youtube.com/embed/0Y4f2rGMIeE",
     tips: ["Secure feet under pads", "Keep elbows slightly bent", "Lower until stretch is felt", "Squeeze lower chest at top"]
   },
   {
     name: "Low Cable Crossover",
     description: "Low cable crossovers target the upper chest. Set cables at the lowest position and bring hands up and together in front of you.",
     muscles: ["Upper Chest", "Shoulders"],
-    videoUrl: "https://www.youtube.com/embed/GxoVmkHS3-k",
+    videoUrl: "https://www.youtube.com/embed/taI4XduLpTk",
     tips: ["Set pulleys at bottom", "Bring hands up and together", "Squeeze upper chest at top", "Control the descent"]
   },
   {
@@ -265,14 +265,14 @@ const exerciseData: ExerciseInfo[] = [
     name: "Wide Grip Pull-ups",
     description: "Wide grip pull-ups emphasize lat width. Use a grip wider than shoulder width with palms facing away.",
     muscles: ["Lats", "Teres Major", "Biceps"],
-    videoUrl: "https://www.youtube.com/embed/cyGfOvkNZec",
+    videoUrl: "https://www.youtube.com/embed/woaC75VwCao",
     tips: ["Grip wider than shoulders", "Pull elbows down and out", "Focus on lat contraction", "Don't swing"]
   },
   {
     name: "Close Grip Lat Pulldown",
     description: "Close grip lat pulldown uses a narrow handle to target the lats with greater range of motion and bicep involvement.",
     muscles: ["Lats", "Biceps", "Rhomboids"],
-    videoUrl: "https://www.youtube.com/embed/lLCMU4pHkW4",
+    videoUrl: "https://www.youtube.com/embed/ecRF8ERf2q4",
     tips: ["Use V-bar or close grip handle", "Pull to upper chest", "Squeeze lats at bottom", "Control the return"]
   },
   {
@@ -286,7 +286,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "Sumo Deadlift",
     description: "Sumo deadlift uses a wide stance which emphasizes the inner thighs and reduces lower back stress. Stand with feet wide and grip the bar between your legs.",
     muscles: ["Glutes", "Inner Thighs", "Hamstrings", "Lower Back"],
-    videoUrl: "https://www.youtube.com/embed/tfYGqRQ8h74",
+    videoUrl: "https://www.youtube.com/embed/1ZXobu7JvvE",
     tips: ["Wide stance, toes pointed out", "Grip between legs", "Push knees out", "Keep chest up"]
   },
   {
@@ -300,7 +300,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "Deficit Deadlift",
     description: "Deficit deadlifts are performed standing on a raised platform to increase range of motion and difficulty.",
     muscles: ["Lower Back", "Glutes", "Hamstrings", "Quads"],
-    videoUrl: "https://www.youtube.com/embed/vpb8-c_QKFQ",
+    videoUrl: "https://www.youtube.com/embed/MN2w0LIsvF8",
     tips: ["Stand on 2-4 inch platform", "Maintain proper form", "Great for building strength off floor", "Start lighter than regular deadlift"]
   },
   {
@@ -321,7 +321,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "Meadows Row",
     description: "Meadows row is a landmine row variation that targets the lats from a unique angle. Stand perpendicular to the bar and row with an overhand grip.",
     muscles: ["Lats", "Rear Deltoids", "Biceps"],
-    videoUrl: "https://www.youtube.com/embed/mR0VpZLbsY0",
+    videoUrl: "https://www.youtube.com/embed/QJ2PXJPEWJI",
     tips: ["Stand perpendicular to bar", "Overhand grip on bar end", "Row to hip", "Great lat stretch at bottom"]
   },
   {
@@ -365,7 +365,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "Reverse Flyes",
     description: "Reverse flyes target the rear deltoids and upper back. Bend at the hips, hold dumbbells with palms facing each other, and raise them out to the sides.",
     muscles: ["Rear Deltoids", "Rhomboids"],
-    videoUrl: "https://www.youtube.com/embed/oLrBaVNVdkE",
+    videoUrl: "https://www.youtube.com/embed/ttvfGg9d76c",
     tips: ["Bend forward at hips", "Keep slight bend in elbows", "Squeeze shoulder blades", "Don't use momentum"]
   },
   {
@@ -428,14 +428,14 @@ const exerciseData: ExerciseInfo[] = [
     name: "Machine Lateral Raises",
     description: "Machine lateral raises provide a fixed path for consistent side deltoid isolation.",
     muscles: ["Side Deltoids"],
-    videoUrl: "https://www.youtube.com/embed/E6Axtw4gJhU",
+    videoUrl: "https://www.youtube.com/embed/kDqklk1ZESo",
     tips: ["Adjust seat height properly", "Lead with elbows", "Control the negative", "Don't use momentum"]
   },
   {
     name: "Rear Delt Flyes",
     description: "Rear delt flyes specifically target the posterior deltoids. Bend forward and raise dumbbells out to the sides.",
     muscles: ["Rear Deltoids", "Rhomboids"],
-    videoUrl: "https://www.youtube.com/embed/oLrBaVNVdkE",
+    videoUrl: "https://www.youtube.com/embed/ttvfGg9d76c",
     tips: ["Bend at hips 45-90 degrees", "Raise out to sides", "Lead with elbows", "Squeeze rear delts at top"]
   },
   {
@@ -514,7 +514,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "Spider Curl",
     description: "Spider curls are performed face down on an incline bench, eliminating momentum and isolating the biceps.",
     muscles: ["Biceps"],
-    videoUrl: "https://www.youtube.com/embed/58JOk_J1ZfI",
+    videoUrl: "https://www.youtube.com/embed/Sn8cxbHDDyU",
     tips: ["Lie face down on incline", "Arms hang straight down", "Curl without swinging", "Constant tension"]
   },
   {
@@ -528,7 +528,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "21s",
     description: "21s are a bicep curl variation: 7 reps bottom half, 7 reps top half, 7 reps full range for maximum pump.",
     muscles: ["Biceps"],
-    videoUrl: "https://www.youtube.com/embed/P3PAL3sIU30",
+    videoUrl: "https://www.youtube.com/embed/Qr2NsSqQC4I",
     tips: ["7 lower half reps", "7 upper half reps", "7 full range reps", "Great for pump and burn"]
   },
 
@@ -593,7 +593,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "Cable Overhead Tricep Extension",
     description: "Cable overhead extensions provide constant tension on the triceps. Face away from the cable and extend overhead.",
     muscles: ["Triceps"],
-    videoUrl: "https://www.youtube.com/embed/xFAv3p5dETs",
+    videoUrl: "https://www.youtube.com/embed/kOQzyQ-pUMs",
     tips: ["Face away from cable", "Extend overhead", "Keep elbows close to head", "Squeeze at full extension"]
   },
   {
@@ -614,14 +614,14 @@ const exerciseData: ExerciseInfo[] = [
     name: "JM Press",
     description: "JM Press is a hybrid between close grip bench and skull crushers, targeting the triceps with heavy weight.",
     muscles: ["Triceps", "Chest"],
-    videoUrl: "https://www.youtube.com/embed/k3K6VPMa7c8",
+    videoUrl: "https://www.youtube.com/embed/QXz36eE9YB4",
     tips: ["Lower bar to chin/throat area", "Elbows tuck in", "Hybrid movement", "Great for tricep strength"]
   },
   {
     name: "Tate Press",
     description: "Tate press is performed by lowering dumbbells to your chest with elbows pointing out, then extending back up.",
     muscles: ["Triceps"],
-    videoUrl: "https://www.youtube.com/embed/v4E2hkFzjOk",
+    videoUrl: "https://www.youtube.com/embed/aL3b4KkLQH0",
     tips: ["Lie on flat bench", "Elbows point outward", "Lower dumbbells to chest", "Extend by straightening arms"]
   },
 
@@ -728,7 +728,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "Box Squat",
     description: "Box squat teaches proper squat depth and develops explosive power. Squat down to a box, pause, then stand.",
     muscles: ["Quads", "Glutes", "Hamstrings"],
-    videoUrl: "https://www.youtube.com/embed/vYijF-hqg0E",
+    videoUrl: "https://www.youtube.com/embed/RpWCNpFW6zY",
     tips: ["Sit back to box", "Pause on box briefly", "Explode up powerfully", "Great for learning depth"]
   },
   {
@@ -763,7 +763,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "Sissy Squat",
     description: "Sissy squat is an advanced quad isolation exercise. Lean back while rising on toes and bending knees forward.",
     muscles: ["Quads"],
-    videoUrl: "https://www.youtube.com/embed/032Xl1gfKKE",
+    videoUrl: "https://www.youtube.com/embed/pY1EV7jNs-M",
     tips: ["Rise onto toes", "Lean torso back", "Knees travel forward", "Extreme quad isolation"]
   },
   {
@@ -784,14 +784,14 @@ const exerciseData: ExerciseInfo[] = [
     name: "Donkey Calf Raises",
     description: "Donkey calf raises allow for a deep stretch at the bottom. Bend at hips and raise heels.",
     muscles: ["Calves"],
-    videoUrl: "https://www.youtube.com/embed/jxPO_yqbnPQ",
+    videoUrl: "https://www.youtube.com/embed/RNBIjAL6gtw",
     tips: ["Bend at hips 90 degrees", "Great stretch at bottom", "Rise onto toes", "Classic bodybuilding exercise"]
   },
   {
     name: "Single Leg Leg Press",
     description: "Single leg leg press helps address muscle imbalances. Use one leg at a time on the leg press machine.",
     muscles: ["Quads", "Glutes"],
-    videoUrl: "https://www.youtube.com/embed/NQJAq4cGxwU",
+    videoUrl: "https://www.youtube.com/embed/yZmx_Ac3880",
     tips: ["One leg at a time", "Control the weight", "Don't lock knee", "Great for imbalances"]
   },
   {
@@ -812,7 +812,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "Good Mornings",
     description: "Good mornings are a hip hinge movement targeting posterior chain. Bar on upper back, hinge at hips while keeping legs nearly straight.",
     muscles: ["Hamstrings", "Glutes", "Lower Back"],
-    videoUrl: "https://www.youtube.com/embed/Ixa0qfVorjY",
+    videoUrl: "https://www.youtube.com/embed/YA-h3n9L4YU",
     tips: ["Bar on upper back", "Push hips back", "Slight knee bend", "Keep back flat"]
   },
   {
@@ -833,7 +833,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "Cable Pull Through",
     description: "Cable pull through is a hip hinge movement using a cable between your legs. Great for teaching hip hinge pattern.",
     muscles: ["Glutes", "Hamstrings"],
-    videoUrl: "https://www.youtube.com/embed/MJB8eJYhdL4",
+    videoUrl: "https://www.youtube.com/embed/3OJL1C9wdN8",
     tips: ["Face away from cable", "Grip between legs", "Hip hinge movement", "Squeeze glutes at top"]
   },
 
@@ -849,7 +849,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "High Plank",
     description: "High plank is performed with arms straight rather than on forearms. Also known as the push-up position hold.",
     muscles: ["Core", "Shoulders", "Chest"],
-    videoUrl: "https://www.youtube.com/embed/sZxrs1CvpjE",
+    videoUrl: "https://www.youtube.com/embed/pSHjTRCQxIw",
     tips: ["Arms straight", "Hands under shoulders", "Body in straight line", "Engage core throughout"]
   },
   {
@@ -870,7 +870,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "Plank to Push-up",
     description: "Plank to push-up transitions between forearm and high plank positions, working arms and core.",
     muscles: ["Core", "Triceps", "Shoulders"],
-    videoUrl: "https://www.youtube.com/embed/L4oFJRDAU4M",
+    videoUrl: "https://www.youtube.com/embed/hyv14e2QDq0",
     tips: ["Alternate which arm leads", "Keep hips stable", "Don't sway side to side", "Controlled movement"]
   },
   {
@@ -912,7 +912,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "Dead Bug",
     description: "Dead bugs teach core stability and coordination. Lie on your back with arms up and knees bent 90 degrees, then alternate lowering opposite arm and leg.",
     muscles: ["Core", "Lower Back"],
-    videoUrl: "https://www.youtube.com/embed/I5xbsA71v1o",
+    videoUrl: "https://www.youtube.com/embed/g_BYB0R-4Ws",
     tips: ["Press lower back into floor", "Move slowly with control", "Opposite arm and leg", "Don't let back arch"]
   },
   {
@@ -954,14 +954,14 @@ const exerciseData: ExerciseInfo[] = [
     name: "Flutter Kicks",
     description: "Flutter kicks target the lower abs. Lie on back and alternate kicking legs up and down.",
     muscles: ["Lower Abs", "Hip Flexors"],
-    videoUrl: "https://www.youtube.com/embed/eEG9uXQp1Lc",
+    videoUrl: "https://www.youtube.com/embed/ANVdMDaYRts",
     tips: ["Keep lower back pressed down", "Small controlled kicks", "Don't let feet touch floor", "Keep core engaged"]
   },
   {
     name: "Toe Touches",
     description: "Toe touches target the upper abs. Lie on back with legs vertical and reach hands toward toes.",
     muscles: ["Abs"],
-    videoUrl: "https://www.youtube.com/embed/9z0m9z6JBGA",
+    videoUrl: "https://www.youtube.com/embed/2YDY9PaBK2g",
     tips: ["Legs straight up", "Reach toward toes", "Lift shoulders off floor", "Don't swing"]
   },
   {
@@ -1012,7 +1012,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "Battle Ropes",
     description: "Battle ropes provide a high-intensity upper body and cardio workout. Hold the ends of heavy ropes and create waves using alternating or simultaneous arm movements.",
     muscles: ["Shoulders", "Arms", "Core", "Cardio"],
-    videoUrl: "https://www.youtube.com/embed/4LbS7EJ8k1k",
+    videoUrl: "https://www.youtube.com/embed/tsGdDSIqDTk",
     tips: ["Maintain athletic stance", "Keep core engaged", "Try different wave patterns", "Start with short intervals"]
   },
   {
@@ -1026,28 +1026,28 @@ const exerciseData: ExerciseInfo[] = [
     name: "Rowing Machine",
     description: "The rowing machine provides a full-body cardiovascular workout. Drive with your legs, lean back slightly, then pull the handle to your chest.",
     muscles: ["Legs", "Back", "Arms", "Core"],
-    videoUrl: "https://www.youtube.com/embed/H0r-bX0Ul6g",
+    videoUrl: "https://www.youtube.com/embed/V9xDbhkPGuo",
     tips: ["Legs, back, arms sequence", "Drive through heels", "Don't hunch over", "Maintain consistent stroke rate"]
   },
   {
     name: "Jumping Lunges",
     description: "Jumping lunges are a plyometric exercise that builds explosive leg power. Perform a lunge, then explosively jump and switch legs in the air.",
     muscles: ["Quads", "Glutes", "Calves"],
-    videoUrl: "https://www.youtube.com/embed/L-Bm7yB7bHI",
+    videoUrl: "https://www.youtube.com/embed/y7Iug7eC0dk",
     tips: ["Land softly", "Keep torso upright", "Drive through front heel", "Scale to alternating lunges if needed"]
   },
   {
     name: "High Knees",
     description: "High knees are a cardio exercise that elevates heart rate. Run in place bringing knees up high toward chest.",
     muscles: ["Hip Flexors", "Core", "Cardio"],
-    videoUrl: "https://www.youtube.com/embed/D0FTqUgEcSI",
+    videoUrl: "https://www.youtube.com/embed/oDdkytliOqE",
     tips: ["Drive knees up high", "Stay on balls of feet", "Pump arms", "Keep a quick pace"]
   },
   {
     name: "Butt Kicks",
     description: "Butt kicks are a cardio warm-up exercise. Run in place kicking heels up toward glutes.",
     muscles: ["Hamstrings", "Cardio"],
-    videoUrl: "https://www.youtube.com/embed/3OGoR-vDvqM",
+    videoUrl: "https://www.youtube.com/embed/8opcQdC-V-U",
     tips: ["Kick heels to glutes", "Stay light on feet", "Good warm-up exercise", "Keep steady rhythm"]
   },
   {
@@ -1061,14 +1061,14 @@ const exerciseData: ExerciseInfo[] = [
     name: "Skater Jumps",
     description: "Skater jumps are lateral plyometric exercises. Jump side to side, landing on one foot like a speed skater.",
     muscles: ["Glutes", "Outer Thighs", "Cardio"],
-    videoUrl: "https://www.youtube.com/embed/d3k2iSHhyxU",
+    videoUrl: "https://www.youtube.com/embed/a21oZOjEFKU",
     tips: ["Jump laterally", "Land on one foot", "Touch floor with opposite hand", "Stay low"]
   },
   {
     name: "Squat Thrusts",
     description: "Squat thrusts are similar to burpees but without the push-up and jump. Squat, jump feet back, then return.",
     muscles: ["Full Body", "Cardio"],
-    videoUrl: "https://www.youtube.com/embed/DpYhVpUIq44",
+    videoUrl: "https://www.youtube.com/embed/ZNVZZEYH-PU",
     tips: ["Squat down", "Jump feet back to plank", "Jump feet forward", "Stand and repeat"]
   },
   {
@@ -1082,42 +1082,42 @@ const exerciseData: ExerciseInfo[] = [
     name: "Treadmill Sprints",
     description: "Treadmill sprints are high-intensity intervals on a treadmill. Sprint for short bursts followed by rest.",
     muscles: ["Legs", "Cardio"],
-    videoUrl: "https://www.youtube.com/embed/g8Eo-e5xJ6o",
+    videoUrl: "https://www.youtube.com/embed/bnmPWHi7Pr8",
     tips: ["Warm up first", "Sprint 20-30 seconds", "Rest or walk between", "Use safety clip"]
   },
   {
     name: "Stair Climber",
     description: "The stair climber machine provides steady-state cardio that targets legs and glutes.",
     muscles: ["Quads", "Glutes", "Calves", "Cardio"],
-    videoUrl: "https://www.youtube.com/embed/VpXfdS3ER8I",
+    videoUrl: "https://www.youtube.com/embed/1mxHoP0P91E",
     tips: ["Stand upright", "Don't lean on rails", "Take full steps", "Great for glutes"]
   },
   {
     name: "Elliptical",
     description: "The elliptical provides low-impact cardio with arm involvement. Great for joint-friendly conditioning.",
     muscles: ["Full Body", "Cardio"],
-    videoUrl: "https://www.youtube.com/embed/pqLvFJCvbpA",
+    videoUrl: "https://www.youtube.com/embed/Y8gEgOGkUEg",
     tips: ["Use arms actively", "Maintain good posture", "Low impact on joints", "Vary resistance and incline"]
   },
   {
     name: "Assault Bike",
     description: "The assault bike provides brutal full-body cardio. Both arms and legs work together for maximum calorie burn.",
     muscles: ["Full Body", "Cardio"],
-    videoUrl: "https://www.youtube.com/embed/nKdMnzFWSU4",
+    videoUrl: "https://www.youtube.com/embed/WmfvyH_CQps",
     tips: ["Push and pull with arms", "Drive with legs", "Pace yourself", "Great for HIIT"]
   },
   {
     name: "Sled Push",
     description: "Sled push is a conditioning exercise. Load a sled and push it for distance or time.",
     muscles: ["Quads", "Glutes", "Core", "Cardio"],
-    videoUrl: "https://www.youtube.com/embed/W8lsGy7EPaE",
+    videoUrl: "https://www.youtube.com/embed/-rJPHJj72nI",
     tips: ["Drive with legs", "Keep body at 45 degrees", "Short choppy steps", "Great for leg conditioning"]
   },
   {
     name: "Sled Pull",
     description: "Sled pull works the posterior chain. Attach a rope and pull the sled toward you.",
     muscles: ["Back", "Biceps", "Hamstrings"],
-    videoUrl: "https://www.youtube.com/embed/qYpjkTJBqxk",
+    videoUrl: "https://www.youtube.com/embed/t8H1O-xv8IE",
     tips: ["Sit back and pull", "Hand over hand motion", "Engage back and legs", "Great for grip strength"]
   },
   {
@@ -1131,7 +1131,7 @@ const exerciseData: ExerciseInfo[] = [
     name: "Bear Crawl",
     description: "Bear crawl is a full-body conditioning exercise. Crawl on hands and feet with knees hovering off ground.",
     muscles: ["Core", "Shoulders", "Full Body"],
-    videoUrl: "https://www.youtube.com/embed/pv00BmEBU3k",
+    videoUrl: "https://www.youtube.com/embed/L9BL0LUUAyU",
     tips: ["Hands under shoulders", "Knees hover off ground", "Move opposite arm and leg", "Keep hips low"]
   },
 ];

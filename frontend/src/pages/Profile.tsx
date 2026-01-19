@@ -14,6 +14,7 @@ import { profileApi, UserProfile, UserStats, Milestone } from '../api';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import LoadingSpinner from '../components/LoadingSpinner';
+import ProgressCharts from '../components/ProgressCharts';
 
 const GENDERS = ['male', 'female', 'other'];
 const ACTIVITY_LEVELS = [
@@ -311,6 +312,9 @@ export default function Profile() {
           ))}
         </div>
       </Card>
+
+      {/* Progress Charts */}
+      <ProgressCharts />
 
       {/* Personal Data */}
       <div ref={personalDataRef}>

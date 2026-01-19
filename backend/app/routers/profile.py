@@ -317,3 +317,96 @@ def get_stats(
         workout_calendar=calendar_data,
         milestones=milestones
     )
+
+
+class ExerciseDataPoint(BaseModel):
+    date: str
+    weight: Optional[float]
+    reps: Optional[int]
+    volume: Optional[float]  # weight * reps
+    
+class ExerciseProgressResponse(BaseModel):
+    exercise_name: str
+    data_points: List[ExerciseDataPoint]
+    max_weight: float
+    max_reps: int
+    max_volume: float
+
+
+@router.get("/progress")
+def get_exercise_progress(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get progress data for all exercises - max weight/reps over time."""
+    from ..models import Exercise, ExerciseSet
+    
+    # Get all completed workouts with their exercises and sets
+    workouts = db.query(Workout).filter(
+        Workout.user_id == current_user.id,
+        Workout.completed_at != None
+    ).order_by(Workout.completed_at).all()
+    
+    # Group by exercise name
+    exercise_data = {}
+    
+    for workout in workouts:
+        workout_date = workout.completed_at.date().isoformat() if workout.completed_at else workout.date.date().isoformat()
+        
+        for exercise in workout.exercises:
+            name = exercise.name.lower().strip()
+            
+            if name not in exercise_data:
+                exercise_data[name] = {
+                    'name': exercise.name,
+                    'data_points': [],
+                    'max_weight': 0,
+                    'max_reps': 0,
+                    'max_volume': 0
+                }
+            
+            # Find max weight and reps for this workout
+            max_weight = 0
+            max_reps = 0
+            total_volume = 0
+            
+            for s in exercise.sets:
+                weight = s.weight or 0
+                reps = s.reps or 0
+                volume = weight * reps
+                
+                if weight > max_weight:
+                    max_weight = weight
+                if reps > max_reps:
+                    max_reps = reps
+                total_volume += volume
+            
+            if max_weight > 0 or max_reps > 0:
+                exercise_data[name]['data_points'].append({
+                    'date': workout_date,
+                    'weight': max_weight if max_weight > 0 else None,
+                    'reps': max_reps if max_reps > 0 else None,
+                    'volume': total_volume if total_volume > 0 else None
+                })
+                
+                # Update maxes
+                if max_weight > exercise_data[name]['max_weight']:
+                    exercise_data[name]['max_weight'] = max_weight
+                if max_reps > exercise_data[name]['max_reps']:
+                    exercise_data[name]['max_reps'] = max_reps
+                if total_volume > exercise_data[name]['max_volume']:
+                    exercise_data[name]['max_volume'] = total_volume
+    
+    # Convert to response format, sorted by most data points
+    result = []
+    for name, data in sorted(exercise_data.items(), key=lambda x: len(x[1]['data_points']), reverse=True):
+        if len(data['data_points']) >= 2:  # Only include exercises with 2+ data points
+            result.append(ExerciseProgressResponse(
+                exercise_name=data['name'],
+                data_points=[ExerciseDataPoint(**dp) for dp in data['data_points']],
+                max_weight=data['max_weight'],
+                max_reps=data['max_reps'],
+                max_volume=data['max_volume']
+            ))
+    
+    return result[:10]  # Return top 10 exercises by frequency

@@ -24,6 +24,7 @@ import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Auth from './pages/Auth';
 import AdminDashboard from './pages/AdminDashboard';
+import ExerciseLibrary from './pages/ExerciseLibrary';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { SubscriptionProvider } from './context/SubscriptionContext';
 import AdBanner from './components/AdBanner';
@@ -77,6 +78,7 @@ function AppRoutes() {
                       <Route path="/plans" element={<Plans />} />
                       <Route path="/plans/:id" element={<PlanDetail />} />
                       <Route path="/profile" element={<Profile />} />
+                      <Route path="/exercises" element={<ExerciseLibrary />} />
                       <Route path="/pricing" element={<Pricing />} />
                       <Route path="/admin" element={<AdminDashboard />} />
                     </Routes>
